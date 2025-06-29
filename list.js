@@ -1,4 +1,4 @@
-export const posts = [
+const posts = [
   {
       title: "Maxon Universe",
       description: "Complémentaire à Maxon Red Giant",
