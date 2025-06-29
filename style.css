@@ -221,24 +221,26 @@ input[type="text"] {
 /* ===================== */
 /* BULLE D'INFO */
 /* ===================== */
-
 .info-bubble {
   position: absolute;
-  max-width: 400px;
-  min-width: 200px;
-  padding: 10px 15px;
+  width: max-content;
+  max-width: 500px;
+  min-width: 250px;
+  padding: 14px 18px;
   bottom: 55%;
   left: 0;
   background: #1e293b;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(17, 34, 61, 0.6);
   color: #e0e7ff;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13.5px;
+  line-height: 1.6;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 9999;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .info-bubble::before {
