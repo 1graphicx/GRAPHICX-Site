@@ -193,49 +193,56 @@ input[type="text"] {
 /* BOUTON INFO */
 /* ===================== */
 
+/* Info button style */
 .info-btn {
-  background-color: #1a1a1a;
-  color: #0ff;
-  border: 1px solid #0ff;
+  background: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
   border-radius: 50%;
   width: 28px;
   height: 28px;
-  font-size: 16px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
   line-height: 28px;
   text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 6px #0ff80f;
-  transition: all 0.25s ease;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
-
-.info-btn:hover {
-  background-color: #0ff;
-  color: #000;
-  box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-}
-
-.info-bubble {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 8px;
-  background: #111;
+.info-btn:hover,
+.info-btn:focus-visible,
+.info-btn[aria-expanded="true"] {
+  background-color: #3b82f6;
   color: #fff;
-  border: 1px solid #0ff;
-  padding: 12px;
-  border-radius: 8px;
-  max-width: 280px;
-  z-index: 999;
-  box-shadow: 0 0 8px #0ff80f;
-  font-size: 14px;
-  line-height: 1.5;
-  white-space: normal;
+  border-color: #3b82f6;
+  outline: none;
 }
 
-.info-bubble.show {
-  display: block;
+/* Info bubble modernisée */
+.info-bubble {
+  position: absolute;
+  max-width: 400px;
+  min-width: 95%;
+  padding: 10px 10px;
+  bottom: 55%; 
+  left: 0%;
+  background: #1e293b;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(17, 34, 61, 0.4);
+  color: #e0e7ff;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  user-select: text;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+  box-sizing: border-box;
 }
 
 /* ===================== */
