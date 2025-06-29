@@ -172,77 +172,83 @@
   outline: none;
 }
 
-/* Info button style */
+/* Bouton Info */
 .info-btn {
   background: transparent;
-  border: 2px solid #3b82f6;
-  color: #3b82f6;
+  border: 2px solid #4a5568; /* Couleur plus neutre au repos */
+  color: #a0aec0;
   border-radius: 50%;
   width: 28px;
   height: 28px;
   cursor: pointer;
   font-weight: 700;
-  font-size: 18px;
-  line-height: 28px;
+  font-size: 16px;
+  line-height: 1;
   text-align: center;
   padding: 0;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition: all 0.3s ease;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
 }
+
 .info-btn:hover,
-.info-btn:focus-visible,
+.info-btn:focus-visible {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: scale(1.1);
+}
+
+/* Style quand la bulle est ouverte (active) */
 .info-btn[aria-expanded="true"] {
   background-color: #3b82f6;
-  color: #fff;
   border-color: #3b82f6;
-  outline: none;
+  color: #fff;
 }
 
-/* Info bubble modernisée */
+/* Info-bulle (Tooltip) */
 .info-bubble {
   position: absolute;
-  max-width: 400px;
-  min-width: 95%;
-  padding: 10px 10px;
-  bottom: 55%; 
-  left: 0%;
+  bottom: calc(100% + 10px); /* Position 10px AU-DESSUS du conteneur .download-section */
+  right: 0; /* Aligné à droite de son conteneur */
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 15px;
   background: #1e293b;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(17, 34, 61, 0.4);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   color: #e0e7ff;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
+  
+  /* Logique de visibilité */
   opacity: 0;
-  pointer-events: none;
-  user-select: text;
-  transition: opacity 0.3s ease;
-  z-index: 9999;
-  box-sizing: border-box;
+  transform: translateY(5px); /* Commence légèrement plus bas */
+  pointer-events: none; /* Non cliquable quand invisible */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
 }
 
-/* Flèche de la bulle */
-.info-bubble::before {
+/* Flèche de la bulle (pseudo-élément) */
+.info-bubble::after {
   content: "";
   position: absolute;
-  top: -8px;
-  right: 12px;
-  border-width: 8px 8px 0 8px;
+  top: 100%; /* Positionné en bas de la bulle */
+  right: 10px; /* Aligné avec le centre du bouton info */
+  border-width: 6px;
   border-style: solid;
   border-color: #1e293b transparent transparent transparent;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
 }
 
-
-.info-btn:hover + .info-bubble,
-.info-btn:focus-visible + .info-bubble {
+/* État visible de la bulle */
+.info-bubble.show {
   opacity: 1;
-  pointer-events: auto;
+  transform: translateY(0); /* Remonte à sa position finale */
+  pointer-events: auto; /* Devient cliquable (pour sélectionner le texte) */
 }
-
 
 /* Container position relative for positioning */
 .download-section {
