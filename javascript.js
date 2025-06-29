@@ -4,47 +4,47 @@ const tagsDropdown = document.getElementById('tagsDropdown');
 const selectedTagsContainer = document.querySelector('.selected-tags');
 const postsGrid = document.getElementById('postsGrid');
 
+
 let selectedTags = new Set();
 
 function init() {
   renderTagsDropdown();
   renderPosts(posts);
 
-  // Filtrage des tags dans la dropdown au saisie dans input tagsFilterInput
   tagsFilterInput.addEventListener('input', () => {
-    filterTagsDropdown();
+  filterTagsDropdown();
   });
 
-  // Toggle dropdown tags au clic dans input tagsFilterInput
+  // Clic sur la barre tags : toggle dropdown
   tagsFilterInput.addEventListener('click', (e) => {
-    e.stopPropagation(); // Empêche la fermeture par le document click
+    e.stopPropagation(); // Empêche la fermeture immédiate par document click
     const isVisible = tagsDropdown.classList.toggle('show');
     tagsFilterInput.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
   });
 
-  // Clic en dehors ferme dropdown
+  // Clic sur document ferme dropdown sauf si on clique dans dropdown ou input
   document.addEventListener('click', () => {
     tagsDropdown.classList.remove('show');
     tagsFilterInput.setAttribute('aria-expanded', 'false');
   });
 
-  // Filtrage live dans dropdown au input
   tagsFilterInput.addEventListener('input', (e) => {
-    const search = e.target.value.toLowerCase();
-    const labels = tagsDropdown.querySelectorAll('label');
-    labels.forEach(label => {
-      const tagText = label.textContent.toLowerCase();
-      label.style.display = tagText.includes(search) ? 'flex' : 'none';
-    });
-
-    // Affiche le dropdown si pas visible
-    if (!tagsDropdown.classList.contains('show')) {
-      tagsDropdown.classList.add('show');
-      tagsFilterInput.setAttribute('aria-expanded', 'true');
-    }
+  const search = e.target.value.toLowerCase();
+  const labels = tagsDropdown.querySelectorAll('label');
+  labels.forEach(label => {
+    const tagText = label.textContent.toLowerCase();
+    label.style.display = tagText.includes(search) ? 'flex' : 'none';
   });
 
-  // Empêche la fermeture du dropdown si clic dedans
+  // Affiche le dropdown si ce n’est pas visible
+  if (!tagsDropdown.classList.contains('show')) {
+    tagsDropdown.classList.add('show');
+    tagsFilterInput.setAttribute('aria-expanded', 'true');
+  }
+  });
+
+
+  // Empêche la fermeture quand on clique dans dropdown lui-même
   tagsDropdown.addEventListener('click', (e) => {
     e.stopPropagation();
   });
@@ -52,7 +52,7 @@ function init() {
   // Recherche texte live
   searchInput.addEventListener('input', updateFilter);
 
-  // Gestion checkbox sélection tags dans dropdown
+  // Gestion des checkbox tags dans dropdown
   tagsDropdown.addEventListener('change', (e) => {
     if (e.target.matches('input[type="checkbox"]')) {
       const tag = e.target.value;
@@ -63,7 +63,7 @@ function init() {
     }
   });
 
-  // Gestion suppression tags sélectionnés (boutons ×)
+  // Gestion des boutons de suppression de tags sélectionnés
   selectedTagsContainer.addEventListener('click', (e) => {
     if (e.target.matches('button.remove-tag')) {
       const tag = e.target.getAttribute('data-tag');
@@ -76,7 +76,42 @@ function init() {
     }
   });
 
-  // Scroll horizontal sur tags dans les posts au wheel vertical
+    // Filtre la liste des tags dans la dropdown selon l'entrée texte
+function filterTagsDropdown() {
+  const filterText = tagsFilterInput.value.trim().toLowerCase();
+  const labels = tagsDropdown.querySelectorAll('label');
+  let visibleCount = 0;
+  labels.forEach(label => {
+    const tagText = label.textContent.toLowerCase();
+    if (tagText.includes(filterText)) {
+      label.style.display = 'flex';
+      visibleCount++;
+    } else {
+      label.style.display = 'none';
+    }
+  });
+
+  // Si aucun tag visible, afficher message "Aucun tag trouvé"
+  let noTagsMsg = tagsDropdown.querySelector('.no-tags-msg');
+  if (visibleCount === 0) {
+    if (!noTagsMsg) {
+      noTagsMsg = document.createElement('div');
+      noTagsMsg.className = 'no-tags-msg';
+      noTagsMsg.style.padding = '10px 15px';
+      noTagsMsg.style.color = '#999';
+      noTagsMsg.style.fontStyle = 'italic';
+      noTagsMsg.textContent = 'Aucun tag trouvé.';
+      tagsDropdown.appendChild(noTagsMsg);
+    }
+  } else {
+    if (noTagsMsg) {
+      noTagsMsg.remove();
+    }
+  }
+}
+
+
+  // Scroll horizontal dans les tags des posts au wheel vertical
   postsGrid.addEventListener('wheel', (e) => {
     const tagsDiv = e.target.closest('.tags');
     if (tagsDiv && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
@@ -119,13 +154,11 @@ function updateSelectedTagsUI() {
       const tagPill = document.createElement('div');
       tagPill.classList.add('selected-tag');
       tagPill.textContent = tag;
-
       const removeBtn = document.createElement('button');
       removeBtn.classList.add('remove-tag');
       removeBtn.setAttribute('aria-label', `Supprimer le filtre ${tag}`);
       removeBtn.setAttribute('data-tag', tag);
       removeBtn.textContent = '×';
-
       tagPill.appendChild(removeBtn);
       selectedTagsContainer.appendChild(tagPill);
     });
@@ -143,7 +176,7 @@ function updateFilter() {
       if (!hasAllTags) return false;
     }
 
-    // Filtre recherche texte sur title, description, tags
+    // Filtre recherche texte sur title, description, tags, version
     if (searchTerm.length > 0) {
       const haystack = [
         post.title.toLowerCase(),
@@ -160,7 +193,6 @@ function updateFilter() {
   renderPosts(filteredPosts);
 }
 
-// Affiche la liste des posts
 function renderPosts(postsToRender) {
   postsGrid.innerHTML = '';
 
@@ -205,7 +237,7 @@ function renderPosts(postsToRender) {
       tagsDiv.appendChild(tagSpan);
     });
 
-    // Version + Taille
+    // Version + Size
     const version = document.createElement('div');
     version.className = 'post-version';
     if (post.version) {
@@ -214,7 +246,7 @@ function renderPosts(postsToRender) {
       version.textContent = `Taille : ${post.size}`;
     }
 
-    // Section téléchargement
+    // Download section
     const downloadSection = document.createElement('div');
     downloadSection.className = 'download-section';
 
@@ -247,14 +279,14 @@ function renderPosts(postsToRender) {
       downloadSection.appendChild(infoBtn);
       downloadSection.appendChild(infoBubble);
 
-      // Afficher bulle au focus clavier
+      // Afficher bulle au focus (clavier)
       infoBtn.addEventListener('focus', () => {
         closeAllInfoBubbles();
         infoBubble.classList.add('show');
         infoBtn.setAttribute('aria-expanded', 'true');
       });
 
-      // Cacher bulle au blur clavier
+      // Cacher bulle au blur (clavier)
       infoBtn.addEventListener('blur', () => {
         infoBubble.classList.remove('show');
         infoBtn.setAttribute('aria-expanded', 'false');
@@ -279,13 +311,14 @@ function closeAllInfoBubbles() {
   document.querySelectorAll('.info-btn[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
 }
 
-// Gestion fermeture dropdown si clic en dehors (hors input et dropdown)
 document.addEventListener('click', (e) => {
   if (!tagsFilterInput.contains(e.target) && !tagsDropdown.contains(e.target)) {
     tagsDropdown.classList.remove('show');
     tagsFilterInput.setAttribute('aria-expanded', 'false');
   }
 });
+
+
 
 
   const posts = [
