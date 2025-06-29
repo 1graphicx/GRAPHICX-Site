@@ -196,44 +196,65 @@ function renderPosts(postsToRender) {
 
     downloadSection.appendChild(downloadLink);
 
-    if (post.information !== undefined && post.information !== null) {
-      const infoBtn = document.createElement('button');
-      infoBtn.className = 'info-btn';
-      infoBtn.type = 'button';
+// Bouton info + bulle
+if (post.information !== undefined && post.information !== null) {
+  const infoBtn = document.createElement('button');
+  infoBtn.className = 'info-btn';
+  infoBtn.type = 'button';
+  infoBtn.setAttribute('aria-expanded', 'false');
+  infoBtn.setAttribute('aria-label', `Afficher les informations supplémentaires pour ${post.title}`);
+  infoBtn.textContent = 'i';
+
+  const infoBubble = document.createElement('div');
+  infoBubble.className = 'info-bubble';
+  infoBubble.textContent = post.information || "Pas d'information supplémentaire.";
+  infoBubble.setAttribute('role', 'tooltip');
+  infoBubble.id = `info-bubble-${post.title.toLowerCase().replace(/\s+/g, '-')}`;
+  infoBtn.setAttribute('aria-describedby', infoBubble.id);
+
+  let isBubbleVisible = false;
+
+  const toggleBubble = () => {
+    isBubbleVisible = !isBubbleVisible;
+    closeAllInfoBubbles();
+    if (isBubbleVisible) {
+      infoBubble.classList.add('show');
+      infoBtn.setAttribute('aria-expanded', 'true');
+    } else {
+      infoBubble.classList.remove('show');
       infoBtn.setAttribute('aria-expanded', 'false');
-      infoBtn.setAttribute('aria-label', `Afficher les informations supplémentaires pour ${post.title}`);
-      infoBtn.textContent = 'i';
-
-      const infoBubble = document.createElement('div');
-      infoBubble.className = 'info-bubble';
-      infoBubble.textContent = post.information || "Pas d'information supplémentaire.";
-      infoBubble.setAttribute('role', 'tooltip');
-      infoBubble.id = `info-bubble-${post.title.toLowerCase().replace(/\s+/g, '-')}`;
-      infoBtn.setAttribute('aria-describedby', infoBubble.id);
-
-      infoBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = infoBubble.classList.contains('show');
-        closeAllInfoBubbles();
-        if (!isOpen) {
-          infoBubble.classList.add('show');
-          infoBtn.setAttribute('aria-expanded', 'true');
-        } else {
-          infoBubble.classList.remove('show');
-          infoBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!infoBtn.contains(e.target) && !infoBubble.contains(e.target)) {
-          infoBubble.classList.remove('show');
-          infoBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      downloadSection.appendChild(infoBtn);
-      downloadSection.appendChild(infoBubble);
     }
+  };
+
+  infoBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleBubble();
+  });
+
+  infoBtn.addEventListener('mouseenter', () => {
+    closeAllInfoBubbles();
+    infoBubble.classList.add('show');
+    infoBtn.setAttribute('aria-expanded', 'true');
+  });
+
+  infoBtn.addEventListener('mouseleave', () => {
+    if (!isBubbleVisible) {
+      infoBubble.classList.remove('show');
+      infoBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!infoBtn.contains(e.target) && !infoBubble.contains(e.target)) {
+      isBubbleVisible = false;
+      infoBubble.classList.remove('show');
+      infoBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  downloadSection.appendChild(infoBtn);
+  downloadSection.appendChild(infoBubble);
+}
 
     contentDiv.appendChild(title);
     contentDiv.appendChild(desc);
