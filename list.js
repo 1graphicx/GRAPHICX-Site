@@ -32,7 +32,7 @@ const posts = [
       version: "18.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "Crack pas encore publié",
       size: "1.8 GB"
     },
     {
@@ -41,7 +41,7 @@ const posts = [
       version: "12.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "Crack pas encore publié",
       size: "1.8 GB"
     },
     {
@@ -50,7 +50,7 @@ const posts = [
       version: "18.51",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "Crack pas encore publié",
       size: "1.8 GB"
     },
     {
