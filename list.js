@@ -11,7 +11,7 @@ const posts = [
     {
       title: "Winrar Premium",
       description: "Vous n'aurez plus la fenêtre de licence parfois relou :)",
-      version: ". Last (auto update)",
+      version: ". Last",
       thumbnail: "https://gramfile.com/wp-content/uploads/2024/01/WinRAR.png",
       tags: ["Software"],
       file: "https://drive.google.com/uc?export=download&id=1BMig6y78Fkx6tTnhD-fXgcshVMtX_Xoc",
