@@ -602,7 +602,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1A6mGve-hwpJC2-fD_oYq-l7d_ddouBgV",
       size: ""
     },
     {
@@ -611,7 +611,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1pGjgTYX1ZEgY8lWFfp2XyLxK7lGNu4in",
       size: ""
     },
     {
@@ -620,7 +620,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1w9QEB-M30ASetHn7gYvZArgwdG5wWOvl",
       size: ""
     },
     {
@@ -629,7 +629,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1ovLTfSs-KHkYsi3V1kKiFAFGnbzxCsUf",
       size: ""
     },
     {
@@ -638,7 +638,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1_qg8FIgYftP6nQfWgA2qzp-yoKN2f3sY",
       size: ""
     },
     {
@@ -647,7 +647,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=13QucgL16BV87ShuLwTGjToYB1AoUSJr3",
       size: ""
     },
     {
@@ -656,7 +656,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=14CO-lfx8fL8BS2KYqLEnPj7jd1Gkxf5z",
       size: ""
     },
     {
@@ -665,7 +665,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1G3liFez6qX33v3Y98rxvmsCEAZQZGu4L",
       size: ""
     },
     {
@@ -674,7 +674,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=15IhCenbKkKQL9ZKnOy9ZAt5J1ngaVlal",
       size: ""
     },
     {
@@ -683,7 +683,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1vKIHN8WLR8J_wlUpb3tYlsobN9O7yWOB",
       size: ""
     },
     {
@@ -691,7 +691,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1Y7i4lRIv7PvXEbB2ztLiIR9FVHyFRU31",
       size: ""
     },
     {
@@ -700,7 +700,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1jTprUnuD0HwNRd0oR8F5rsGwwtCvX7TZ",
       size: ""
     },
     {
@@ -708,7 +708,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1mcm65E9Hpta3wWAhBtbyefCmVLZiurj5",
       size: ""
     },
     {
