@@ -53,8 +53,8 @@ const posts = [
       version: "18.51",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "https://drive.google.com/uc?export=download&id=1K3dKPX-VRxr57J4T5X0KX7ZWvAGyPzeI",
-      size: "988 MB"
+      file: "https://drive.google.com/uc?export=download&id=1veItqodWqneRhWRKuvv6l8qTEd8YzEMw",
+      size: "1.1 GB"
     },
     {
       title: "Autokroma All Plugins",
@@ -62,7 +62,7 @@ const posts = [
       information: "AfterCodecs v1.11.5, BRAW Studio v3.3.5 + Presets, PlumePack v2.4.0, Vizual v1.0.7, Influx v1.5.3",
       thumbnail: "https://img.pikbest.com/origin/09/27/02/37vpIkbEsTNW8.png!sw800",
       tags: ["All Plugins", "After Effects", "Premiere Pro", "Plugins"],
-      file: "https://drive.google.com/uc?export=download&id=1veItqodWqneRhWRKuvv6l8qTEd8YzEMw",
+      file: "https://drive.google.com/uc?export=download&id=1bZVPlsXJrwV9NKQNdv90L6Nz1SaSkjFq",
       size: "74 MB"
     },
     {
