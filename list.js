@@ -629,7 +629,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "https://drive.google.com/uc?export=download&id=1ovLTfSs-KHkYsi3V1kKiFAFGnbzxCsUf",
+      file: "https://drive.google.com/uc?export=download&id=1Ha9rnv9Ws4rcGBibnMqgJcUrG00wIiUF",
       size: ""
     },
     {
@@ -656,7 +656,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
-      file: "https://drive.google.com/uc?export=download&id=14CO-lfx8fL8BS2KYqLEnPj7jd1Gkxf5z",
+      file: "https://drive.google.com/uc?export=download&id=1nIypNyRyhkZiS4sP6LLx5Fg5TDD1ZYM9",
       size: ""
     },
     {
