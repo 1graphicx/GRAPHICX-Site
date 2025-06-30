@@ -716,7 +716,7 @@ const posts = [
     {
       title: "Adobe After Effects 2025",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "25.3.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Uplf57C6hzVmtwDuooZ7SAV5TQqxILou",
@@ -725,7 +725,7 @@ const posts = [
     {
       title: "Adobe After Effects 2024",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "24.6.2",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1scJmfWyq7XVWZOzxNeOGbAkXANrlUEBq",
@@ -734,7 +734,7 @@ const posts = [
     {
       title: "Adobe After Effects 2023",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "23.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13Vo5tzAjX9uUUg56GtW-PKBEpBDJwiQg",
@@ -743,7 +743,7 @@ const posts = [
     {
       title: "Adobe After Effects 2022",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "22.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1YoXsq11mLjF50MIxA9kIgYEdgXENBVyL",
@@ -752,7 +752,7 @@ const posts = [
     {
       title: "Adobe After Effects 2021",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "18.4.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Sry39790qdOH_s21k0HaO6czI9543ozx",
@@ -761,7 +761,7 @@ const posts = [
     {
       title: "Adobe After Effects 2020",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "17.7",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13tmsqu_D6Y2gs3oR_sltfRE8JoaeY2J8",
@@ -770,7 +770,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2025",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "26.8.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1l643MYMBmTmuQ27zfmrOxCQHM1w0XnnP",
@@ -779,7 +779,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2024",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "25.12.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1kJzjm--EfqQjW1bwh3kmlngQkWtjjU6_",
@@ -788,7 +788,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2023",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "24.7.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=11s8VcodiBFrvKynyzKwlnbR3jvpyJmmj",
@@ -797,7 +797,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2022",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "23.5.5",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1dOov2fC8sW39C8fRKQaciEmOhhnLVwPQ",
@@ -806,7 +806,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2021",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "22.5.8",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1LnbkZOB4KCDZVHNFolMFMBZXjKST9Wkj",
@@ -815,7 +815,7 @@ const posts = [
     {
       title: "Adobe Photoshop 2020",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "21.2.11",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=15JShJRp_DhOiV4_Lqpmo8CdQC1X4dfko",
@@ -824,7 +824,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2025",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "25.3.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1HJYQkdVR1_mzqfGvfMcpUZp7fBaPN45O",
@@ -833,7 +833,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2024",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "24.6.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13Ij0pwtjDDuGrYLj_IIs3k1XsCDHFec2",
@@ -842,7 +842,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2023",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "23.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=12b32ew2KBc6U208a0Azyy7i90BhSOfvM",
@@ -851,7 +851,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2022",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "22.6.2",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Uy1caSIauX_rTH8yZymBri5VAw6m9HeT",
@@ -860,7 +860,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2021",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "15.4.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=15AtFNIGDZkmFJFtgxzMNRKgy79-vrkkD",
@@ -869,7 +869,7 @@ const posts = [
     {
       title: "Adobe Premiere Pro 2020",
       description: "Logiciel de montage de la suite Adobe",
-      version: "",
+      version: "14.9.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1ctGmcPubOcHuJLp4hKja1Po-9feJSQwt",
