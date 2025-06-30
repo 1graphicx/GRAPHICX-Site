@@ -717,7 +717,7 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1Uplf57C6hzVmtwDuooZ7SAV5TQqxILou",
       size: ""
     },
     {
