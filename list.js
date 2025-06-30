@@ -5,7 +5,7 @@ const posts = [
       version: "Last (auto update)",
       thumbnail: "https://gramfile.com/wp-content/uploads/2024/01/WinRAR.png",
       tags: ["Software"],
-      file: "https://drive.google.com/uc?export=download&id=1BMig6y78Fkx6tTnhD-fXgcshVMtX_Xoc",
+      file: "https://keyoriginal.com/wp-content/uploads/2023/12/winrar-min.png",
       size: "1.8 MB"
     },
     {
