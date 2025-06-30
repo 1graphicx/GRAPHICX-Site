@@ -33,7 +33,7 @@ const posts = [
       version: "18.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1viQVC_bjPhXcAbCj1FaIT0RiOo23d6JJ",
       size: "1.8 GB"
     },
     {
@@ -43,7 +43,7 @@ const posts = [
       version: "12.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1K3dKPX-VRxr57J4T5X0KX7ZWvAGyPzeI",
       size: "1.8 GB"
     },
     {
