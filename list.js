@@ -603,7 +603,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1A6mGve-hwpJC2-fD_oYq-l7d_ddouBgV",
-      size: ""
+      size: "56 KB"
     },
     {
       title: "Swiss Knife",
@@ -612,7 +612,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1pGjgTYX1ZEgY8lWFfp2XyLxK7lGNu4in",
-      size: ""
+      size: "1 MB"
     },
     {
       title: "Spiral Maker",
@@ -621,7 +621,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1w9QEB-M30ASetHn7gYvZArgwdG5wWOvl",
-      size: ""
+      size: "490 KB"
     },
     {
       title: "GG Bunkai",
@@ -639,7 +639,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1_qg8FIgYftP6nQfWgA2qzp-yoKN2f3sY",
-      size: ""
+      size: "84.1 KB"
     },
     {
       title: "AutoSway",
@@ -648,7 +648,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=13QucgL16BV87ShuLwTGjToYB1AoUSJr3",
-      size: ""
+      size: "895 KB"
     },
     {
       title: "TextEvo",
@@ -666,7 +666,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1G3liFez6qX33v3Y98rxvmsCEAZQZGu4L",
-      size: ""
+      size: "115 MB"
     },
     {
       title: "Joysticks ‘n Sliders",
@@ -675,7 +675,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=15IhCenbKkKQL9ZKnOy9ZAt5J1ngaVlal",
-      size: ""
+      size: "1 MB"
     },
     {
       title: "Duik Angela",
@@ -684,7 +684,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1vKIHN8WLR8J_wlUpb3tYlsobN9O7yWOB",
-      size: ""
+      size: "33 KB"
     },
     {
       title: "EZ Tools",
@@ -692,7 +692,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1Y7i4lRIv7PvXEbB2ztLiIR9FVHyFRU31",
-      size: ""
+      size: "73.5 KB"
     },
     {
       title: "AW Autosaver",
@@ -701,7 +701,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1jTprUnuD0HwNRd0oR8F5rsGwwtCvX7TZ",
-      size: ""
+      size: "871 KB"
     },
     {
       title: "EasyLayers by LankyLucius",
@@ -709,7 +709,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1mcm65E9Hpta3wWAhBtbyefCmVLZiurj5",
-      size: ""
+      size: "61 KB"
     },
     {
       title: "Adobe After Effects 2025",
