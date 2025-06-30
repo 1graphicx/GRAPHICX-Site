@@ -1,13 +1,4 @@
 const posts = [
-  {
-      title: "Maxon Universe",
-      description: "Complémentaire à Maxon Red Giant",
-      version: "2025.3.2",
-      thumbnail: "https://media.licdn.com/dms/image/v2/C560BAQGKHH1nNDICKA/company-logo_200_200/company-logo_200_200/0/1630655476204/maxonvfx_logo?e=2147483647&v=beta&t=VD2iowvt8RT7YB3ZSirroDm1CPzRY0vWx47F0M4D-n8",
-      tags: ["Maxon", "After Effects", "Plugins"],
-      file: "https://drive.google.com/uc?export=download&id=1Uj9_h6wieKULANxSo1p98xu6jrEgMRE1",
-      size: "1.8 GB"
-    },
     {
       title: "Maxon Red Giant",
       description: "Magic Bullet Looks, VFX Suite, Trapcode, Particular",
@@ -16,6 +7,15 @@ const posts = [
       tags: ["Maxon", "After Effects", "Plugins"],
       file: "https://drive.usercontent.google.com/download?id=1anYUN6VS54tzlF7i4LgoTvNzAOtOFIJ6&export=download&authuser=0",
       size: "1.2 GB"
+    },
+    {
+      title: "Maxon Universe",
+      description: "Complémentaire à Maxon Red Giant",
+      version: "2025.3.2",
+      thumbnail: "https://media.licdn.com/dms/image/v2/C560BAQGKHH1nNDICKA/company-logo_200_200/company-logo_200_200/0/1630655476204/maxonvfx_logo?e=2147483647&v=beta&t=VD2iowvt8RT7YB3ZSirroDm1CPzRY0vWx47F0M4D-n8",
+      tags: ["Maxon", "After Effects", "Plugins"],
+      file: "https://drive.google.com/uc?export=download&id=1Uj9_h6wieKULANxSo1p98xu6jrEgMRE1",
+      size: "1.8 GB"
     },
     {
       title: "Maxon Cinema 4D",
