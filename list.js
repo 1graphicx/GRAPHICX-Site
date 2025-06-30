@@ -718,7 +718,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "25.3.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Uplf57C6hzVmtwDuooZ7SAV5TQqxILou",
       size: "4.2 GB"
     },
@@ -727,7 +727,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "24.6.2",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1scJmfWyq7XVWZOzxNeOGbAkXANrlUEBq",
       size: "3.5 GB"
     },
@@ -736,7 +736,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "23.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13Vo5tzAjX9uUUg56GtW-PKBEpBDJwiQg",
       size: "3.0 GB"
     },
@@ -745,7 +745,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "22.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1YoXsq11mLjF50MIxA9kIgYEdgXENBVyL",
       size: "2.7 GB"
     },
@@ -754,7 +754,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "18.4.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Sry39790qdOH_s21k0HaO6czI9543ozx",
       size: "2.1 GB"
     },
@@ -763,7 +763,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "17.7",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13tmsqu_D6Y2gs3oR_sltfRE8JoaeY2J8",
       size: "2.1 GB"
     },
@@ -772,7 +772,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "26.8.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1l643MYMBmTmuQ27zfmrOxCQHM1w0XnnP",
       size: "5.2 GB"
     },
@@ -781,7 +781,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "25.12.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1kJzjm--EfqQjW1bwh3kmlngQkWtjjU6_",
       size: "4.7 GB"
     },
@@ -790,7 +790,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "24.7.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=11s8VcodiBFrvKynyzKwlnbR3jvpyJmmj",
       size: "4.2 GB"
     },
@@ -799,7 +799,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "23.5.5",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1dOov2fC8sW39C8fRKQaciEmOhhnLVwPQ",
       size: "2.5 GB"
     },
@@ -808,7 +808,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "22.5.8",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1LnbkZOB4KCDZVHNFolMFMBZXjKST9Wkj",
       size: "2.4 GB"
     },
@@ -817,7 +817,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "21.2.11",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=15JShJRp_DhOiV4_Lqpmo8CdQC1X4dfko",
       size: "1.8 GB"
     },
@@ -826,7 +826,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "25.3.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1HJYQkdVR1_mzqfGvfMcpUZp7fBaPN45O",
       size: "2.7 GB"
     },
@@ -835,7 +835,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "24.6.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13Ij0pwtjDDuGrYLj_IIs3k1XsCDHFec2",
       size: "2.1 GB"
     },
@@ -844,7 +844,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "23.6.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=12b32ew2KBc6U208a0Azyy7i90BhSOfvM",
       size: "2 GB"
     },
@@ -853,7 +853,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "22.6.2",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Uy1caSIauX_rTH8yZymBri5VAw6m9HeT",
       size: "1.8 GB"
     },
@@ -862,7 +862,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "15.4.1",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=15AtFNIGDZkmFJFtgxzMNRKgy79-vrkkD",
       size: "1.6 GB"
     },
@@ -871,7 +871,7 @@ const posts = [
       description: "Logiciel de montage de la suite Adobe",
       version: "14.9.0",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
-      tags: ["Adobe"],
+      tags: ["Software", "Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1ctGmcPubOcHuJLp4hKja1Po-9feJSQwt",
       size: "1.6 GB"
     },
@@ -880,7 +880,7 @@ const posts = [
       description: "Logiciel d'amélioration de qualité par IA",
       version: "7.0.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
-      tags: ["Topaz"],
+      tags: ["Software", "Topaz"],
       file: "",
       size: ""
     },
@@ -889,7 +889,7 @@ const posts = [
       description: "Logiciel d'amélioration de qualité par IA",
       version: "4.0.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
-      tags: ["Topaz"],
+      tags: ["Software", "Topaz"],
       file: "",
       size: ""
     },
@@ -898,7 +898,7 @@ const posts = [
       description: "Logiciel d'amélioration de qualité par IA",
       version: "8.4.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
-      tags: ["Topaz"],
+      tags: ["Software", "Topaz"],
       file: "",
       size: ""
     },
@@ -907,7 +907,7 @@ const posts = [
       description: "Logiciel d'amélioration de qualité par IA",
       version: "2.6.4",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
-      tags: ["Topaz"],
+      tags: ["Software", "Topaz"],
       file: "",
       size: ""
     },
@@ -917,7 +917,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "1.10.5",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1ktkJtKaPiOdXdGg3m3G8p52WQUz9QTAH",
     "size": "525 KB"
     },
@@ -927,7 +927,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "5.7.5",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1aFY69MxwzgoFaPW6KW2PM2bJ23b6dXAG",
     "size": "523 KB"
     },
@@ -937,7 +937,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "3.0.1",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1d53Fo2v5s0UZNi333sBQLwoSJQUQE3Ly",
     "size": "555 KB"
     },
@@ -947,7 +947,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "1.5.0",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1dqIG-rP_-v3k9Kk-CLWhFtgAHkb7dQDz",
     "size": "571 KB"
     },
@@ -957,7 +957,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "2.0.1",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1t6w1sF6mAtiuhwS0Z8SrrOfB0ZsTKOpw",
     "size": "545 KB"
     },
@@ -967,7 +967,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "4.9.0",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=12KDtWgwXyvzb8nCbqcmCvPDkVYJ1lYsv",
     "size": "460 KB"
     },
@@ -977,7 +977,7 @@ const posts = [
     "information": "Mettez à jour quand c'est demandé",
     "version": "2.7.4",
     "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-    "tags": ["4K Download"],
+    "tags": ["Software", "4K Download"],
     "file": "https://drive.google.com/uc?export=download&id=1r97UEbRmlQG_Pjk_XG1mk_3B92yzxjtL",
     "size": "484 KB"
     },
