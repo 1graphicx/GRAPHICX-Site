@@ -973,5 +973,23 @@ const posts = [
       tags: ["Software"],
       file: "https://drive.google.com/uc?export=download&id=1BMig6y78Fkx6tTnhD-fXgcshVMtX_Xoc",
       size: "1.8 MB"
+    },
+    {
+      title: "Lock Hunter",
+      description: "Débloquer des fichiers bloqués par un processus en cours",
+      version: ". Last",
+      thumbnail: "https://lockhunter.com/assets/images/lockhunter_icon_large_128_sh.png",
+      tags: ["Software"],
+      file: "https://lockhunter.com/startdownload.htm?imm&v=&t=",
+      size: "3.2 MB"
+    },
+    {
+      title: "SweetScape 010 Editor",
+      description: " Éditeur hexadécimal professionnel très puissant",
+      version: "15.0.2",
+      thumbnail: "https://lockhunter.com/assets/images/lockhunter_icon_large_128_sh.png",
+      tags: ["Software"],
+      file: "https://drive.usercontent.google.com/download?id=1OcKWObWy0FjwH8zMJlWPXj3VN4tauFj_&export=download&authuser=0",
+      size: "34 MB"
     }
 ];
