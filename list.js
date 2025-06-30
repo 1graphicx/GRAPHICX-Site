@@ -243,7 +243,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1-yb1Wk8oeGfNsPvmSQd6vswOyaSOSi7D",
       size: ""
     },
     {
@@ -252,7 +252,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1Z8Eh-Ttv4jXnkuzLnkdLKoLy-K4_l7jm",
       size: ""
     },
     {
@@ -261,7 +261,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1GMFDr7OarSmFqhPhwN3NL2RdCtzMohPj",
       size: ""
     },
     {
@@ -270,7 +270,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1FyDUXx_dHxqi1pk4lNfJLUxBM31bwhKv",
       size: ""
     },
     {
@@ -279,7 +279,7 @@ const posts = [
       description: "Plugin pour After Effects et Premiere Pro",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Premiere Pro", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1BsCE2nGq4Hr_K0ixmky_Nwf2_Aebzlez",
       size: ""
     },
     {
@@ -288,7 +288,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1f6lS893g_9-vATNXbbSDLTLuzgDYImUn",
       size: ""
     },
     {
@@ -297,7 +297,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=10rVwF6wwutnvhF8QNNKYpBSMwWeaPEeb",
       size: ""
     },
     {
@@ -306,7 +306,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1rwEeEEt_UCj-qF2fg5nBL73Lce-Z6_m1",
       size: ""
     },
     {
@@ -315,7 +315,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1m12awHwfuPxFRPfUi1kLWn45qHOFYo3C",
       size: ""
     },
     {
@@ -324,7 +324,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1CqblhjrNA7mAl1Au10n9UDSFnJvBhQJx",
       size: ""
     },
     {
@@ -333,7 +333,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1p5_nNgM6ApaagU59w8d2K77CFqF43Fvk",
       size: ""
     },
     {
@@ -342,7 +342,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1vuYTTzirzuxQaZbH-UVkUKM_-llK92gH",
       size: ""
     },
     {
@@ -351,7 +351,7 @@ const posts = [
       description: "Plugin pour After Effects et Premiere Pro",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["Photoshop", "Lightroom", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1j8AAadY7MKr9Hz_-vPtif0R7BSLgt4Sv",
       size: ""
     },
     {
@@ -359,7 +359,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=11qx3w2xG-Vnhpp3yvPWCQY6TLtxw6ZKl",
       size: ""
     },
     {
@@ -368,7 +368,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1l7P4EDFiLAkW4aKHDcwZyAoSdmvqP8eR",
       size: ""
     },
     {
@@ -377,7 +377,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1PtUID1ua6NDR69kLk84lw-TC8S8-P7Gp",
       size: ""
     },
     {
@@ -386,7 +386,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1oHjQAgl1IZvDtHuSzCwbLzudtjmZtpdN",
       size: ""
     },
     {
@@ -395,7 +395,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1qng7l9zwvHueRVi3IRbeN6ZlbSCb26zf",
       size: ""
     },
     {
@@ -403,7 +403,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["After Effects", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1BqKi1u9-iKQ8p-aoVk5qYRTWZCNXAhou",
       size: ""
     },
     {
@@ -412,7 +412,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "https://ficheiros.com.br/assets/img/icons/files/128/aex-10550.png",
       tags: ["Photoshop", "Plugins"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1vjT3OuyamF8llNJayRSofIZRWeDDyhHo",
       size: ""
     },
     {
