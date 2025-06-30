@@ -718,7 +718,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Uplf57C6hzVmtwDuooZ7SAV5TQqxILou",
-      size: ""
+      size: "4.2 GB"
     },
     {
       title: "Adobe After Effects 2024",
@@ -727,7 +727,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1scJmfWyq7XVWZOzxNeOGbAkXANrlUEBq",
-      size: ""
+      size: "3.5 GB"
     },
     {
       title: "Adobe After Effects 2023",
@@ -736,7 +736,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13Vo5tzAjX9uUUg56GtW-PKBEpBDJwiQg",
-      size: ""
+      size: "3.0 GB"
     },
     {
       title: "Adobe After Effects 2022",
@@ -745,7 +745,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1YoXsq11mLjF50MIxA9kIgYEdgXENBVyL",
-      size: ""
+      size: "2.7 GB"
     },
     {
       title: "Adobe After Effects 2021",
@@ -754,7 +754,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1Sry39790qdOH_s21k0HaO6czI9543ozx",
-      size: ""
+      size: "2.1 GB"
     },
     {
       title: "Adobe After Effects 2020",
@@ -763,7 +763,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=13tmsqu_D6Y2gs3oR_sltfRE8JoaeY2J8",
-      size: ""
+      size: "2.1 GB"
     },
     {
       title: "Adobe Photoshop 2025",
@@ -772,7 +772,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1l643MYMBmTmuQ27zfmrOxCQHM1w0XnnP",
-      size: ""
+      size: "5.2 GB"
     },
     {
       title: "Adobe Photoshop 2024",
@@ -781,7 +781,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1kJzjm--EfqQjW1bwh3kmlngQkWtjjU6_",
-      size: ""
+      size: "4.7 GB"
     },
     {
       title: "Adobe Photoshop 2023",
@@ -790,7 +790,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=11s8VcodiBFrvKynyzKwlnbR3jvpyJmmj",
-      size: ""
+      size: "4.2 GB"
     },
     {
       title: "Adobe Photoshop 2022",
@@ -799,7 +799,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1dOov2fC8sW39C8fRKQaciEmOhhnLVwPQ",
-      size: ""
+      size: "2.5 GB"
     },
     {
       title: "Adobe Photoshop 2021",
@@ -808,7 +808,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=1LnbkZOB4KCDZVHNFolMFMBZXjKST9Wkj",
-      size: ""
+      size: "2.4 GB"
     },
     {
       title: "Adobe Photoshop 2020",
@@ -817,7 +817,7 @@ const posts = [
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
       file: "https://drive.google.com/uc?export=download&id=15JShJRp_DhOiV4_Lqpmo8CdQC1X4dfko",
-      size: ""
+      size: "1.8 GB"
     },
     {
       title: "Adobe Premiere Pro 2025",
