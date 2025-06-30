@@ -1,5 +1,14 @@
 const posts = [
     {
+      title: "Avira Phantom VPN Pro",
+      description: "Un VPN gratuit qui marche à tous les coups sans avoir à payer",
+      version: "2.44",
+      thumbnail: "https://vpnwiki.com/_shared/logo/1000/avira-phantom-vpn.png",
+      tags: ["Software", "VPN"],
+      file: "https://drive.google.com/uc?export=download&id=1SWavJISDg2anP5LeNoEi3Cx7moorH4rQ",
+      size: "5 MB"
+    },
+    {
       title: "Windows Activator",
       description: "Activer la licence windows ",
       version: "8 v10 v11",
