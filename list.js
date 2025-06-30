@@ -44,7 +44,7 @@ const posts = [
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
       file: "https://drive.google.com/uc?export=download&id=1K3dKPX-VRxr57J4T5X0KX7ZWvAGyPzeI",
-      size: "1.8 GB"
+      size: "988 MB"
     },
     {
       title: "Boris FX Sapphire 2025.5",
