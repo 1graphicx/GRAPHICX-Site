@@ -630,7 +630,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1Ha9rnv9Ws4rcGBibnMqgJcUrG00wIiUF",
-      size: ""
+      size: "58 KB"
     },
     {
       title: "EasyShape FX",
@@ -657,7 +657,7 @@ const posts = [
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
       tags: ["After Effects", "Scripts"],
       file: "https://drive.google.com/uc?export=download&id=1nIypNyRyhkZiS4sP6LLx5Fg5TDD1ZYM9",
-      size: ""
+      size: "421 KB"
     },
     {
       title: "AutoFill",
