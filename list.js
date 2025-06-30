@@ -789,7 +789,7 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=11s8VcodiBFrvKynyzKwlnbR3jvpyJmmj",
       size: ""
     },
     {
@@ -798,7 +798,7 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1dOov2fC8sW39C8fRKQaciEmOhhnLVwPQ",
       size: ""
     },
     {
@@ -807,7 +807,7 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=1LnbkZOB4KCDZVHNFolMFMBZXjKST9Wkj",
       size: ""
     },
     {
@@ -816,7 +816,7 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
+      file: "https://drive.google.com/uc?export=download&id=15JShJRp_DhOiV4_Lqpmo8CdQC1X4dfko",
       size: ""
     },
     {
