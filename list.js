@@ -836,8 +836,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=13Ij0pwtjDDuGrYLj_IIs3k1XsCDHFec2",
+      size: "2.1 GB"
     },
     {
       title: "Adobe Premiere Pro 2023",
@@ -845,8 +845,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=12b32ew2KBc6U208a0Azyy7i90BhSOfvM",
+      size: "2 GB"
     },
     {
       title: "Adobe Premiere Pro 2022",
@@ -854,8 +854,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1Uy1caSIauX_rTH8yZymBri5VAw6m9HeT",
+      size: "1.8 GB"
     },
     {
       title: "Adobe Premiere Pro 2021",
@@ -863,8 +863,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=15AtFNIGDZkmFJFtgxzMNRKgy79-vrkkD",
+      size: "1.6 GB"
     },
     {
       title: "Adobe Premiere Pro 2020",
@@ -872,8 +872,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1ctGmcPubOcHuJLp4hKja1Po-9feJSQwt",
+      size: "1.6 GB"
     },
     {
       title: "Topaz Video AI 7",
