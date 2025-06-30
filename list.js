@@ -625,6 +625,7 @@ const posts = [
     },
     {
       title: "GG Bunkai",
+      information: "Mot de passe : GRAPHICX",
       version: "1.4",
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
@@ -652,6 +653,7 @@ const posts = [
     },
     {
       title: "TextEvo",
+      information: "Mot de passe : GRAPHICX",
       version: "2.0.0",
       description: "Script pour After Effects",
       thumbnail: "https://cdn-icons-png.freepik.com/256/8694/8694283.png?semt=ais_hybrid",
