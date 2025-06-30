@@ -1,5 +1,4 @@
 const posts = [
-    },
     {
       title: "Winrar Premium",
       description: "Vous n'aurez plus la fenêtre de licence parfois relou :)",
