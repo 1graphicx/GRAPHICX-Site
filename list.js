@@ -987,7 +987,7 @@ const posts = [
       title: "SweetScape 010 Editor",
       description: " Éditeur hexadécimal professionnel très puissant",
       version: "15.0.2",
-      thumbnail: "https://lockhunter.com/assets/images/lockhunter_icon_large_128_sh.png",
+      thumbnail: "https://www.sweetscape.com/graphics/SwooshBig.png",
       tags: ["Software"],
       file: "https://drive.usercontent.google.com/download?id=1OcKWObWy0FjwH8zMJlWPXj3VN4tauFj_&export=download&authuser=0",
       size: "34 MB"
