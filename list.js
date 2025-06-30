@@ -1,11 +1,20 @@
 const posts = [
     {
+      title: "Windows Activator",
+      description: "Activer la licence windows ",
+      version: "8 v10 v11",
+      thumbnail: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Windows_11_logo.svg/2560px-Windows_11_logo.svg.png",
+      tags: ["Windows"],
+      file: "https://drive.google.com/uc?export=download&id=1aPJYoPgPy9cdD142CiustuiMhdnQLePU",
+      size: "51 KB"
+    },
+    {
       title: "Winrar Premium",
       description: "Vous n'aurez plus la fenêtre de licence parfois relou :)",
-      version: "Last (auto update)",
+      version: ". Last (auto update)",
       thumbnail: "https://gramfile.com/wp-content/uploads/2024/01/WinRAR.png",
       tags: ["Software"],
-      file: "https://keyoriginal.com/wp-content/uploads/2023/12/winrar-min.png",
+      file: "https://drive.google.com/uc?export=download&id=1BMig6y78Fkx6tTnhD-fXgcshVMtX_Xoc",
       size: "1.8 MB"
     },
     {
