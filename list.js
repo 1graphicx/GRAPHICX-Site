@@ -827,8 +827,8 @@ const posts = [
       version: "",
       thumbnail: "https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png",
       tags: ["Adobe"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1HJYQkdVR1_mzqfGvfMcpUZp7fBaPN45O",
+      size: "2.7 GB"
     },
     {
       title: "Adobe Premiere Pro 2024",
