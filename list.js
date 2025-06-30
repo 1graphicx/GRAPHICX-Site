@@ -912,40 +912,74 @@ const posts = [
       size: ""
     },
     {
-      title: "4K Video Downloader",
-      description: "Télécharger des vidéos YouTube en qualité extrème",
-      version: "1.10.5",
-      thumbnail: "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-      tags: ["4K Download"],
-      file: "",
-      size: ""
+    "title": "4K Video Downloader",
+    "description": "Téléchargez des vidéos depuis YouTube et d'autres plateformes en qualité 4K et au-delà.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "1.10.5",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
     },
     {
-      title: "4K Youtube to MP3",
-      description: "Télécharger des vidéos YouTube en mp3",
-      version: "5.7.5",
-      thumbnail: "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-      tags: ["4K Download"],
-      file: "",
-      size: ""
+    "title": "4K Youtube to MP3",
+    "description": "Convertissez rapidement les vidéos YouTube en fichiers audio MP3 de haute qualité.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "5.7.5",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
     },
     {
-      title: "4K Video to MP3",
-      description: "Transformer des mp4 en mp3",
-      version: "3.0.1",
-      thumbnail: "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-      tags: ["4K Download"],
-      file: "",
-      size: ""
+    "title": "4K Video to MP3",
+    "description": "Extrayez l'audio de vidéos MP4 en toute simplicité pour obtenir des fichiers MP3.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "3.0.1",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
     },
     {
-      title: "4K Image Compressor",
-      description: "Compresser des images tout en respectant la qualité",
-      version: "1.5.0.",
-      thumbnail: "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
-      tags: ["4K Download"],
-      file: "",
-      size: ""
+    "title": "4K Image Compressor",
+    "description": "Réduisez la taille de vos images tout en conservant leur qualité d'origine.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "1.5.0",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
+    },
+    {
+    "title": "4K Slideshow Maker",
+    "description": "Créez facilement des diaporamas photo animés en haute définition avec musique et effets.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "2.0.1",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
+    },
+    {
+    "title": "4K Stogram",
+    "description": "Téléchargez automatiquement photos, vidéos et stories depuis des comptes Instagram publics.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "4.9.0",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
+    },
+    {
+    "title": "4K Tokkit",
+    "description": "Sauvegardez facilement des vidéos TikTok, hashtags, comptes ou playlists en un clic.",
+    "information": "Mettez à jour quand c'est demandé",
+    "version": "2.7.4",
+    "thumbnail": "https://www.cybermania.ws/wp-content/uploads/4kvideodownloaderplus.png",
+    "tags": ["4K Download"],
+    "file": "",
+    "size": ""
     },
     {
       title: "Avira Phantom VPN Pro",
