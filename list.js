@@ -28,29 +28,32 @@ const posts = [
     },
     {
       title: "Boris FX Continuum 2025.5",
+      information: "Crack by Team V.R https://codec.kyiv.ua/ad0be.html",
       description: "BCC Continuum",
       version: "18.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "Crack pas encore publié",
+      file: "",
       size: "1.8 GB"
     },
     {
       title: "Boris FX Mocha Pro 2025.5",
       description: "Rotobrush et tracing avancé",
+      information: "Crack by Team V.R https://codec.kyiv.ua/ad0be.html",
       version: "12.5.0",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "Crack pas encore publié",
+      file: "",
       size: "1.8 GB"
     },
     {
       title: "Boris FX Sapphire 2025.5",
+      information: "Crack by Team V.R https://codec.kyiv.ua/ad0be.html",
       description: "Plugins essentiels aux edits",
       version: "18.51",
       thumbnail: "https://sohoeditors.com/uploads/BorisFX-logo215.png",
       tags: ["Boris FX", "After Effects", "Premiere Pro", "Plugins"],
-      file: "Crack pas encore publié",
+      file: "",
       size: "1.8 GB"
     },
     {
