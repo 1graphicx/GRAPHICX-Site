@@ -507,7 +507,7 @@ const posts = [
     },
     {
       title: "JerryFlow V2",
-      information: "Mod de passe : GRAPHICX",
+      information: "Mot de passe : GRAPHICX",
       version: "2.0.1",
       description: "Extension pour After Effects",
       thumbnail: "https://png.pngtree.com/png-vector/20240222/ourmid/pngtree-json-file-icon-colorful-style-design-document-format-text-icons-extension-png-image_11791173.png",
