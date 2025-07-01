@@ -899,8 +899,8 @@ const posts = [
       version: "8.4.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
       tags: ["Software", "Topaz"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1T3cz3U39vUkhb0u05CXCvoZ-JcH1zJnX",
+      size: "361 MB"
     },
     {
       title: "Topaz Video Enhance AI 2",
