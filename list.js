@@ -890,8 +890,8 @@ const posts = [
       version: "4.0.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
       tags: ["Software", "Topaz"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1W7M5COvQamJfa19v4mmx5c_BD_aG6u15",
+      size: "863 MB"
     },
     {
       title: "Topaz Gigapixel AI 8",
