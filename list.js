@@ -881,8 +881,8 @@ const posts = [
       version: "7.0.2",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
       tags: ["Software", "Topaz"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=17WQdaPHZeUD98qihfME7LlGT852ZYv6p",
+      size: "334 MB"
     },
     {
       title: "Topaz Photo AI 4",
