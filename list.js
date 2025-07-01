@@ -948,8 +948,8 @@ const posts = [
       version: "2.6.4",
       thumbnail: "https://sm.pcmag.com/pcmag_au/review/t/topaz-phot/topaz-photo-ai_qan9.jpg",
       tags: ["Software", "Topaz"],
-      file: "",
-      size: ""
+      file: "https://drive.google.com/uc?export=download&id=1Bqeq9zXq8i6CBDN8RHInJ9HdbUQ4xGbZ",
+      size: "217 MB"
     },
     {
     "title": "4K Video Downloader",
