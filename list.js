@@ -876,6 +876,46 @@ const posts = [
       size: "1.6 GB"
     },
     {
+      title: "JangaFX EmberGen",
+      information: "Mot de passe : GRAPHICX",
+      description: "Logiciel de la suite JangaFX",
+      version: "1.2.1",
+      thumbnail: "https://jangafx.com/favicon.ico",
+      tags: ["Software", "JangaFX"],
+      file: "https://drive.google.com/uc?export=download&id=1aC5M1w9Jw9_foGQ-SLJEq-3Y5IOzz6IM",
+      size: "83.3 MB"
+    },
+    {
+      title: "JangaFX VectorayGen",
+      information: "Mot de passe : GRAPHICX",
+      description: "Logiciel de la suite JangaFX",
+      version: "1.04.1",
+      thumbnail: "https://jangafx.com/favicon.ico",
+      tags: ["Software", "JangaFX"],
+      file: "https://drive.google.com/uc?export=download&id=1DLq3G9PLe5hii4PJgivHSH7HC5zR3wB8",
+      size: "2.7 MB"
+    },
+    {
+      title: "JangaFX GeoGen",
+      information: "Mot de passe : GRAPHICX",
+      description: "Logiciel de la suite JangaFX",
+      version: "0.3.1",
+      thumbnail: "https://jangafx.com/favicon.ico",
+      tags: ["Software", "JangaFX"],
+      file: "https://drive.google.com/uc?export=download&id=1z0oMJ4Y2VXcrYvnbTQRcmU2yT0Ge0qEd",
+      size: "137.2 MB"
+    },
+    {
+      title: "JangaFX LiquidGen",
+      information: "Mot de passe : GRAPHICX",
+      description: "Logiciel de la suite JangaFX",
+      version: "0.3.0",
+      thumbnail: "https://jangafx.com/favicon.ico",
+      tags: ["Software", "JangaFX"],
+      file: "https://drive.google.com/uc?export=download&id=1Cc9iyVNSKE8y8hNCH_s7jQ_sNz4EIWxO",
+      size: "43.3 MB"
+    },
+    {
       title: "Topaz Video AI 7",
       description: "Logiciel d'amélioration de qualité par IA",
       version: "7.0.2",
