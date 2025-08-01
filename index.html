@@ -1,26 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GRAPHICX</title>
-<link rel="icon" href="/assets/images/logo.ico" type="image/x-icon">
-<link href="style.css" rel="stylesheet">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://graphicx.store/">
-<meta property="og:title" content="GRAPHICX BY HYRAX">
-<meta property="og:description" content="Collection complète de plugins, extensions et logiciels pour After Effects, Premiere Pro, Photoshop et plus. Téléchargements gratuits de Maxon Red Giant, Boris FX, Video Copilot et bien d'autres.">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:site_name" content="GRAPHICX">
-<meta property="og:locale" content="fr_FR">
-</head>
-<body>
-<html lang="fr">
-<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GRAPHICX</title>
+  <title>GRAPHICX BY HYRAX</title>
   <style>
     :root {
       --accent: #e63946;
@@ -51,6 +34,7 @@
       display: flex; align-items: center; justify-content: center;
       z-index: 1000;
       animation: fadeOut 2.5s forwards;
+      cursor: pointer;
     }
 
     .splash h1 {
@@ -139,7 +123,6 @@
       transform: translateZ(-10px);
       filter: blur(8px);
     }
-
 
     .category:hover {
       color: #fff;
@@ -284,7 +267,7 @@
   </style>
 </head>
 <body>
-  <div class="splash">
+  <div class="splash" title="Cliquez pour passer l'animation">
     <h1 id="splash-text">Bienvenue sur GRAPHICX</h1>
   </div>
 
@@ -292,9 +275,9 @@
     <h1 class="main-title">GRAPHICX BY HYRAX</h1>
 
     <div class="categories">
-      <a class="category" href="windows/index.html">Windows</a>
-      <a class="category" href="macos/index.html">macOS</a>
-      <a class="category" href="android/index.html">Android</a>
+      <a class="category" href="/windows">Windows</a>
+      <a class="category" href="/macos">macOS</a>
+      <a class="category" href="/android">Android</a>
     </div>
 
     <div class="section discord">
@@ -323,20 +306,20 @@
     const translations = {
       fr: {
         splash: "Bienvenue sur GRAPHICX",
-        discordTitle: "Rejoins notre communauté Discord !",
+        discordTitle: "Rejoins la communauté GRAPHICX",
         discordText: "Échange, collabore et reste à jour sur les dernières créations. Notre serveur Discord est ouvert à tous.",
         discordLink: "Accéder au serveur",
-        youtubeTitle: "Découvre ma chaîne YouTube !",
-        youtubeText: "Je créer et partage des edits pour le fun.",
+        youtubeTitle: "Découvre ma chaîne YouTube",
+        youtubeText: "Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.",
         youtubeLink: "Visiter la chaîne"
       },
       en: {
         splash: "Welcome to GRAPHICX",
-        discordTitle: "Join our Discord community!",
+        discordTitle: "Join the GRAPHICX community",
         discordText: "Chat, collaborate and stay updated on the latest creations. Our Discord server is open to everyone.",
         discordLink: "Join the server",
-        youtubeTitle: "Discover my YouTube channel !",
-        youtubeText: "I create and share edits for fun.",
+        youtubeTitle: "Discover my YouTube channel",
+        youtubeText: "Tutorials, tips, software... I share my tools and digital creation vision every week.",
         youtubeLink: "Visit the channel"
       }
     };
@@ -354,9 +337,24 @@
 
     window.onload = () => {
       applyTranslations();
-      setTimeout(() => {
-        document.querySelector('.splash').style.display = 'none';
-      }, 2500);
+
+      const splash = document.querySelector('.splash');
+      let splashHidden = false;
+
+      function hideSplash() {
+        if (splashHidden) return;
+        splashHidden = true;
+        splash.style.animationPlayState = 'paused';
+        splash.style.transition = 'opacity 0.5s ease';
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 500);
+      }
+
+      setTimeout(hideSplash, 2500);
+
+      splash.addEventListener('click', hideSplash);
     };
   </script>
 </body>
