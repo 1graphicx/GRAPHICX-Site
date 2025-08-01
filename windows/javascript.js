@@ -180,6 +180,7 @@ function updateFilter() {
     if (searchTerm.length > 0) {
       const haystack = [
         post.title.toLowerCase(),
+        post.information ? post.information.toLowerCase() : '',
         post.description.toLowerCase(),
         post.tags.join(' ').toLowerCase(),
       ].join(' ');
