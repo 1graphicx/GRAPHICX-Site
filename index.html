@@ -107,7 +107,7 @@
       color: #fff;
       transform: translateY(-6px) rotateX(6deg) rotateY(3deg);
       box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.9),
+        0 14px 30px rgba(0, 0, 0, 0.65),
         0 0 12px rgba(0, 0, 0, 0.5);
     }
 
@@ -122,13 +122,6 @@
       z-index: 0;
       transform: translateZ(-10px);
       filter: blur(8px);
-    }
-
-    .category:hover {
-      color: #fff;
-      transform: translateY(-6px) rotateX(6deg) rotateY(3deg);
-      box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.65);
     }
 
     .category:hover::before {
@@ -353,7 +346,6 @@
       }
 
       setTimeout(hideSplash, 2500);
-
       splash.addEventListener('click', hideSplash);
     };
   </script>
