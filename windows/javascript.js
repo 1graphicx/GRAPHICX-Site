@@ -113,7 +113,7 @@ function filterTagsDropdown() {
 
   // Scroll horizontal dans les tags des posts au wheel vertical
   postsGrid.addEventListener('wheel', (e) => {
-    const tagsDiv = e.target.closest('.tags');
+    const tagsDiv = e.target.closest('.post-tags');
     if (tagsDiv && Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
       e.preventDefault();
       tagsDiv.scrollLeft += e.deltaY;
@@ -197,70 +197,60 @@ function renderPosts(postsToRender) {
   postsGrid.innerHTML = '';
 
   if (postsToRender.length === 0) {
-    postsGrid.innerHTML = '<p>Aucun post trouvé.</p>';
+    postsGrid.innerHTML = `
+      <div class="empty-state">
+        <h3>Aucun résultat trouvé</h3>
+        <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+      </div>
+    `;
     return;
   }
 
   postsToRender.forEach(post => {
-    const postDiv = document.createElement('div');
-    postDiv.className = 'post';
-    postDiv.tabIndex = 0;
-    postDiv.setAttribute('aria-label', `Post ${post.title}`);
+    const postCard = document.createElement('div');
+    postCard.className = 'post-card';
+    postCard.tabIndex = 0;
+    postCard.setAttribute('aria-label', `Post ${post.title}`);
 
-    // Image
-    const postImgDiv = document.createElement('div');
-    postImgDiv.className = 'post-img';
-    const img = document.createElement('img');
-    img.src = post.thumbnail;
-    img.alt = `Thumbnail de ${post.title}`;
-    postImgDiv.appendChild(img);
-
-    // Content
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'post-content';
-
-    const title = document.createElement('h2');
+    // Titre
+    const title = document.createElement('h3');
     title.className = 'post-title';
     title.textContent = post.title;
 
-    const desc = document.createElement('p');
-    desc.className = 'post-desc';
-    desc.textContent = post.description;
+    // Description
+    const description = document.createElement('p');
+    description.className = 'post-description';
+    description.textContent = post.description;
 
     // Tags
     const tagsDiv = document.createElement('div');
-    tagsDiv.className = 'tags';
+    tagsDiv.className = 'post-tags';
     post.tags.forEach(tag => {
       const tagSpan = document.createElement('span');
-      tagSpan.className = 'tag';
+      tagSpan.className = 'post-tag';
       tagSpan.textContent = tag;
       tagsDiv.appendChild(tagSpan);
     });
 
-    // Version + Size
-    const version = document.createElement('div');
-    version.className = 'post-version';
+    // Version et taille
+    const versionInfo = document.createElement('div');
+    versionInfo.className = 'post-version';
     if (post.version) {
-      version.textContent = `v${post.version} • Taille : ${post.size}`;
+      versionInfo.textContent = `v${post.version} • ${post.size}`;
     } else {
-      version.textContent = `Taille : ${post.size}`;
+      versionInfo.textContent = post.size;
     }
 
-    // Download section
-    const downloadSection = document.createElement('div');
-    downloadSection.className = 'download-section';
-
+    // Lien de téléchargement
     const downloadLink = document.createElement('a');
-    downloadLink.className = 'download-btn';
+    downloadLink.className = 'post-link';
     downloadLink.href = post.file;
     downloadLink.target = '_blank';
     downloadLink.textContent = 'Télécharger';
     downloadLink.setAttribute('aria-label', `Télécharger ${post.title}`);
 
-    downloadSection.appendChild(downloadLink);
-
-    // Bouton info + bulle
-    if (post.information !== undefined && post.information !== null) {
+    // Information supplémentaire si disponible
+    if (post.information) {
       const infoBtn = document.createElement('button');
       infoBtn.className = 'info-btn';
       infoBtn.type = 'button';
@@ -270,14 +260,27 @@ function renderPosts(postsToRender) {
 
       const infoBubble = document.createElement('div');
       infoBubble.className = 'info-bubble';
-      infoBubble.textContent = post.information || "Pas d'information supplémentaire.";
+      infoBubble.textContent = post.information;
       infoBubble.setAttribute('role', 'tooltip');
       infoBubble.id = `info-bubble-${post.title.toLowerCase().replace(/\s+/g, '-')}`;
 
       infoBtn.setAttribute('aria-describedby', infoBubble.id);
 
-      downloadSection.appendChild(infoBtn);
-      downloadSection.appendChild(infoBubble);
+      // Afficher bulle au hover (souris)
+      infoBtn.addEventListener('mouseenter', () => {
+        closeAllInfoBubbles();
+        infoBubble.classList.add('show');
+        infoBtn.setAttribute('aria-expanded', 'true');
+      });
+
+      infoBtn.addEventListener('mouseleave', () => {
+        setTimeout(() => {
+          if (!infoBubble.matches(':hover')) {
+            infoBubble.classList.remove('show');
+            infoBtn.setAttribute('aria-expanded', 'false');
+          }
+        }, 100);
+      });
 
       // Afficher bulle au focus (clavier)
       infoBtn.addEventListener('focus', () => {
@@ -288,20 +291,48 @@ function renderPosts(postsToRender) {
 
       // Cacher bulle au blur (clavier)
       infoBtn.addEventListener('blur', () => {
+        setTimeout(() => {
+          infoBubble.classList.remove('show');
+          infoBtn.setAttribute('aria-expanded', 'false');
+        }, 100);
+      });
+
+      // Permettre de survoler la bulle elle-même
+      infoBubble.addEventListener('mouseenter', () => {
+        infoBubble.classList.add('show');
+        infoBtn.setAttribute('aria-expanded', 'true');
+      });
+
+      infoBubble.addEventListener('mouseleave', () => {
         infoBubble.classList.remove('show');
         infoBtn.setAttribute('aria-expanded', 'false');
       });
+
+      // Ajouter les éléments à la carte
+      postCard.appendChild(title);
+      postCard.appendChild(description);
+      postCard.appendChild(tagsDiv);
+      postCard.appendChild(versionInfo);
+      
+      const actionDiv = document.createElement('div');
+      actionDiv.style.display = 'flex';
+      actionDiv.style.alignItems = 'center';
+      actionDiv.style.gap = '10px';
+      actionDiv.style.position = 'relative';
+      actionDiv.appendChild(downloadLink);
+      actionDiv.appendChild(infoBtn);
+      actionDiv.appendChild(infoBubble);
+      postCard.appendChild(actionDiv);
+    } else {
+      // Pas d'information supplémentaire
+      postCard.appendChild(title);
+      postCard.appendChild(description);
+      postCard.appendChild(tagsDiv);
+      postCard.appendChild(versionInfo);
+      postCard.appendChild(downloadLink);
     }
 
-    contentDiv.appendChild(title);
-    contentDiv.appendChild(desc);
-    contentDiv.appendChild(tagsDiv);
-    contentDiv.appendChild(version);
-    contentDiv.appendChild(downloadSection);
-
-    postDiv.appendChild(postImgDiv);
-    postDiv.appendChild(contentDiv);
-    postsGrid.appendChild(postDiv);
+    postsGrid.appendChild(postCard);
   });
 }
 
