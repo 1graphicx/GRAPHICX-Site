@@ -212,6 +212,14 @@ function renderPosts(postsToRender) {
     postCard.tabIndex = 0;
     postCard.setAttribute('aria-label', `Post ${post.title}`);
 
+    // Image du post
+    const imageDiv = document.createElement('div');
+    imageDiv.className = 'post-image';
+    const img = document.createElement('img');
+    img.src = post.thumbnail;
+    img.alt = post.title;
+    imageDiv.appendChild(img);
+
     // Titre
     const title = document.createElement('h3');
     title.className = 'post-title';
@@ -309,27 +317,30 @@ function renderPosts(postsToRender) {
       });
 
       // Ajouter les éléments à la carte
+      postCard.appendChild(imageDiv);
       postCard.appendChild(title);
       postCard.appendChild(description);
       postCard.appendChild(tagsDiv);
       postCard.appendChild(versionInfo);
       
       const actionDiv = document.createElement('div');
-      actionDiv.style.display = 'flex';
-      actionDiv.style.alignItems = 'center';
-      actionDiv.style.gap = '10px';
-      actionDiv.style.position = 'relative';
+      actionDiv.className = 'post-actions';
       actionDiv.appendChild(downloadLink);
       actionDiv.appendChild(infoBtn);
       actionDiv.appendChild(infoBubble);
       postCard.appendChild(actionDiv);
     } else {
       // Pas d'information supplémentaire
+      postCard.appendChild(imageDiv);
       postCard.appendChild(title);
       postCard.appendChild(description);
       postCard.appendChild(tagsDiv);
       postCard.appendChild(versionInfo);
-      postCard.appendChild(downloadLink);
+      
+      const actionDiv = document.createElement('div');
+      actionDiv.className = 'post-actions';
+      actionDiv.appendChild(downloadLink);
+      postCard.appendChild(actionDiv);
     }
 
     postsGrid.appendChild(postCard);
