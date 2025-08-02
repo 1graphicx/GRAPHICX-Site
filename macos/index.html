@@ -61,7 +61,7 @@
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -71,7 +71,7 @@
 
   .home-btn:hover {
     background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.05);
     box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
   }
 
@@ -308,7 +308,7 @@
     background: var(--card-bg);
     border-radius: 16px;
     padding: 20px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid var(--border);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -332,14 +332,29 @@
     border-radius: 16px 16px 0 0;
   }
 
+  .post-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 71, 87, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+
   .post-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) scale(1.02);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     border-color: var(--accent);
   }
 
   .post-card:hover::before {
     transform: scaleX(1);
+  }
+
+  .post-card:hover::after {
+    left: 100%;
   }
 
   /* Image du post */
@@ -354,6 +369,12 @@
     margin-bottom: 16px;
     overflow: hidden;
     border: 1px solid var(--border);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .post-card:hover .post-image {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
   }
 
   .post-image img {
@@ -370,6 +391,12 @@
     margin-bottom: 10px;
     line-height: 1.4;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .post-card:hover .post-title {
+    color: var(--accent);
+    transform: translateX(3px);
   }
 
   .post-description {
@@ -455,7 +482,7 @@
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
     flex: 1;
     text-align: center;
@@ -463,7 +490,7 @@
 
   .post-link:hover {
     background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.03);
     box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
   }
 
