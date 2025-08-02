@@ -115,6 +115,14 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       position: relative;
       overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .section:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      border-color: var(--accent);
     }
 
     .section.discord {
@@ -158,7 +166,7 @@
       border-radius: 12px;
       box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       user-select: none;
     }
 
@@ -166,6 +174,7 @@
       background: linear-gradient(135deg, #ff4a58 0%, #c1273b 100%);
       box-shadow: 0 8px 24px rgba(255, 64, 77, 0.45);
       transform: translateY(-3px) scale(1.03);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .links-grid {
@@ -182,14 +191,32 @@
       padding: 20px;
       text-decoration: none;
       color: #fff;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(230, 57, 70, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .link-card:hover::before {
+      left: 100%;
     }
 
     .link-card:hover {
       background: rgba(255, 255, 255, 0.12);
       border-color: var(--accent);
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 8px 25px rgba(230, 57, 70, 0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .link-card-content {
@@ -208,13 +235,14 @@
       justify-content: center;
       font-size: 1.3rem;
       box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       flex-shrink: 0;
     }
 
     .link-card:hover .link-icon {
-      transform: scale(1.05);
+      transform: scale(1.1) rotate(5deg);
       box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .link-text {
@@ -226,7 +254,7 @@
       font-weight: 600;
       margin-bottom: 3px;
       color: #fff;
-      transition: color 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .link-description {
@@ -237,22 +265,11 @@
 
     .link-card:hover .link-title {
       color: var(--accent);
+      transform: translateX(5px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .link-arrow {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 1.1rem;
-      color: var(--accent);
-      opacity: 0.6;
-      transition: all 0.3s ease;
-    }
 
-    .link-card:hover .link-arrow {
-      opacity: 1;
-      transform: translateX(3px);
-    }
 
     .separator {
       width: 60px;
@@ -303,11 +320,7 @@
       .link-description {
         font-size: 0.8rem;
       }
-      .link-arrow {
-        top: 12px;
-        right: 12px;
-        font-size: 1rem;
-      }
+
     }
   </style>
 </head>
@@ -352,7 +365,6 @@
               <div class="link-description">La référence Reddit pour les ressources de piratage</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
         
         <a href="https://shakil-shahadat.github.io/awesome-piracy/" target="_blank" class="link-card">
@@ -363,7 +375,6 @@
               <div class="link-description">Collection curated de ressources de piratage</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
         
         <a href="https://champagne.pages.dev/" target="_blank" class="link-card">
@@ -374,7 +385,6 @@
               <div class="link-description">Guide moderne et élégant du piratage</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
         
         <a href="https://fmhy.net/" target="_blank" class="link-card">
@@ -385,7 +395,6 @@
               <div class="link-description">Média gratuit et ressources de streaming</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
         
         <a href="https://ripped.guide/" target="_blank" class="link-card">
@@ -396,7 +405,6 @@
               <div class="link-description">Guide complet pour le piratage moderne</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
         
         <a href="https://francepirate.gitbook.io/wikitipiak" target="_blank" class="link-card">
@@ -407,7 +415,6 @@
               <div class="link-description">Wiki français du piratage et des alternatives</div>
             </div>
           </div>
-          <div class="link-arrow">→</div>
         </a>
       </div>
     </div>
@@ -418,7 +425,26 @@
   </div>
 
   <script>
-    const lang = navigator.language.startsWith("fr") ? "fr" : "en";
+    // Improved language detection
+    function detectLanguage() {
+      const userLang = navigator.language || navigator.userLanguage;
+      const browserLang = userLang.toLowerCase();
+      
+      // Check for French variants
+      if (browserLang.startsWith('fr') || browserLang.includes('french')) {
+        return 'fr';
+      }
+      
+      // Check for other languages that might prefer English
+      if (browserLang.startsWith('en') || browserLang.includes('english')) {
+        return 'en';
+      }
+      
+      // Default to English for other languages
+      return 'en';
+    }
+    
+    const lang = detectLanguage();
     const translations = {
       fr: {
         splash: "Bienvenue sur GRAPHICX",
@@ -428,8 +454,21 @@
         youtubeTitle: "Découvre ma chaîne YouTube",
         youtubeText: "Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.",
         youtubeLink: "Visiter la chaîne",
-        megathreadTitle: "📚 Megathread - Base d'informations",
-        megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.\nThe Megathread is an information database gathering various secure sources from the internet."
+                 megathreadTitle: "📚 Megathread - Base d'informations",
+         megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.",
+        megathreadLink1: "Megathread Piracy",
+        megathreadDesc1: "La référence Reddit pour les ressources de piratage",
+        megathreadLink2: "Awesome Piracy",
+        megathreadDesc2: "Collection curated de ressources de piratage",
+        megathreadLink3: "Champagne Piracy",
+        megathreadDesc3: "Guide moderne et élégant du piratage",
+        megathreadLink4: "FMHY FreeMediaHeckYeah",
+        megathreadDesc4: "Média gratuit et ressources de streaming",
+        megathreadLink5: "Ripped",
+        megathreadDesc5: "Guide complet pour le piratage moderne",
+        megathreadLink6: "Wikitipiak",
+        megathreadDesc6: "Wiki français du piratage et des alternatives",
+        footer: "© 2025 GRAPHICX by HYRAX. Tous droits réservés."
       },
       en: {
         splash: "Welcome to GRAPHICX",
@@ -439,22 +478,75 @@
         youtubeTitle: "Discover my YouTube channel",
         youtubeText: "Tutorials, tips, software... I share my tools and digital creation vision every week.",
         youtubeLink: "Visit the channel",
-        megathreadTitle: "📚 Megathread - Information Database",
-        megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.\nThe Megathread is an information database gathering various secure sources from the internet."
+                 megathreadTitle: "📚 Megathread - Information Database",
+         megathreadText: "The Megathread is an information database gathering various secure sources from the internet.",
+        megathreadLink1: "Megathread Piracy",
+        megathreadDesc1: "Reddit reference for piracy resources",
+        megathreadLink2: "Awesome Piracy",
+        megathreadDesc2: "Curated collection of piracy resources",
+        megathreadLink3: "Champagne Piracy",
+        megathreadDesc3: "Modern and elegant piracy guide",
+        megathreadLink4: "FMHY FreeMediaHeckYeah",
+        megathreadDesc4: "Free media and streaming resources",
+        megathreadLink5: "Ripped",
+        megathreadDesc5: "Complete guide for modern piracy",
+        megathreadLink6: "Wikitipiak",
+        megathreadDesc6: "French wiki of piracy and alternatives",
+        footer: "© 2025 GRAPHICX by HYRAX. All rights reserved."
       }
     };
 
     function applyTranslations() {
       const t = translations[lang] || translations.en;
+      
+      // Splash screen
       document.getElementById('splash-text').textContent = t.splash;
+      
+      // Discord section
       document.getElementById('discord-title').textContent = t.discordTitle;
       document.getElementById('discord-text').textContent = t.discordText;
       document.getElementById('discord-link').textContent = t.discordLink;
+      
+      // YouTube section
       document.getElementById('youtube-title').textContent = t.youtubeTitle;
       document.getElementById('youtube-text').textContent = t.youtubeText;
       document.getElementById('youtube-link').textContent = t.youtubeLink;
+      
+      // Megathread section
       document.getElementById('megathread-title').textContent = t.megathreadTitle;
-      document.getElementById('megathread-text').textContent = t.megathreadText.split('\n')[0];
+      document.getElementById('megathread-text').textContent = t.megathreadText;
+      
+             // Remove second paragraph if it exists (bilingual text)
+       const megathreadSection = document.querySelector('.section:not(.discord):not(.youtube)');
+       const existingP = megathreadSection.querySelector('p:nth-child(3)');
+       if (existingP && (existingP.textContent.includes('The Megathread') || existingP.textContent.includes('Le Megathread'))) {
+         existingP.remove();
+       }
+      
+      // Update megathread links
+      const linkCards = document.querySelectorAll('.link-card');
+      if (linkCards.length >= 6) {
+        linkCards[0].querySelector('.link-title').textContent = t.megathreadLink1;
+        linkCards[0].querySelector('.link-description').textContent = t.megathreadDesc1;
+        
+        linkCards[1].querySelector('.link-title').textContent = t.megathreadLink2;
+        linkCards[1].querySelector('.link-description').textContent = t.megathreadDesc2;
+        
+        linkCards[2].querySelector('.link-title').textContent = t.megathreadLink3;
+        linkCards[2].querySelector('.link-description').textContent = t.megathreadDesc3;
+        
+        linkCards[3].querySelector('.link-title').textContent = t.megathreadLink4;
+        linkCards[3].querySelector('.link-description').textContent = t.megathreadDesc4;
+        
+        linkCards[4].querySelector('.link-title').textContent = t.megathreadLink5;
+        linkCards[4].querySelector('.link-description').textContent = t.megathreadDesc5;
+        
+        linkCards[5].querySelector('.link-title').textContent = t.megathreadLink6;
+        linkCards[5].querySelector('.link-description').textContent = t.megathreadDesc6;
+      }
+      
+      // Footer
+      document.querySelector('footer').textContent = t.footer;
     }
 
     window.onload = () => {
