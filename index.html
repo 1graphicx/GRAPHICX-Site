@@ -87,9 +87,7 @@
       background: var(--card-bg);
       padding: 20px 38px;
       border-radius: 16px;
-      box-shadow:
-        0 6px 12px rgba(0, 0, 0, 0.7),
-        inset 0 -3px 8px rgba(255, 255, 255, 0.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
       transition: all 0.35s ease;
       cursor: pointer;
       text-decoration: none;
@@ -99,114 +97,49 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       user-select: none;
-      perspective: 600px;
-      transform-style: preserve-3d;
-      position: relative;
     }
 
     .category:hover {
       color: #fff;
-      transform: translateY(-6px) rotateX(6deg) rotateY(3deg);
-      box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.65),
-        0 0 12px rgba(0, 0, 0, 0.5);
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65);
     }
 
-    .category::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border-radius: 16px;
-      background: linear-gradient(45deg, #fff, #fff);
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      z-index: 0;
-      transform: translateZ(-10px);
-      filter: blur(8px);
-    }
-
-    .category:hover::before {
-      opacity: 0.7;
-    }
-
-    /* Sections with 3D effect */
-
-    .section.discord,
-    .section.youtube {
-      position: relative;
-      min-height: 320px;
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .section {
       margin: 40px auto;
       max-width: 920px;
-      perspective: 1000px;
-      transform-style: preserve-3d;
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0);
-      transition: box-shadow 0.3s ease;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 35px 40px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
     }
 
-    .section.discord:hover,
-    .section.youtube:hover {
-      box-shadow: 0 18px 40px rgba(61, 61, 61, 0.4);
-    }
-
-    .section.discord::before,
-    .section.youtube::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+    .section.discord {
+      background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.9)), url('assets/images/discord_banner_graphicx.gif');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-blend-mode: darken;
-      filter: brightness(0.35) contrast(1.2);
-      z-index: 0;
-      transform: translateZ(-1px) scale(1.1);
-      transition: filter 0.3s ease;
     }
 
-    .section.discord:hover::before,
-    .section.youtube:hover::before {
-      filter: brightness(0.45) contrast(1.3);
+    .section.youtube {
+      background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.9)), url('assets/images/youtube_banner_hyrax.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
-    .section.discord::before {
-      background-image: url('assets/images/discord_banner_graphicx.gif');
-    }
-
-    .section.youtube::before {
-      background-image: url('assets/images/youtube_banner_hyrax.jpg');
-    }
-
-    .section .overlay {
-      position: relative;
-      z-index: 1;
-      background: rgba(10, 10, 10, 0.8);
-      padding: 35px 40px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 720px;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 12px 24px rgba(255, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transform: translateZ(10px);
-      text-align: left;
-    }
-
-    .section .overlay h2 {
+    .section h2 {
       font-size: 1.9rem;
       margin-bottom: 15px;
       color: #fff;
       font-weight: 700;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
       letter-spacing: 1px;
     }
 
-    .section .overlay p {
+    .section p {
       font-size: 1.15rem;
       color: #ccc;
       margin-bottom: 25px;
@@ -226,7 +159,6 @@
       box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
       text-decoration: none;
       transition: all 0.3s ease;
-      transform: translateZ(5px);
       user-select: none;
     }
 
@@ -234,6 +166,99 @@
       background: linear-gradient(135deg, #ff4a58 0%, #c1273b 100%);
       box-shadow: 0 8px 24px rgba(255, 64, 77, 0.45);
       transform: translateY(-3px) scale(1.03);
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .link-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(230, 57, 70, 0.2);
+    }
+
+    .link-card-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .link-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent) 0%, #9b1d2c 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .link-card:hover .link-icon {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+    }
+
+    .link-text {
+      flex: 1;
+    }
+
+    .link-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+
+    .link-description {
+      font-size: 0.85rem;
+      color: #b0b0b0;
+      line-height: 1.4;
+    }
+
+    .link-card:hover .link-title {
+      color: var(--accent);
+    }
+
+    .link-arrow {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.1rem;
+      color: var(--accent);
+      opacity: 0.6;
+      transition: all 0.3s ease;
+    }
+
+    .link-card:hover .link-arrow {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    .separator {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 15px auto;
     }
 
     footer {
@@ -253,9 +278,35 @@
         width: 100%;
         text-align: center;
       }
-      .section .overlay {
+      .section {
+        padding: 25px 20px;
         text-align: center;
-        max-width: 100%;
+      }
+      .links-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .link-card {
+        padding: 16px;
+      }
+      .link-card-content {
+        gap: 12px;
+      }
+      .link-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .link-title {
+        font-size: 0.95rem;
+      }
+      .link-description {
+        font-size: 0.8rem;
+      }
+      .link-arrow {
+        top: 12px;
+        right: 12px;
+        font-size: 1rem;
       }
     }
   </style>
@@ -275,18 +326,89 @@
     </div>
 
     <div class="section discord">
-      <div class="overlay">
-        <h2 id="discord-title">Rejoins la communauté GRAPHICX</h2>
-        <p id="discord-text">Échange, collabore et reste à jour sur les dernières créations. Notre serveur Discord est ouvert à tous.</p>
-        <a href="https://discord.com/invite/CNudm6aJ2n" target="_blank" class="button" id="discord-link">Accéder au serveur</a>
-      </div>
+      <h2 id="discord-title">Rejoins la communauté GRAPHICX</h2>
+      <p id="discord-text">Échange, collabore et reste à jour sur les dernières créations. Notre serveur Discord est ouvert à tous.</p>
+      <a href="https://discord.com/invite/CNudm6aJ2n" target="_blank" class="button" id="discord-link">Accéder au serveur</a>
     </div>
 
     <div class="section youtube">
-      <div class="overlay">
-        <h2 id="youtube-title">Découvre ma chaîne YouTube</h2>
-        <p id="youtube-text">Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.</p>
-        <a href="https://www.youtube.com/channel/UCJB2IQP3pfiYF5NxMa5-jPQ" target="_blank" class="button" id="youtube-link">Visiter la chaîne</a>
+      <h2 id="youtube-title">Découvre ma chaîne YouTube</h2>
+      <p id="youtube-text">Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.</p>
+      <a href="https://www.youtube.com/channel/UCJB2IQP3pfiYF5NxMa5-jPQ" target="_blank" class="button" id="youtube-link">Visiter la chaîne</a>
+    </div>
+
+    <div class="section">
+      <h2 id="megathread-title">📚 Megathread - Base d'informations</h2>
+      <p id="megathread-text">Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.</p>
+      <p>The Megathread is an information database gathering various secure sources from the internet.</p>
+      <div class="separator"></div>
+      
+      <div class="links-grid">
+        <a href="https://www.reddit.com/r/Piracy/wiki/megathread/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📚</div>
+            <div class="link-text">
+              <div class="link-title">Megathread Piracy</div>
+              <div class="link-description">La référence Reddit pour les ressources de piratage</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        
+        <a href="https://shakil-shahadat.github.io/awesome-piracy/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">⭐</div>
+            <div class="link-text">
+              <div class="link-title">Awesome Piracy</div>
+              <div class="link-description">Collection curated de ressources de piratage</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        
+        <a href="https://champagne.pages.dev/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🍾</div>
+            <div class="link-text">
+              <div class="link-title">Champagne Piracy</div>
+              <div class="link-description">Guide moderne et élégant du piratage</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        
+        <a href="https://fmhy.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎬</div>
+            <div class="link-text">
+              <div class="link-title">FMHY FreeMediaHeckYeah</div>
+              <div class="link-description">Média gratuit et ressources de streaming</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        
+        <a href="https://ripped.guide/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">💎</div>
+            <div class="link-text">
+              <div class="link-title">Ripped</div>
+              <div class="link-description">Guide complet pour le piratage moderne</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
+        
+        <a href="https://francepirate.gitbook.io/wikitipiak" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🇫🇷</div>
+            <div class="link-text">
+              <div class="link-title">Wikitipiak</div>
+              <div class="link-description">Wiki français du piratage et des alternatives</div>
+            </div>
+          </div>
+          <div class="link-arrow">→</div>
+        </a>
       </div>
     </div>
 
@@ -305,7 +427,9 @@
         discordLink: "Accéder au serveur",
         youtubeTitle: "Découvre ma chaîne YouTube",
         youtubeText: "Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.",
-        youtubeLink: "Visiter la chaîne"
+        youtubeLink: "Visiter la chaîne",
+        megathreadTitle: "📚 Megathread - Base d'informations",
+        megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.\nThe Megathread is an information database gathering various secure sources from the internet."
       },
       en: {
         splash: "Welcome to GRAPHICX",
@@ -314,7 +438,9 @@
         discordLink: "Join the server",
         youtubeTitle: "Discover my YouTube channel",
         youtubeText: "Tutorials, tips, software... I share my tools and digital creation vision every week.",
-        youtubeLink: "Visit the channel"
+        youtubeLink: "Visit the channel",
+        megathreadTitle: "📚 Megathread - Information Database",
+        megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.\nThe Megathread is an information database gathering various secure sources from the internet."
       }
     };
 
@@ -327,6 +453,8 @@
       document.getElementById('youtube-title').textContent = t.youtubeTitle;
       document.getElementById('youtube-text').textContent = t.youtubeText;
       document.getElementById('youtube-link').textContent = t.youtubeLink;
+      document.getElementById('megathread-title').textContent = t.megathreadTitle;
+      document.getElementById('megathread-text').textContent = t.megathreadText.split('\n')[0];
     }
 
     window.onload = () => {
