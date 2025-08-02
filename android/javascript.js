@@ -191,7 +191,16 @@ function updateFilter() {
     return true;
   });
 
-  renderPosts(filteredPosts);
+  // Animation fluide pour les cartes existantes
+  const existingCards = document.querySelectorAll('.post-card');
+  existingCards.forEach(card => {
+    card.classList.add('hidden');
+  });
+
+  // Attendre que l'animation de disparition soit terminée avant de rendre les nouvelles cartes
+  setTimeout(() => {
+    renderPosts(filteredPosts);
+  }, 300);
 }
 
 function renderPosts(postsToRender) {
