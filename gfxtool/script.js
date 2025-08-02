@@ -172,57 +172,45 @@ async function patchFiles() {
     updateProgress(0);
     
     try {
-        // Créer FormData pour envoyer les fichiers
+        // Essayer d'abord le serveur local
+        const serverUrl = 'http://localhost:5000/api/process-files';
+        
         const formData = new FormData();
         filesToProcess.forEach(file => {
             formData.append('files', file);
         });
-        
-        // Envoyer les fichiers au serveur
-        const response = await fetch('http://localhost:5000/api/process-files', {
+
+        const response = await fetch(serverUrl, {
             method: 'POST',
             body: formData
         });
-        
-        if (!response.ok) {
+
+        if (response.ok) {
+            const result = await response.json();
+            updateProgress(100);
+            
+            if (result.success) {
+                logToConsole('🎉 Traitement terminé avec succès !', 'success');
+                result.results.forEach(r => {
+                    if (r.status === 'success') {
+                        logToConsole(`✅ ${r.action || r.filename}: ${r.output}`, 'success');
+                    } else {
+                        logToConsole(`❌ ${r.action || r.filename}: ${r.message}`, 'error');
+                    }
+                });
+            } else {
+                logToConsole('❌ Erreur lors du traitement', 'error');
+            }
+        } else {
             throw new Error(`Erreur serveur: ${response.status}`);
         }
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            result.results.forEach((fileResult, index) => {
-                const progress = ((index + 1) / result.results.length) * 100;
-                
-                if (fileResult.status === 'success') {
-                    logToConsole(`✅ ${fileResult.filename} → ${fileResult.action}`, 'success');
-                    if (fileResult.output) {
-                        logToConsole(`📝 Sortie: ${fileResult.output}`, 'info');
-                    }
-                } else if (fileResult.status === 'no_rule') {
-                    logToConsole(`⚠️ ${fileResult.filename}: ${fileResult.message}`, 'warning');
-                } else {
-                    logToConsole(`❌ ${fileResult.filename}: ${fileResult.message}`, 'error');
-                }
-                
-                updateProgress(progress);
-            });
-            
-            logToConsole('🎉 Traitement terminé avec succès !', 'success');
-        } else {
-            logToConsole(`❌ Erreur: ${result.error}`, 'error');
-        }
-        
     } catch (error) {
-        logToConsole(`❌ Erreur de connexion: ${error.message}`, 'error');
-        logToConsole('💡 Assurez-vous que le serveur backend est démarré', 'info');
+        console.error('Erreur de connexion au serveur:', error);
+        logToConsole('⚠️ Serveur local non disponible, simulation du traitement...', 'warning');
         
-        // Fallback vers la simulation si le serveur n'est pas disponible
-        logToConsole('🔄 Utilisation du mode simulation...', 'warning');
+        // Fallback vers la simulation
         simulateProcessing(filesToProcess);
     }
-    
-    setTimeout(() => updateProgress(0), 1000);
 }
 
 // Simulation du traitement (fallback)
