@@ -1,0 +1,393 @@
+body {
+  margin: 0;
+  background: #0f0f0f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f3f4f6;
+}
+
+/* HEADER FIXE */
+.top-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 50px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  z-index: 1000;
+}
+.top-header a {
+  color: #f3f4f6;
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+.top-header a:hover {
+  color: #60a5fa;
+}
+.icon {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+header {
+  margin-top: 50px;
+  padding: 20px;
+  text-align: center;
+  background: #1f1f1f;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 30px auto 60px;
+  padding: 0 15px;
+}
+
+/* FILTRE TAGS + RECHERCHE */
+.filters {
+  margin-bottom: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-box {
+  flex: 1 1 300px;
+}
+
+input[type="search"], input[type="text"] {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 9999px;
+  border: none;
+  outline: none;
+  background: #222;
+  color: #eee;
+  box-sizing: border-box;
+}
+
+/* FILTER TAGS DROPDOWN */
+.tags-filter-wrapper {
+  position: relative;
+  flex: 1 1 400px;
+  max-width: 400px;
+}
+.tags-filter-input {
+  cursor: pointer;
+}
+
+.tags-dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  padding: 10px 15px;
+  z-index: 1500;
+  display: none;
+}
+.tags-dropdown.show {
+  display: block;
+}
+.tags-dropdown label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.tags-dropdown label:last-child {
+  margin-bottom: 0;
+}
+.tags-dropdown input[type="checkbox"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Selected tags pills */
+.selected-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.selected-tag {
+  background: #292929;
+  color: #60a5fa;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+.selected-tag button {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  margin-left: 6px;
+  font-weight: bold;
+  line-height: 1;
+  font-size: 14px;
+}
+.selected-tag button:hover {
+  color: #a0cfff;
+}
+
+
+/* Bouton Télécharger modernisé */
+.download-btn {
+background: linear-gradient(135deg, #4f46e5, #3b82f6);
+color: white;
+padding: 10px 20px;
+border-radius: 12px;
+font-weight: 600;
+font-size: 16px;
+text-decoration: none;
+box-shadow: 0 6px 12px rgb(59 130 246 / 0.5);
+transition: background 0.3s ease, box-shadow 0.3s ease;
+user-select: none;
+display: inline-block;
+}
+.download-btn:hover,
+.download-btn:focus-visible {
+background: linear-gradient(135deg, #2563eb, #1d4ed8);
+box-shadow: 0 8px 20px rgb(29 78 216 / 0.7);
+outline: none;
+}
+
+/* Info button style */
+.info-btn {
+background: transparent;
+border: 2px solid #3b82f6;
+color: #3b82f6;
+border-radius: 50%;
+width: 28px;
+height: 28px;
+cursor: pointer;
+font-weight: 700;
+font-size: 18px;
+line-height: 28px;
+text-align: center;
+padding: 0;
+transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+flex-shrink: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+user-select: none;
+}
+.info-btn:hover,
+.info-btn:focus-visible,
+.info-btn[aria-expanded="true"] {
+background-color: #3b82f6;
+color: #fff;
+border-color: #3b82f6;
+outline: none;
+}
+
+/* Info bubble modernisée */
+.info-bubble {
+position: absolute;
+max-width: 400px;
+min-width: 95%;
+padding: 10px 10px;
+bottom: 55%; 
+left: 0%;
+background: #1e293b;
+border-radius: 12px;
+box-shadow: 0 10px 30px rgba(17, 34, 61, 0.4);
+color: #e0e7ff;
+font-size: 12px;
+line-height: 1.5;
+opacity: 0;
+pointer-events: none;
+user-select: text;
+transition: opacity 0.3s ease;
+z-index: 9999;
+box-sizing: border-box;
+}
+
+/* Flèche de la bulle */
+.info-bubble::before {
+content: "";
+position: absolute;
+top: -8px;
+right: 12px;
+border-width: 8px 8px 0 8px;
+border-style: solid;
+border-color: #1e293b transparent transparent transparent;
+filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
+
+.info-btn:hover + .info-bubble,
+.info-btn:focus-visible + .info-bubble {
+opacity: 1;
+pointer-events: auto;
+}
+
+
+/* Container position relative for positioning */
+.download-section {
+position: relative;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+
+/* GRILLE POSTS */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+@media (max-width: 1200px) {
+  .posts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* POST CARD */
+.post {
+  background: #1c1c1e;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s;
+}
+.post:hover {
+  transform: translateY(-5px);
+}
+
+.post-img {
+  position: relative;
+  width: 100%;
+  padding-top: 60%;
+  background: #000;
+  overflow: hidden;
+}
+.post-img img {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.post-content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.post-desc {
+  flex-grow: 1;
+  font-size: 14px;
+  color: #c1c1c1;
+  margin-bottom: 15px;
+}
+
+/* TAGS DANS POST : scroll horizontal + molette */
+.tags {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 4px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.tags::-webkit-scrollbar {
+  display: none;
+}
+.tags {
+  scrollbar-width: none;
+}
+.tag {
+  flex-shrink: 0;
+  background: #292929;
+  color: #60a5fa;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.download-section {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* espace entre les boutons et taille cohérente */
+}
+
+.info-btn {
+  background: transparent;
+  border: 2px solid #60a5fa;
+  color: #60a5fa;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #a1a1a1;
+  margin-left: auto;
+}
+
+.post-version {
+  font-size: 12px;
+  color: #ffffff;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,35 @@
+{
+  "name": "graphicx-site",
+  "version": "1.0.0",
+  "description": "GRAPHICX by HYRAX - Hub de Création Numérique",
+  "main": "index.html",
+  "scripts": {
+    "build": "npm run optimize && npm run minify",
+    "optimize": "html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true index.html -o index.html",
+    "minify": "cleancss -o assets/css/style.min.css assets/css/style.css && uglifyjs assets/js/script.js -o assets/js/script.min.js -c -m",
+    "dev": "live-server --port=3000 --open=/",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "graphicx",
+    "hyrax",
+    "plugins",
+    "vfx",
+    "after-effects",
+    "premiere-pro",
+    "creation-numerique"
+  ],
+  "author": "HYRAX",
+  "license": "MIT",
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "clean-css-cli": "^5.6.2",
+    "uglify-js": "^3.17.4",
+    "live-server": "^1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/GRAPHICX-Site-main.git"
+  },
+  "homepage": "https://graphicx.store"
+} 

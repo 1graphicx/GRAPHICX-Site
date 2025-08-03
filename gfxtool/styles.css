@@ -1,0 +1,308 @@
+/* Variables CSS pour les couleurs */
+:root {
+    --bg-color: #121212;
+    --fg-color: #E0E0E0;
+    --label-bg: #1F1F1F;
+    --text-bg: #2D2D2D;
+    --status-bg: #222222;
+    --primary-color: #00ccff;
+    --success-color: #00ff00;
+    --error-color: #ff0000;
+    --warning-color: #aaaaaa;
+}
+
+/* Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--fg-color);
+    margin: 0;
+}
+
+/* Drop Zone */
+.drop-zone {
+    background-color: var(--label-bg);
+    border: 2px dashed var(--primary-color);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-zone:hover {
+    border-color: var(--success-color);
+    background-color: rgba(0, 204, 255, 0.1);
+}
+
+.drop-zone.dragover {
+    border-color: var(--success-color);
+    background-color: rgba(0, 255, 0, 0.1);
+    transform: scale(1.02);
+}
+
+.drop-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.drop-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.drop-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.drop-content p {
+    color: var(--warning-color);
+    margin: 0;
+}
+
+.select-btn {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select-btn:hover {
+    background-color: var(--success-color);
+    transform: translateY(-2px);
+}
+
+/* Buttons */
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    background-color: var(--label-bg);
+    color: var(--fg-color);
+    border: 2px solid var(--primary-color);
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.btn:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    transform: translateY(-2px);
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+.btn.primary:hover {
+    background-color: var(--success-color);
+}
+
+/* File Container */
+.file-container {
+    flex: 1;
+    background-color: var(--text-bg);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.file-list {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.file-item {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.file-item.recognized {
+    color: var(--primary-color);
+}
+
+.file-item.unknown {
+    color: var(--warning-color);
+}
+
+.file-item.folder {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: var(--status-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.status {
+    background-color: var(--status-bg);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Console */
+.console {
+    background-color: var(--text-bg);
+    border-radius: 5px;
+    padding: 20px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.console .success {
+    color: var(--success-color);
+}
+
+.console .error {
+    color: var(--error-color);
+}
+
+.console .info {
+    color: var(--primary-color);
+}
+
+.console .warning {
+    color: var(--warning-color);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--status-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--success-color);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .drop-zone {
+        padding: 20px;
+    }
+    
+    .title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.file-item {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--status-bg);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+} 

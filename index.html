@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GRAPHICX" />
+  <meta name="keywords" content="graphicx, hyrax, plugins, logiciels, vfx, after effects, premiere pro, création numérique" />
+  <meta name="author" content="HYRAX" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="GRAPHICX by HYRAX" />
+  <meta property="og:description" content="Votre hub pour les plugins, logiciels et ressources de création numérique" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://graphicx.store" />
+  <meta property="og:image" content="https://graphicx.store/assets/images/logo.ico" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GRAPHICX" />
+  <meta name="twitter:description" content="Votre hub pour les plugins, logiciels et ressources de création numérique" />
+  <meta name="twitter:image" content="https://graphicx.store/assets/images/logo.ico" />
+  <link rel="canonical" href="https://graphicx.store" />
+  <title>GRAPHICX by HYRAX - Hub de Création Numérique</title>
+  <link rel="icon" href="/assets/images/logo.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    :root {
+      --accent: #e63946;
+      --bg: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --text: #fff;
+      --muted: #888;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #111;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+      animation: fadeOut 2.5s forwards;
+      cursor: pointer;
+    }
+
+    .splash h1 {
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      animation: zoomOut 2s forwards;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    @keyframes zoomOut {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0; }
+    }
+
+    .container {
+      padding: 100px 20px 40px;
+      text-align: center;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h1.main-title {
+      font-size: 3rem;
+      margin-bottom: 40px;
+      color: var(--accent);
+      text-shadow: 0 0 12px var(--accent);
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .categories {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    .category {
+      background: var(--card-bg);
+      padding: 20px 38px;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+      transition: all 0.35s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .category:hover {
+      color: #fff;
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65);
+    }
+
+    .section {
+      margin: 40px auto;
+      max-width: 920px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 35px 40px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .section:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      border-color: var(--accent);
+    }
+
+    .section.discord {
+      background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.9)), url('assets/images/discord_banner_graphicx.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .section.youtube {
+      background: linear-gradient(rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.9)), url('assets/images/youtube_banner_hyrax.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .section h2 {
+      font-size: 1.9rem;
+      margin-bottom: 15px;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .section p {
+      font-size: 1.15rem;
+      color: #ccc;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .section a.button {
+      display: inline-block;
+      padding: 14px 28px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+      background: linear-gradient(135deg, #e63946 0%, #9b1d2c 100%);
+      border: 1px solid #e63946;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      user-select: none;
+    }
+
+    .section a.button:hover {
+      background: linear-gradient(135deg, #ff4a58 0%, #c1273b 100%);
+      box-shadow: 0 8px 24px rgba(255, 64, 77, 0.45);
+      transform: translateY(-3px) scale(1.03);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(230, 57, 70, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .link-card:hover::before {
+      left: 100%;
+    }
+
+    .link-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(230, 57, 70, 0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .link-card-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .link-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent) 0%, #9b1d2c 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      flex-shrink: 0;
+    }
+
+    .link-card:hover .link-icon {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .link-text {
+      flex: 1;
+    }
+
+    .link-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .link-description {
+      font-size: 0.85rem;
+      color: #b0b0b0;
+      line-height: 1.4;
+    }
+
+    .link-card:hover .link-title {
+      color: var(--accent);
+      transform: translateX(5px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+
+
+    .separator {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 15px auto;
+    }
+
+    footer {
+      margin-top: 60px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      user-select: none;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 600px) {
+      h1.main-title {
+        font-size: 2.2rem;
+      }
+      .category {
+        width: 100%;
+        text-align: center;
+      }
+      .section {
+        padding: 25px 20px;
+        text-align: center;
+      }
+      .links-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .link-card {
+        padding: 16px;
+      }
+      .link-card-content {
+        gap: 12px;
+      }
+      .link-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .link-title {
+        font-size: 0.95rem;
+      }
+      .link-description {
+        font-size: 0.8rem;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="splash" title="Cliquez pour passer l'animation">
+    <h1 id="splash-text">Bienvenue sur GRAPHICX</h1>
+  </div>
+
+  <div class="container">
+    <h1 class="main-title">GRAPHICX BY HYRAX</h1>
+
+    <div class="categories">
+      <a class="category" href="/windows">Windows</a>
+      <a class="category" href="/macos">macOS</a>
+      <a class="category" href="/android">Android</a>
+      <a class="category" href="/licenses">Licenses</a>
+    </div>
+
+    <div class="section discord">
+      <h2 id="discord-title">Rejoins la communauté GRAPHICX</h2>
+      <p id="discord-text">Échange, collabore et reste à jour sur les dernières créations. Notre serveur Discord est ouvert à tous.</p>
+      <a href="https://discord.com/invite/CNudm6aJ2n" target="_blank" class="button" id="discord-link">Accéder au serveur</a>
+    </div>
+
+    <div class="section youtube">
+      <h2 id="youtube-title">Découvre ma chaîne YouTube</h2>
+      <p id="youtube-text">Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.</p>
+      <a href="https://www.youtube.com/channel/UCJB2IQP3pfiYF5NxMa5-jPQ" target="_blank" class="button" id="youtube-link">Visiter la chaîne</a>
+    </div>
+
+    <div class="section">
+      <h2 id="megathread-title">📚 Megathread - Base d'informations</h2>
+      <p id="megathread-text">Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.</p>
+      <p>The Megathread is an information database gathering various secure sources from the internet.</p>
+      <div class="separator"></div>
+      
+      <div class="links-grid">
+        <a href="https://www.reddit.com/r/Piracy/wiki/megathread/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📚</div>
+            <div class="link-text">
+              <div class="link-title">Megathread Piracy</div>
+              <div class="link-description">La référence Reddit pour les ressources de piratage</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://shakil-shahadat.github.io/awesome-piracy/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">⭐</div>
+            <div class="link-text">
+              <div class="link-title">Awesome Piracy</div>
+              <div class="link-description">Collection curated de ressources de piratage</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://champagne.pages.dev/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🍾</div>
+            <div class="link-text">
+              <div class="link-title">Champagne Piracy</div>
+              <div class="link-description">Guide moderne et élégant du piratage</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://fmhy.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎬</div>
+            <div class="link-text">
+              <div class="link-title">FMHY FreeMediaHeckYeah</div>
+              <div class="link-description">Média gratuit et ressources de streaming</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://ripped.guide/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">💎</div>
+            <div class="link-text">
+              <div class="link-title">Ripped</div>
+              <div class="link-description">Guide complet pour le piratage moderne</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://francepirate.gitbook.io/wikitipiak" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🇫🇷</div>
+            <div class="link-text">
+              <div class="link-title">Wikitipiak</div>
+              <div class="link-description">Wiki français du piratage et des alternatives</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 id="plugins-title">💻 Plugins & Logiciels Windows / MacOS</h2>
+      <p id="plugins-text">Si vous ne trouvez pas le plugin ou le logiciel que vous cherchez, voici quelques sites que je vous recommande.</p>
+      <p>If you can't find the plugin or software you're looking for, here are some sites I recommend.</p>
+      <div class="separator"></div>
+      
+      <div class="links-grid">
+        <a href="https://vfxdownload.net/plugin-script/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎬</div>
+            <div class="link-text">
+              <div class="link-title">VFX Download</div>
+              <div class="link-description">(Lent) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://intro-hd.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎥</div>
+            <div class="link-text">
+              <div class="link-title">Intro HD</div>
+              <div class="link-description">(Lent) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.downloadpirate.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🏴‍☠️</div>
+            <div class="link-text">
+              <div class="link-title">Download Pirate</div>
+              <div class="link-description">(Rapide) Plugins & Software Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://codec.kyiv.ua/ad0be.html" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🔧</div>
+            <div class="link-text">
+              <div class="link-title">Team V.R</div>
+              <div class="link-description">(Lent) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.vfxmed.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">💊</div>
+            <div class="link-text">
+              <div class="link-title">VFX Med</div>
+              <div class="link-description">(Lent) Plugins & Software Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://taiwebs.com/?lang=FR" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🌐</div>
+            <div class="link-text">
+              <div class="link-title">Taiwebs</div>
+              <div class="link-description">(Rapide) Plugins & Software Win / Mac - Mot de passe : taiweb.com</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://freevideoeffect.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎭</div>
+            <div class="link-text">
+              <div class="link-title">MatesFX</div>
+              <div class="link-description">(Rapide) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://motka.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎯</div>
+            <div class="link-text">
+              <div class="link-title">Motka</div>
+              <div class="link-description">(Rapide) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://vfxloot.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">💎</div>
+            <div class="link-text">
+              <div class="link-title">VFX Loot</div>
+              <div class="link-description">(Rapide) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.lookae.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">👁️</div>
+            <div class="link-text">
+              <div class="link-title">LookAE</div>
+              <div class="link-description">(Moyen) Plugins Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.downloadha.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📥</div>
+            <div class="link-text">
+              <div class="link-title">DownloadHA</div>
+              <div class="link-description">(Moyen) Software Win / Mac</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://appstorrent.ru/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🍎</div>
+            <div class="link-text">
+              <div class="link-title">AppStorrent</div>
+              <div class="link-description">(Rapide) Plugins & Software Mac</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 id="mobile-title">📱 Applications Android / iOS</h2>
+      <p id="mobile-text">Si vous ne trouvez pas l'application que vous cherchez, voici quelques sites que je vous recommande.</p>
+      <p>If you can't find the application you're looking for, here are some sites I recommend.</p>
+      <div class="separator"></div>
+      
+      <div class="links-grid">
+        <a href="https://apkmos.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📱</div>
+            <div class="link-text">
+              <div class="link-title">APK Mos</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://rexdl.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🦖</div>
+            <div class="link-text">
+              <div class="link-title">REXDL</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://dlandroid.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📥</div>
+            <div class="link-text">
+              <div class="link-title">DL Android</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://apkmody.mobi/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🔧</div>
+            <div class="link-text">
+              <div class="link-title">APK Mody</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://modyolo.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎯</div>
+            <div class="link-text">
+              <div class="link-title">MODYOLO</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.rockmods.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🪨</div>
+            <div class="link-text">
+              <div class="link-title">Rock Mods</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://androeed.store/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🏪</div>
+            <div class="link-text">
+              <div class="link-title">Andreed</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://an1.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🔢</div>
+            <div class="link-text">
+              <div class="link-title">AN1</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://apkdone.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">✅</div>
+            <div class="link-text">
+              <div class="link-title">APK Done</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://apkkit.com/fr" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🧰</div>
+            <div class="link-text">
+              <div class="link-title">APK Kit</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://apkmb.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📦</div>
+            <div class="link-text">
+              <div class="link-title">APK MB</div>
+              <div class="link-description">Android</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://platinmods.com/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🥇</div>
+            <div class="link-text">
+              <div class="link-title">PlatinMods</div>
+              <div class="link-description">Android / iOS</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://appdb.to/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🍎</div>
+            <div class="link-text">
+              <div class="link-title">App DB Market</div>
+              <div class="link-description">iOS</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://ipa.cypwn.xyz/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🔓</div>
+            <div class="link-text">
+              <div class="link-title">CyPwn</div>
+              <div class="link-description">iOS</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 id="utilities-title">🛠️ Utilitaires</h2>
+      <p id="utilities-text">Outils pratiques pour télécharger du contenu et traiter l'audio.</p>
+      <p>Practical tools for downloading content and processing audio.</p>
+      <div class="separator"></div>
+      
+      <div class="links-grid">
+        <a href="https://www.downloadhelper.net/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">📥</div>
+            <div class="link-text">
+              <div class="link-title">Video DownloadHelper</div>
+              <div class="link-description">Télécharger des animés et films facilement</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://hianime.to/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎌</div>
+            <div class="link-text">
+              <div class="link-title">HiAnime</div>
+              <div class="link-description">Site d'animés</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://animekai.to/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">⚔️</div>
+            <div class="link-text">
+              <div class="link-title">AnimeKai</div>
+              <div class="link-description">Site d'animés</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://anicrush.to/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">💥</div>
+            <div class="link-text">
+              <div class="link-title">AniCrush</div>
+              <div class="link-description">Site d'animés</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://4anime.gg/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎬</div>
+            <div class="link-text">
+              <div class="link-title">4Anime</div>
+              <div class="link-description">Site d'animés</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://www.cineby.app/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎭</div>
+            <div class="link-text">
+              <div class="link-title">CineBy</div>
+              <div class="link-description">Site de films</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://hexa.watch/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🔷</div>
+            <div class="link-text">
+              <div class="link-title">Hexa Watch</div>
+              <div class="link-description">Site de films</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://cinemaos.live/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎦</div>
+            <div class="link-text">
+              <div class="link-title">CinemaOS</div>
+              <div class="link-description">Site de films</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://flixer.su/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎬</div>
+            <div class="link-text">
+              <div class="link-title">Flixer</div>
+              <div class="link-description">Site de films</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://beech.watch/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🌳</div>
+            <div class="link-text">
+              <div class="link-title">Beech Watch</div>
+              <div class="link-description">Site de films</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/UVR_v5.6.0_setup_9_25_23_2_1.exe" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🎤</div>
+            <div class="link-text">
+              <div class="link-title">Ultimate Vocal Remover</div>
+              <div class="link-description">Software - Supprimer musique de fond</div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://vocalremover.org/fr/" target="_blank" class="link-card">
+          <div class="link-card-content">
+            <div class="link-icon">🌐</div>
+            <div class="link-text">
+              <div class="link-title">Vocal Remover</div>
+              <div class="link-description">Web - Supprimer musique de fond</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2025 GRAPHICX by HYRAX. Tous droits réservés.
+    </footer>
+  </div>
+
+  <script>
+    // Improved language detection
+    function detectLanguage() {
+      const userLang = navigator.language || navigator.userLanguage;
+      const browserLang = userLang.toLowerCase();
+      
+      // Check for French variants
+      if (browserLang.startsWith('fr') || browserLang.includes('french')) {
+        return 'fr';
+      }
+      
+      // Check for other languages that might prefer English
+      if (browserLang.startsWith('en') || browserLang.includes('english')) {
+        return 'en';
+      }
+      
+      // Default to English for other languages
+      return 'en';
+    }
+    
+    const lang = detectLanguage();
+    const translations = {
+      fr: {
+        splash: "Bienvenue sur GRAPHICX",
+        discordTitle: "Rejoins la communauté GRAPHICX",
+        discordText: "Échange, collabore et reste à jour sur les dernières créations. Notre serveur Discord est ouvert à tous.",
+        discordLink: "Accéder au serveur",
+        youtubeTitle: "Découvre ma chaîne YouTube",
+        youtubeText: "Tutoriels, astuces, logiciels... Je partage mes outils et ma vision de la création numérique chaque semaine.",
+        youtubeLink: "Visiter la chaîne",
+        megathreadTitle: "📚 Megathread - Base d'informations",
+         megathreadText: "Le Megathread est une base d'informations regroupant différentes sources d'internet sécurisées.",
+        megathreadLink1: "Megathread Piracy",
+        megathreadDesc1: "La référence Reddit pour les ressources de piratage",
+        megathreadLink2: "Awesome Piracy",
+        megathreadDesc2: "Collection curated de ressources de piratage",
+        megathreadLink3: "Champagne Piracy",
+        megathreadDesc3: "Guide moderne et élégant du piratage",
+        megathreadLink4: "FMHY FreeMediaHeckYeah",
+        megathreadDesc4: "Média gratuit et ressources de streaming",
+        megathreadLink5: "Ripped",
+        megathreadDesc5: "Guide complet pour le piratage moderne",
+                 megathreadLink6: "Wikitipiak",
+         megathreadDesc6: "Wiki français du piratage et des alternatives",
+         pluginsTitle: "💻 Plugins & Logiciels Windows / MacOS",
+         pluginsText: "Si vous ne trouvez pas le plugin ou le logiciel que vous cherchez, voici quelques sites que je vous recommande.",
+        pluginsLink1: "VFX Download",
+        pluginsDesc1: "(Lent) Plugins Win / Mac",
+        pluginsLink2: "Intro HD",
+        pluginsDesc2: "(Lent) Plugins Win / Mac",
+        pluginsLink3: "Download Pirate",
+        pluginsDesc3: "(Rapide) Plugins & Software Win / Mac",
+        pluginsLink4: "Team V.R",
+        pluginsDesc4: "(Lent) Plugins Win / Mac",
+        pluginsLink5: "VFX Med",
+        pluginsDesc5: "(Lent) Plugins & Software Win / Mac",
+        pluginsLink6: "Taiwebs",
+        pluginsDesc6: "(Rapide) Plugins & Software Win / Mac - Mot de passe : taiweb.com",
+        pluginsLink7: "MatesFX",
+        pluginsDesc7: "(Rapide) Plugins Win / Mac",
+        pluginsLink8: "Motka",
+        pluginsDesc8: "(Rapide) Plugins Win / Mac",
+        pluginsLink9: "VFX Loot",
+        pluginsDesc9: "(Rapide) Plugins Win / Mac",
+        pluginsLink10: "LookAE",
+        pluginsDesc10: "(Moyen) Plugins Win / Mac",
+        pluginsLink11: "DownloadHA",
+        pluginsDesc11: "(Moyen) Software Win / Mac",
+                 pluginsLink12: "AppStorrent",
+         pluginsDesc12: "(Rapide) Plugins & Software Mac",
+         mobileTitle: "📱 Applications Android / iOS",
+         mobileText: "Si vous ne trouvez pas l'application que vous cherchez, voici quelques sites que je vous recommande.",
+         mobileLink1: "APK Mos",
+         mobileDesc1: "Android",
+         mobileLink2: "REXDL",
+         mobileDesc2: "Android",
+         mobileLink3: "DL Android",
+         mobileDesc3: "Android",
+         mobileLink4: "APK Mody",
+         mobileDesc4: "Android",
+         mobileLink5: "MODYOLO",
+         mobileDesc5: "Android",
+         mobileLink6: "Rock Mods",
+         mobileDesc6: "Android",
+         mobileLink7: "Andreed",
+         mobileDesc7: "Android",
+         mobileLink8: "AN1",
+         mobileDesc8: "Android",
+         mobileLink9: "APK Done",
+         mobileDesc9: "Android",
+         mobileLink10: "APK Kit",
+         mobileDesc10: "Android",
+         mobileLink11: "APK MB",
+         mobileDesc11: "Android",
+         mobileLink12: "PlatinMods",
+         mobileDesc12: "Android / iOS",
+         mobileLink13: "App DB Market",
+         mobileDesc13: "iOS",
+         mobileLink14: "CyPwn",
+         mobileDesc14: "iOS",
+         utilitiesTitle: "🛠️ Utilitaires",
+         utilitiesText: "Outils pratiques pour télécharger du contenu et traiter l'audio.",
+         utilitiesLink1: "Video DownloadHelper",
+         utilitiesDesc1: "Télécharger des animés et films facilement",
+         utilitiesLink2: "HiAnime",
+         utilitiesDesc2: "Site d'animés",
+         utilitiesLink3: "AnimeKai",
+         utilitiesDesc3: "Site d'animés",
+         utilitiesLink4: "AniCrush",
+         utilitiesDesc4: "Site d'animés",
+         utilitiesLink5: "4Anime",
+         utilitiesDesc5: "Site d'animés",
+         utilitiesLink6: "CineBy",
+         utilitiesDesc6: "Site de films",
+         utilitiesLink7: "Hexa Watch",
+         utilitiesDesc7: "Site de films",
+         utilitiesLink8: "CinemaOS",
+         utilitiesDesc8: "Site de films",
+         utilitiesLink9: "Flixer",
+         utilitiesDesc9: "Site de films",
+         utilitiesLink10: "Beech Watch",
+         utilitiesDesc10: "Site de films",
+         utilitiesLink11: "Ultimate Vocal Remover",
+         utilitiesDesc11: "Software - Supprimer musique de fond",
+         utilitiesLink12: "Vocal Remover",
+         utilitiesDesc12: "Web - Supprimer musique de fond",
+         footer: "© 2025 GRAPHICX by HYRAX. Tous droits réservés."
+      },
+      en: {
+        splash: "Welcome to GRAPHICX",
+        discordTitle: "Join the GRAPHICX community",
+        discordText: "Chat, collaborate and stay updated on the latest creations. Our Discord server is open to everyone.",
+        discordLink: "Join the server",
+        youtubeTitle: "Discover my YouTube channel",
+        youtubeText: "Tutorials, tips, software... I share my tools and digital creation vision every week.",
+        youtubeLink: "Visit the channel",
+        megathreadTitle: "📚 Megathread - Information Database",
+         megathreadText: "The Megathread is an information database gathering various secure sources from the internet.",
+        megathreadLink1: "Megathread Piracy",
+        megathreadDesc1: "Reddit reference for piracy resources",
+        megathreadLink2: "Awesome Piracy",
+        megathreadDesc2: "Curated collection of piracy resources",
+        megathreadLink3: "Champagne Piracy",
+        megathreadDesc3: "Modern and elegant piracy guide",
+        megathreadLink4: "FMHY FreeMediaHeckYeah",
+        megathreadDesc4: "Free media and streaming resources",
+        megathreadLink5: "Ripped",
+        megathreadDesc5: "Complete guide for modern piracy",
+                 megathreadLink6: "Wikitipiak",
+         megathreadDesc6: "French wiki of piracy and alternatives",
+         pluginsTitle: "💻 Plugins & Software Windows / MacOS",
+         pluginsText: "If you can't find the plugin or software you're looking for, here are some sites I recommend.",
+        pluginsLink1: "VFX Download",
+        pluginsDesc1: "(Slow) Plugins Win / Mac",
+        pluginsLink2: "Intro HD",
+        pluginsDesc2: "(Slow) Plugins Win / Mac",
+        pluginsLink3: "Download Pirate",
+        pluginsDesc3: "(Fast) Plugins & Software Win / Mac",
+        pluginsLink4: "Team V.R",
+        pluginsDesc4: "(Slow) Plugins Win / Mac",
+        pluginsLink5: "VFX Med",
+        pluginsDesc5: "(Slow) Plugins & Software Win / Mac",
+        pluginsLink6: "Taiwebs",
+        pluginsDesc6: "(Fast) Plugins & Software Win / Mac - Password: taiweb.com",
+        pluginsLink7: "MatesFX",
+        pluginsDesc7: "(Fast) Plugins Win / Mac",
+        pluginsLink8: "Motka",
+        pluginsDesc8: "(Fast) Plugins Win / Mac",
+        pluginsLink9: "VFX Loot",
+        pluginsDesc9: "(Fast) Plugins Win / Mac",
+        pluginsLink10: "LookAE",
+        pluginsDesc10: "(Medium) Plugins Win / Mac",
+        pluginsLink11: "DownloadHA",
+        pluginsDesc11: "(Medium) Software Win / Mac",
+                 pluginsLink12: "AppStorrent",
+         pluginsDesc12: "(Fast) Plugins & Software Mac",
+         mobileTitle: "📱 Android / iOS Applications",
+         mobileText: "If you can't find the application you're looking for, here are some sites I recommend.",
+         mobileLink1: "APK Mos",
+         mobileDesc1: "Android",
+         mobileLink2: "REXDL",
+         mobileDesc2: "Android",
+         mobileLink3: "DL Android",
+         mobileDesc3: "Android",
+         mobileLink4: "APK Mody",
+         mobileDesc4: "Android",
+         mobileLink5: "MODYOLO",
+         mobileDesc5: "Android",
+         mobileLink6: "Rock Mods",
+         mobileDesc6: "Android",
+         mobileLink7: "Andreed",
+         mobileDesc7: "Android",
+         mobileLink8: "AN1",
+         mobileDesc8: "Android",
+         mobileLink9: "APK Done",
+         mobileDesc9: "Android",
+         mobileLink10: "APK Kit",
+         mobileDesc10: "Android",
+         mobileLink11: "APK MB",
+         mobileDesc11: "Android",
+         mobileLink12: "PlatinMods",
+         mobileDesc12: "Android / iOS",
+         mobileLink13: "App DB Market",
+         mobileDesc13: "iOS",
+         mobileLink14: "CyPwn",
+         mobileDesc14: "iOS",
+         utilitiesTitle: "🛠️ Utilities",
+         utilitiesText: "Practical tools for downloading content and processing audio.",
+         utilitiesLink1: "Video DownloadHelper",
+         utilitiesDesc1: "Download anime and movies easily",
+         utilitiesLink2: "HiAnime",
+         utilitiesDesc2: "Anime site",
+         utilitiesLink3: "AnimeKai",
+         utilitiesDesc3: "Anime site",
+         utilitiesLink4: "AniCrush",
+         utilitiesDesc4: "Anime site",
+         utilitiesLink5: "4Anime",
+         utilitiesDesc5: "Anime site",
+         utilitiesLink6: "CineBy",
+         utilitiesDesc6: "Movie site",
+         utilitiesLink7: "Hexa Watch",
+         utilitiesDesc7: "Movie site",
+         utilitiesLink8: "CinemaOS",
+         utilitiesDesc8: "Movie site",
+         utilitiesLink9: "Flixer",
+         utilitiesDesc9: "Movie site",
+         utilitiesLink10: "Beech Watch",
+         utilitiesDesc10: "Movie site",
+         utilitiesLink11: "Ultimate Vocal Remover",
+         utilitiesDesc11: "Software - Remove background music",
+         utilitiesLink12: "Vocal Remover",
+         utilitiesDesc12: "Web - Remove background music",
+         footer: "© 2025 GRAPHICX by HYRAX. All rights reserved."
+      }
+    };
+
+    function applyTranslations() {
+      const t = translations[lang] || translations.en;
+      
+      // Splash screen
+      document.getElementById('splash-text').textContent = t.splash;
+      
+      // Discord section
+      document.getElementById('discord-title').textContent = t.discordTitle;
+      document.getElementById('discord-text').textContent = t.discordText;
+      document.getElementById('discord-link').textContent = t.discordLink;
+      
+      // YouTube section
+      document.getElementById('youtube-title').textContent = t.youtubeTitle;
+      document.getElementById('youtube-text').textContent = t.youtubeText;
+      document.getElementById('youtube-link').textContent = t.youtubeLink;
+      
+      // Megathread section
+      document.getElementById('megathread-title').textContent = t.megathreadTitle;
+      document.getElementById('megathread-text').textContent = t.megathreadText;
+      
+      // Remove second paragraph if it exists (bilingual text)
+      const megathreadSection = document.querySelector('.section:not(.discord):not(.youtube)');
+      const existingP = megathreadSection.querySelector('p:nth-child(3)');
+      if (existingP && (existingP.textContent.includes('The Megathread') || existingP.textContent.includes('Le Megathread'))) {
+        existingP.remove();
+      }
+      
+      // Update megathread links
+      const linkCards = document.querySelectorAll('.link-card');
+      if (linkCards.length >= 6) {
+        linkCards[0].querySelector('.link-title').textContent = t.megathreadLink1;
+        linkCards[0].querySelector('.link-description').textContent = t.megathreadDesc1;
+        
+        linkCards[1].querySelector('.link-title').textContent = t.megathreadLink2;
+        linkCards[1].querySelector('.link-description').textContent = t.megathreadDesc2;
+        
+        linkCards[2].querySelector('.link-title').textContent = t.megathreadLink3;
+        linkCards[2].querySelector('.link-description').textContent = t.megathreadDesc3;
+        
+        linkCards[3].querySelector('.link-title').textContent = t.megathreadLink4;
+        linkCards[3].querySelector('.link-description').textContent = t.megathreadDesc4;
+        
+        linkCards[4].querySelector('.link-title').textContent = t.megathreadLink5;
+        linkCards[4].querySelector('.link-description').textContent = t.megathreadDesc5;
+        
+        linkCards[5].querySelector('.link-title').textContent = t.megathreadLink6;
+        linkCards[5].querySelector('.link-description').textContent = t.megathreadDesc6;
+      }
+      
+      // Plugins section
+      document.getElementById('plugins-title').textContent = t.pluginsTitle;
+      document.getElementById('plugins-text').textContent = t.pluginsText;
+      
+      // Remove second paragraph if it exists (bilingual text) - for plugins section
+      const pluginsSection = document.getElementById('plugins-title').closest('.section');
+      if (pluginsSection) {
+        const pluginsParagraphs = pluginsSection.querySelectorAll('p');
+        if (pluginsParagraphs.length >= 2) {
+          const secondP = pluginsParagraphs[1]; // Second paragraph in plugins section
+          if (secondP && (secondP.textContent.includes('If you can\'t find') || secondP.textContent.includes('Si vous ne trouvez pas'))) {
+            secondP.remove();
+          }
+        }
+      }
+      
+      // Update plugins links (they come after megathread links)
+      const allLinkCards = document.querySelectorAll('.link-card');
+      if (allLinkCards.length >= 18) { // 6 megathread + 12 plugins
+        // Update plugins links (indices 6-17)
+        allLinkCards[6].querySelector('.link-title').textContent = t.pluginsLink1;
+        allLinkCards[6].querySelector('.link-description').textContent = t.pluginsDesc1;
+        
+        allLinkCards[7].querySelector('.link-title').textContent = t.pluginsLink2;
+        allLinkCards[7].querySelector('.link-description').textContent = t.pluginsDesc2;
+        
+        allLinkCards[8].querySelector('.link-title').textContent = t.pluginsLink3;
+        allLinkCards[8].querySelector('.link-description').textContent = t.pluginsDesc3;
+        
+        allLinkCards[9].querySelector('.link-title').textContent = t.pluginsLink4;
+        allLinkCards[9].querySelector('.link-description').textContent = t.pluginsDesc4;
+        
+        allLinkCards[10].querySelector('.link-title').textContent = t.pluginsLink5;
+        allLinkCards[10].querySelector('.link-description').textContent = t.pluginsDesc5;
+        
+        allLinkCards[11].querySelector('.link-title').textContent = t.pluginsLink6;
+        allLinkCards[11].querySelector('.link-description').textContent = t.pluginsDesc6;
+        
+        allLinkCards[12].querySelector('.link-title').textContent = t.pluginsLink7;
+        allLinkCards[12].querySelector('.link-description').textContent = t.pluginsDesc7;
+        
+        allLinkCards[13].querySelector('.link-title').textContent = t.pluginsLink8;
+        allLinkCards[13].querySelector('.link-description').textContent = t.pluginsDesc8;
+        
+        allLinkCards[14].querySelector('.link-title').textContent = t.pluginsLink9;
+        allLinkCards[14].querySelector('.link-description').textContent = t.pluginsDesc9;
+        
+        allLinkCards[15].querySelector('.link-title').textContent = t.pluginsLink10;
+        allLinkCards[15].querySelector('.link-description').textContent = t.pluginsDesc10;
+        
+        allLinkCards[16].querySelector('.link-title').textContent = t.pluginsLink11;
+        allLinkCards[16].querySelector('.link-description').textContent = t.pluginsDesc11;
+        
+                 allLinkCards[17].querySelector('.link-title').textContent = t.pluginsLink12;
+         allLinkCards[17].querySelector('.link-description').textContent = t.pluginsDesc12;
+       }
+       
+       // Mobile section
+       document.getElementById('mobile-title').textContent = t.mobileTitle;
+       document.getElementById('mobile-text').textContent = t.mobileText;
+       
+       // Remove second paragraph if it exists (bilingual text) - for mobile section
+       const mobileSection = document.getElementById('mobile-title').closest('.section');
+       if (mobileSection) {
+         const mobileParagraphs = mobileSection.querySelectorAll('p');
+         if (mobileParagraphs.length >= 2) {
+           const secondP = mobileParagraphs[1]; // Second paragraph in mobile section
+           if (secondP && (secondP.textContent.includes('If you can\'t find') || secondP.textContent.includes('Si vous ne trouvez pas'))) {
+             secondP.remove();
+           }
+         }
+       }
+       
+       // Update mobile links (they come after plugins links)
+       const mobileLinkCards = document.querySelectorAll('.link-card');
+       if (mobileLinkCards.length >= 32) { // 6 megathread + 12 plugins + 14 mobile
+         // Update mobile links (indices 18-31)
+         mobileLinkCards[18].querySelector('.link-title').textContent = t.mobileLink1;
+         mobileLinkCards[18].querySelector('.link-description').textContent = t.mobileDesc1;
+         
+         mobileLinkCards[19].querySelector('.link-title').textContent = t.mobileLink2;
+         mobileLinkCards[19].querySelector('.link-description').textContent = t.mobileDesc2;
+         
+         mobileLinkCards[20].querySelector('.link-title').textContent = t.mobileLink3;
+         mobileLinkCards[20].querySelector('.link-description').textContent = t.mobileDesc3;
+         
+         mobileLinkCards[21].querySelector('.link-title').textContent = t.mobileLink4;
+         mobileLinkCards[21].querySelector('.link-description').textContent = t.mobileDesc4;
+         
+         mobileLinkCards[22].querySelector('.link-title').textContent = t.mobileLink5;
+         mobileLinkCards[22].querySelector('.link-description').textContent = t.mobileDesc5;
+         
+         mobileLinkCards[23].querySelector('.link-title').textContent = t.mobileLink6;
+         mobileLinkCards[23].querySelector('.link-description').textContent = t.mobileDesc6;
+         
+         mobileLinkCards[24].querySelector('.link-title').textContent = t.mobileLink7;
+         mobileLinkCards[24].querySelector('.link-description').textContent = t.mobileDesc7;
+         
+         mobileLinkCards[25].querySelector('.link-title').textContent = t.mobileLink8;
+         mobileLinkCards[25].querySelector('.link-description').textContent = t.mobileDesc8;
+         
+         mobileLinkCards[26].querySelector('.link-title').textContent = t.mobileLink9;
+         mobileLinkCards[26].querySelector('.link-description').textContent = t.mobileDesc9;
+         
+         mobileLinkCards[27].querySelector('.link-title').textContent = t.mobileLink10;
+         mobileLinkCards[27].querySelector('.link-description').textContent = t.mobileDesc10;
+         
+         mobileLinkCards[28].querySelector('.link-title').textContent = t.mobileLink11;
+         mobileLinkCards[28].querySelector('.link-description').textContent = t.mobileDesc11;
+         
+         mobileLinkCards[29].querySelector('.link-title').textContent = t.mobileLink12;
+         mobileLinkCards[29].querySelector('.link-description').textContent = t.mobileDesc12;
+         
+         mobileLinkCards[30].querySelector('.link-title').textContent = t.mobileLink13;
+         mobileLinkCards[30].querySelector('.link-description').textContent = t.mobileDesc13;
+         
+         mobileLinkCards[31].querySelector('.link-title').textContent = t.mobileLink14;
+         mobileLinkCards[31].querySelector('.link-description').textContent = t.mobileDesc14;
+       }
+       
+       // Utilities section
+       document.getElementById('utilities-title').textContent = t.utilitiesTitle;
+       document.getElementById('utilities-text').textContent = t.utilitiesText;
+       
+       // Remove second paragraph if it exists (bilingual text) - for utilities section
+       const utilitiesSection = document.getElementById('utilities-title').closest('.section');
+       if (utilitiesSection) {
+         const utilitiesParagraphs = utilitiesSection.querySelectorAll('p');
+         if (utilitiesParagraphs.length >= 2) {
+           const secondP = utilitiesParagraphs[1]; // Second paragraph in utilities section
+           if (secondP && (secondP.textContent.includes('If you can\'t find') || secondP.textContent.includes('Si vous ne trouvez pas') || secondP.textContent.includes('Practical tools') || secondP.textContent.includes('Outils pratiques'))) {
+             secondP.remove();
+           }
+         }
+       }
+       
+       // Update utilities links (they come after mobile links)
+       const utilitiesLinkCards = document.querySelectorAll('.link-card');
+       if (utilitiesLinkCards.length >= 46) { // 6 megathread + 12 plugins + 14 mobile + 12 utilities
+         // Update utilities links (indices 32-43)
+         utilitiesLinkCards[32].querySelector('.link-title').textContent = t.utilitiesLink1;
+         utilitiesLinkCards[32].querySelector('.link-description').textContent = t.utilitiesDesc1;
+         
+         utilitiesLinkCards[33].querySelector('.link-title').textContent = t.utilitiesLink2;
+         utilitiesLinkCards[33].querySelector('.link-description').textContent = t.utilitiesDesc2;
+         
+         utilitiesLinkCards[34].querySelector('.link-title').textContent = t.utilitiesLink3;
+         utilitiesLinkCards[34].querySelector('.link-description').textContent = t.utilitiesDesc3;
+         
+         utilitiesLinkCards[35].querySelector('.link-title').textContent = t.utilitiesLink4;
+         utilitiesLinkCards[35].querySelector('.link-description').textContent = t.utilitiesDesc4;
+         
+         utilitiesLinkCards[36].querySelector('.link-title').textContent = t.utilitiesLink5;
+         utilitiesLinkCards[36].querySelector('.link-description').textContent = t.utilitiesDesc5;
+         
+         utilitiesLinkCards[37].querySelector('.link-title').textContent = t.utilitiesLink6;
+         utilitiesLinkCards[37].querySelector('.link-description').textContent = t.utilitiesDesc6;
+         
+         utilitiesLinkCards[38].querySelector('.link-title').textContent = t.utilitiesLink7;
+         utilitiesLinkCards[38].querySelector('.link-description').textContent = t.utilitiesDesc7;
+         
+         utilitiesLinkCards[39].querySelector('.link-title').textContent = t.utilitiesLink8;
+         utilitiesLinkCards[39].querySelector('.link-description').textContent = t.utilitiesDesc8;
+         
+         utilitiesLinkCards[40].querySelector('.link-title').textContent = t.utilitiesLink9;
+         utilitiesLinkCards[40].querySelector('.link-description').textContent = t.utilitiesDesc9;
+         
+         utilitiesLinkCards[41].querySelector('.link-title').textContent = t.utilitiesLink10;
+         utilitiesLinkCards[41].querySelector('.link-description').textContent = t.utilitiesDesc10;
+         
+         utilitiesLinkCards[42].querySelector('.link-title').textContent = t.utilitiesLink11;
+         utilitiesLinkCards[42].querySelector('.link-description').textContent = t.utilitiesDesc11;
+         
+         utilitiesLinkCards[43].querySelector('.link-title').textContent = t.utilitiesLink12;
+         utilitiesLinkCards[43].querySelector('.link-description').textContent = t.utilitiesDesc12;
+       }
+       
+       // Footer
+       document.querySelector('footer').textContent = t.footer;
+    }
+
+    window.onload = () => {
+      applyTranslations();
+
+      const splash = document.querySelector('.splash');
+      let splashHidden = false;
+
+      function hideSplash() {
+        if (splashHidden) return;
+        splashHidden = true;
+        splash.style.animationPlayState = 'paused';
+        splash.style.transition = 'opacity 0.5s ease';
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 500);
+      }
+
+      setTimeout(hideSplash, 2500);
+      splash.addEventListener('click', hideSplash);
+    };
+  </script>
+</body>
+</html>
