@@ -544,22 +544,104 @@ function showGitHubAuthButton() {
     authBtn.innerHTML = '🔑 Authentifier GitHub';
     authBtn.onclick = authenticateGitHub;
     
+    const testBtn = document.createElement('button');
+    testBtn.className = 'btn';
+    testBtn.innerHTML = '🧪 Mode Test (Sans GitHub)';
+    testBtn.onclick = testMode;
+    
     const buttonsContainer = document.querySelector('.buttons');
     buttonsContainer.appendChild(authBtn);
+    buttonsContainer.appendChild(testBtn);
+}
+
+// Mode test sans authentification GitHub
+async function testMode() {
+    logToConsole('🧪 Mode test activé - Simulation du traitement', 'info');
+    
+    if (filesAdded.length === 0) {
+        logToConsole('❌ Aucun fichier à traiter', 'error');
+        return;
+    }
+    
+    // Désactiver les boutons pendant le traitement
+    setButtonsState(true);
+    isProcessing = true;
+    
+    logToConsole('🚀 Début du traitement en mode test...', 'info');
+    updateProgress(10);
+    
+    try {
+        // Simuler le traitement
+        for (let i = 0; i < filesAdded.length; i++) {
+            const file = filesAdded[i];
+            const rule = matchRuleForFile(file.name);
+            const progress = 10 + ((i + 1) / filesAdded.length) * 80;
+            
+            logToConsole(`📁 Traitement de: ${file.name}`, 'info');
+            updateProgress(progress);
+            
+            if (rule) {
+                logToConsole(`✅ Règle trouvée: ${rule.action}`, 'success');
+                
+                // Simuler la création d'un installateur
+                const installerName = `${file.name.replace(/\.[^/.]+$/, '')}_Patched.exe`;
+                logToConsole(`📦 Installateur créé: ${installerName}`, 'success');
+                
+                // Attendre un peu pour l'effet visuel
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Afficher le bouton de téléchargement (simulé)
+                showDownloadButton(installerName, null);
+            } else {
+                logToConsole(`⚠️ Aucune règle trouvée pour: ${file.name}`, 'warning');
+            }
+        }
+        
+        updateProgress(100);
+        logToConsole('🎉 Traitement en mode test terminé !', 'success');
+        logToConsole('💡 Les boutons de téléchargement sont simulés', 'info');
+        
+    } catch (error) {
+        logToConsole('❌ Erreur lors du traitement en mode test', 'error');
+        logToConsole(`💡 Détails: ${error.message}`, 'info');
+    } finally {
+        // Réactiver les boutons après le traitement
+        setButtonsState(false);
+        isProcessing = false;
+    }
 }
 
 // Authentification GitHub
 async function authenticateGitHub() {
     logToConsole('🔑 Début de l\'authentification GitHub...', 'info');
     
-    // Ouvrir la popup d'authentification GitHub
-    const clientId = 'your-github-app-client-id'; // À configurer
+    // Configuration OAuth - À remplacer par votre Client ID
+    const clientId = 'your-github-app-client-id'; // REMPLACEZ PAR VOTRE CLIENT ID
+    
+    if (clientId === 'your-github-app-client-id') {
+        logToConsole('❌ Client ID GitHub non configuré', 'error');
+        logToConsole('💡 Configurez votre OAuth App GitHub d\'abord', 'info');
+        logToConsole('📋 Voir la documentation dans le README.md', 'info');
+        
+        // Afficher les instructions
+        showGitHubSetupInstructions();
+        return;
+    }
+    
     const redirectUri = encodeURIComponent(window.location.origin);
     const scope = 'repo workflow';
     
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
     
+    logToConsole('🌐 Ouverture de la page d\'authentification GitHub...', 'info');
+    
     const popup = window.open(authUrl, 'github-auth', 'width=600,height=600');
+    
+    if (!popup) {
+        logToConsole('❌ Popup bloquée par le navigateur', 'error');
+        logToConsole('💡 Autorisez les popups pour ce site', 'info');
+        return;
+    }
     
     // Écouter le message de retour
     window.addEventListener('message', async function(event) {
@@ -572,6 +654,48 @@ async function authenticateGitHub() {
             
             // Relancer le traitement
             patchFiles();
+        } else if (event.data.type === 'github-auth-error') {
+            logToConsole('❌ Erreur d\'authentification GitHub', 'error');
+            logToConsole(`💡 Détails: ${event.data.error}`, 'info');
+            popup.close();
         }
     });
+    
+    // Timeout pour éviter les blocages
+    setTimeout(() => {
+        if (!popup.closed) {
+            logToConsole('⏰ Timeout d\'authentification', 'warning');
+            logToConsole('💡 Vérifiez que la popup GitHub s\'est ouverte', 'info');
+        }
+    }, 10000);
+}
+
+// Afficher les instructions de configuration
+function showGitHubSetupInstructions() {
+    const instructions = document.createElement('div');
+    instructions.className = 'setup-instructions';
+    instructions.innerHTML = `
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin: 20px 0; border: 2px solid var(--accent);">
+            <h3 style="color: var(--accent); margin-bottom: 15px;">🔧 Configuration GitHub OAuth App</h3>
+            <ol style="text-align: left; line-height: 1.6;">
+                <li>Allez sur <a href="https://github.com/settings/developers" target="_blank" style="color: var(--accent);">GitHub Developer Settings</a></li>
+                <li>Cliquez sur "OAuth Apps" → "New OAuth App"</li>
+                <li>Remplissez :
+                    <ul>
+                        <li><strong>Application name</strong> : GFX Tool</li>
+                        <li><strong>Homepage URL</strong> : https://VOTRE_USERNAME.github.io/graphicx-gfxtool</li>
+                        <li><strong>Authorization callback URL</strong> : https://VOTRE_USERNAME.github.io/graphicx-gfxtool</li>
+                    </ul>
+                </li>
+                <li>Copiez le <strong>Client ID</strong> généré</li>
+                <li>Remplacez <code>your-github-app-client-id</code> dans le code par votre Client ID</li>
+            </ol>
+            <p style="margin-top: 15px; color: var(--muted);">
+                💡 <strong>Note</strong> : Remplacez VOTRE_USERNAME par votre nom d'utilisateur GitHub
+            </p>
+        </div>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.appendChild(instructions);
 } 
