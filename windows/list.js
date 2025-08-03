@@ -176,7 +176,7 @@ const posts = [
     {
       title: "Back Light",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.google.com/uc?export=download&id=13GacSI_50UxF0hY2gD-BKrzf6u7ECh6F",
       size: "525 MB"
@@ -184,7 +184,7 @@ const posts = [
     {
       title: "Fresh Food",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1hUFCgP5ATC2LiniyhKAJ4NECn6TnOW3z&export=download&authuser=0",
       size: "188 MB"
@@ -192,7 +192,7 @@ const posts = [
     {
       title: "Metropolitan",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1lGW2-6ZBCRzTi8XWG5nxFhkIIN1tUNDf&export=download&authuser=0",
       size: "601 MB"
@@ -200,7 +200,7 @@ const posts = [
     {
       title: "Money Casino",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1I-K1SA--_Hn_g_jLiRSyuOz4GubGLKhy&export=download&authuser=0",
       size: "138 MB"
@@ -208,7 +208,7 @@ const posts = [
     {
       title: "Motion Design 2",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1BXIqG14ImXXbqJu8kd4zyDUZ6VflMX-Z&export=download&authuser=0",
       size: "644 MB"
@@ -216,7 +216,7 @@ const posts = [
     {
       title: "Pro Shader 2",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1vYmHIfXi2DJHluf78yzKLeLdw9R9CLC7&export=download&authuser=0",
       size: "1.7 GB"
@@ -224,7 +224,7 @@ const posts = [
     {
       title: "Projectiles Weapons 3D",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1RDWm2qprZ8Fxvw2MOWf2iBYrdMx2jLXa&export=download&authuser=0",
       size: "384 MB"
@@ -232,7 +232,7 @@ const posts = [
     {
       title: "Sound Music 3D",
       description: "Pack pour Element 3D",
-      thumbnail: "assets/images/video_copilot_logo.png",
+      thumbnail: "assets/images/extension_logo.png",
       tags: ["Video Copilot"],
       file: "https://drive.usercontent.google.com/download?id=1rbv_X_Vw0_6hsF982GmA5FpHXaf_6ZKf&export=download&authuser=0",
       size: "548 MB"
