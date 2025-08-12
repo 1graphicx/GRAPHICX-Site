@@ -1977,6 +1977,26 @@ local playerConnections = {}
 -- URL de l'icône pour les amis
 local friendIcon = "URL_DE_VOTRE_ICONE"
 
+-- Retourne la liste des joueurs triée: amis d'abord, puis par DisplayName (alpha)
+local function getPlayersSortedFriendsFirst(includeLocal)
+    local list = {}
+    local lp = game.Players.LocalPlayer
+    for _, plr in ipairs(game.Players:GetPlayers()) do
+        if includeLocal or plr ~= lp then
+            table.insert(list, plr)
+        end
+    end
+    table.sort(list, function(a, b)
+        local af = lp:IsFriendsWith(a.UserId)
+        local bf = lp:IsFriendsWith(b.UserId)
+        if af ~= bf then
+            return af and not bf
+        end
+        return string.lower(a.DisplayName) < string.lower(b.DisplayName)
+    end)
+    return list
+end
+
 -- Fonction pour téléporter le joueur local à un autre joueur
 local function teleportToPlayer(targetPlayer)
     local localPlayer = game.Players.LocalPlayer
@@ -2039,33 +2059,54 @@ local function deletePlayerButton(playerName)
     end
 end
 
--- Fonction pour initialiser les boutons pour tous les joueurs actuellement présents
-local function initializePlayerButtons()
-    local localPlayer = game.Players.LocalPlayer
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        -- Ne pas créer de bouton pour le joueur local
-        if player ~= localPlayer then
-            createPlayerButton(player)
+-- Reconstruit entièrement la liste de TP en appliquant le tri amis d'abord
+local function rebuildPlayerButtons()
+    -- Détruire tous les boutons existants et connexions
+    for name, btn in pairs(playerButtons) do
+        pcall(function()
+            if typeof(btn.Destroy) == "function" then
+                btn:Destroy()
+            elseif typeof(btn.Set) == "function" then
+                btn:Set("")
+            end
+        end)
+        playerButtons[name] = nil
+    end
+    for name, conn in pairs(playerConnections) do
+        pcall(function() conn:Disconnect() end)
+        playerConnections[name] = nil
+    end
+
+    -- Recréer dans l'ordre souhaité
+    local sorted = getPlayersSortedFriendsFirst(false)
+    local lp = game.Players.LocalPlayer
+    for _, plr in ipairs(sorted) do
+        if plr ~= lp then
+            createPlayerButton(plr)
         end
     end
 end
 
+-- Fonction pour initialiser les boutons pour tous les joueurs actuellement présents
+local function initializePlayerButtons()
+    rebuildPlayerButtons()
+end
+
 -- Écouter l'ajout d'un nouveau joueur pour créer un bouton
 game.Players.PlayerAdded:Connect(function(player)
-    if player ~= game.Players.LocalPlayer then
-        createPlayerButton(player)
-        -- Nettoyer automatiquement si le joueur quitte avant la propagation UI
-        player.AncestryChanged:Connect(function(_, parent)
-            if parent == nil then
-                deletePlayerButton(player.Name)
-            end
-        end)
-    end
+    rebuildPlayerButtons()
+    -- Nettoyer automatiquement si le joueur quitte avant la propagation UI
+    player.AncestryChanged:Connect(function(_, parent)
+        if parent == nil then
+            deletePlayerButton(player.Name)
+        end
+    end)
 end)
 
 -- Écouter le départ d'un joueur pour supprimer son bouton
 game.Players.PlayerRemoving:Connect(function(player)
     deletePlayerButton(player.Name)
+    rebuildPlayerButtons()
 end)
 
 -- Initialiser les boutons lors du lancement du script
