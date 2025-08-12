@@ -1,5 +1,5 @@
 -- Charger la bibliothèque Rayfield
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet('https://graphicx.store/roblox/scripts/QuantiX.lua'))()
 
 -- Créer la fenêtre principale de Rayfield
 local Window = Rayfield:CreateWindow({
@@ -91,35 +91,34 @@ local noclipToggle = MainTab:CreateToggle({
 -- Variables pour la téléportation
 local teleportEnabled = false
 local preTeleportOrientation = nil  -- Pour stocker l'orientation avant la téléportation
+local teleportClickConnection
 
 -- Fonction pour activer/désactiver la téléportation
 local function toggleTeleport(state)
     teleportEnabled = state
+    if teleportClickConnection then
+        teleportClickConnection:Disconnect()
+        teleportClickConnection = nil
+    end
+    if teleportEnabled then
+        local UIS = game:GetService("UserInputService")
+        local Player = game.Players.LocalPlayer
+        local Mouse = Player:GetMouse()
+        teleportClickConnection = UIS.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) and teleportEnabled then
+                local targetPosition = Mouse.Hit.Position
+                local character = Player.Character
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    preTeleportOrientation = character.HumanoidRootPart.CFrame - character.HumanoidRootPart.Position
+                    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition) * preTeleportOrientation
+                end
+            end
+        end)
+    end
 end
 
 -- Fonction pour gérer la téléportation
-local function teleportToMouse()
-    local UIS = game:GetService("UserInputService")
-    local Player = game.Players.LocalPlayer
-    local Mouse = Player:GetMouse()
-
-    UIS.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) and teleportEnabled then
-            local targetPosition = Mouse.Hit.Position
-            local character = Player.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                -- Conserver l'orientation actuelle du joueur
-                preTeleportOrientation = character.HumanoidRootPart.CFrame - character.HumanoidRootPart.Position
-
-                -- Déplacer le joueur à la position ciblée tout en conservant l'orientation
-                character.HumanoidRootPart.CFrame = CFrame.new(targetPosition) * preTeleportOrientation
-            end
-        end
-    end)
-end
-
--- Initialiser la fonction de téléportation
-teleportToMouse()
+-- Initialisation: pas de listener tant que le toggle n'est pas actif
 
 -- Toggle pour Click TP
 local clickTpToggle = MainTab:CreateToggle({
@@ -155,20 +154,16 @@ local DeleteBlocksToggle = MainTab:CreateToggle({
 			deleteBlocksConnection:Disconnect()
 		end
 
-		-- Connexion pour détecter les clics de souris
-		deleteBlocksConnection = Mouse.Button1Down:Connect(function()
-			if State and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
-				local target = Mouse.Target
-				if target and target:IsA("BasePart") then
-					-- Debugging
-					print("Bloc ciblé pour suppression :", target.Name)
-					-- Supprimer le bloc
-					target:Destroy()
-				else
-					print("Aucun bloc cible détecté ou le bloc cible n'est pas un BasePart")
-				end
-			end
-		end)
+        -- Connexion pour détecter les clics de souris (nettoyable et unique)
+        deleteBlocksConnection = Mouse.Button1Down:Connect(function()
+            if not State then return end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                local target = Mouse.Target
+                if target and target:IsA("BasePart") then
+                    target:Destroy()
+                end
+            end
+        end)
 	end,
 })
 
@@ -646,14 +641,15 @@ local function createUI()
 	-- Utilisation de CoreGui pour s'afficher au-dessus de tout
 	local coreGui = game:GetService("CoreGui")
 	local screenGui = Instance.new("ScreenGui", coreGui)  -- Changer PlayerGui à CoreGui
-	return {
-		pathLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 10), ""),
-		blockPositionLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 70), ""),
-		positionLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 130), ""),
-		bodyAngleLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 190), ""),
-		angleLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 250), ""),
-		guiPathLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 310), "")
-	}
+    return {
+        root = screenGui,
+        pathLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 10), ""),
+        blockPositionLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 70), ""),
+        positionLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 130), ""),
+        bodyAngleLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 190), ""),
+        angleLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 250), ""),
+        guiPathLabel = createTextLabel(screenGui, UDim2.new(0.5, -250, 0, 310), "")
+    }
 end
 
 -- Fonction pour filtrer "Ugc." du chemin
@@ -1971,11 +1967,12 @@ local afkToggle = UtilTab:CreateToggle({
 -------------------------------------------------------------------------- TP Players
 
 -- Créer un onglet et une section dans la fenêtre
-local UtilTab = Window:CreateTab("TP Players", nil)
-local UtilSection = UtilTab:CreateSection("Players")
+local TPPlayersTab = Window:CreateTab("TP Players", nil)
+local TPPlayersSection = TPPlayersTab:CreateSection("Players")
 
--- Table pour stocker les boutons associés aux joueurs
+-- Table pour stocker les boutons/connexions associés aux joueurs
 local playerButtons = {}
+local playerConnections = {}
 
 -- URL de l'icône pour les amis
 local friendIcon = "URL_DE_VOTRE_ICONE"
@@ -2004,7 +2001,7 @@ local function createPlayerButton(player)
     local isFriend = game.Players.LocalPlayer:IsFriendsWith(player.UserId)
 
     -- Créer un bouton avec une icône si le joueur est un ami
-    local tpButton = UtilTab:CreateButton({
+    local tpButton = TPPlayersTab:CreateButton({
         Name = (isFriend and "⭐  " or "") .. displayName .. " (" .. userName .. ")",
         Icon = isFriend and friendIcon or nil, -- Ajouter une icône si c'est un ami
         Callback = function()
@@ -2012,16 +2009,33 @@ local function createPlayerButton(player)
         end
     })
 
-    -- Stocker le bouton dans la table avec le nom du joueur comme clé
+    -- Stocker le bouton et des hooks pour nettoyage
     playerButtons[player.Name] = tpButton
+    -- Mettre à jour dynamiquement le libellé si DisplayName change
+    playerConnections[player.Name] = player:GetPropertyChangedSignal("DisplayName"):Connect(function()
+        local newDisplay = player.DisplayName
+        local friend = game.Players.LocalPlayer:IsFriendsWith(player.UserId)
+        tpButton:Set((friend and "⭐  " or "") .. newDisplay .. " (" .. player.Name .. ")")
+    end)
 end
 
 -- Fonction pour supprimer un bouton associé à un joueur
 local function deletePlayerButton(playerName)
     local button = playerButtons[playerName]
     if button then
-        button:Destroy()  -- Supprimer le bouton de l'interface
+        -- Essayer de masquer/détruire via l'API de Rayfield/QuantiX exposée
+        if typeof(button.Destroy) == "function" then
+            pcall(function() button:Destroy() end)
+        elseif typeof(button.Set) == "function" then
+            -- fallback: vider le texte et le masquer si pas de Destroy
+            pcall(function() button:Set("") end)
+        end
         playerButtons[playerName] = nil  -- Retirer de la table
+    end
+    local conn = playerConnections[playerName]
+    if conn then
+        conn:Disconnect()
+        playerConnections[playerName] = nil
     end
 end
 
@@ -2040,6 +2054,12 @@ end
 game.Players.PlayerAdded:Connect(function(player)
     if player ~= game.Players.LocalPlayer then
         createPlayerButton(player)
+        -- Nettoyer automatiquement si le joueur quitte avant la propagation UI
+        player.AncestryChanged:Connect(function(_, parent)
+            if parent == nil then
+                deletePlayerButton(player.Name)
+            end
+        end)
     end
 end)
 
