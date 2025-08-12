@@ -1718,6 +1718,7 @@ local function createEmoteButtons()
 
         FunTab:CreateButton({
             Name = buttonName,
+            IndicatorText = "Jouer l'emote",
             Callback = function()
                 local character = game.Players.LocalPlayer.Character
                 if character then
@@ -2024,6 +2025,7 @@ local function createPlayerButton(player)
     local tpButton = TPPlayersTab:CreateButton({
         Name = (isFriend and "⭐  " or "") .. displayName .. " (" .. userName .. ")",
         Icon = isFriend and friendIcon or nil, -- Ajouter une icône si c'est un ami
+        IndicatorText = "Téléporter",
         Callback = function()
             teleportToPlayer(player)
         end
