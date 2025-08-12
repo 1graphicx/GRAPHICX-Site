@@ -3839,11 +3839,9 @@ function QuantiXLibrary:CreateWindow(Settings)
 				progressCorner = Instance.new("UICorner")
 				progressCorner.Parent = Slider.Main.Progress
 			end
-			progressCorner.CornerRadius = trackCorner.CornerRadius
-            local cornerInset = (trackCorner and trackCorner.CornerRadius and trackCorner.CornerRadius.Offset) or 6
+            progressCorner.CornerRadius = trackCorner.CornerRadius
 			Slider.Main.Progress.BorderSizePixel = 0
             Slider.Main.Progress.AnchorPoint = Vector2.new(0, 0.5)
-            Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInset, 0.5, 0)
 			Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
 			if Slider.Main.Progress:FindFirstChildOfClass("UIStroke") then
 				Slider.Main.Progress:FindFirstChildOfClass("UIStroke").Transparency = 1
@@ -3862,10 +3860,14 @@ function QuantiXLibrary:CreateWindow(Settings)
 			end
             local function applyProgressPixels(px: number)
                 local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                -- Leave space for rounded corners on both ends
-                local maxInnerWidth = math.max(1, Slider.Main.AbsoluteSize.X - (strokeThickness * 2) - (cornerInset * 2))
-                local insetWidth = math.clamp(math.max(1, px - (strokeThickness * 2) - (cornerInset * 2)), 1, maxInnerWidth)
-                Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInset, 0.5, 0)
+                -- Estimate corner inset as half of height (pill shape), bounded by any UICorner offset if present
+                local uic = Slider.Main:FindFirstChildOfClass("UICorner")
+                local uicOffset = (uic and uic.CornerRadius and uic.CornerRadius.Offset) or 0
+                local cornerInsetPx = math.max(uicOffset, math.floor(heightPx / 2 + 0.5))
+                cornerInsetPx = math.min(cornerInsetPx, math.floor((Slider.Main.AbsoluteSize.X - strokeThickness*2)/2))
+                local maxInnerWidth = math.max(1, Slider.Main.AbsoluteSize.X - (strokeThickness * 2) - (cornerInsetPx * 2))
+                local insetWidth = math.clamp(math.max(1, px - (strokeThickness * 2) - (cornerInsetPx * 2)), 1, maxInnerWidth)
+                Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInsetPx, 0.5, 0)
                 Slider.Main.Progress.Size = UDim2.new(0, insetWidth, 0, heightPx)
             end
 
@@ -3936,10 +3938,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 							-- Keep progress clamped inside the track and at least 5px
                         local newWidth = math.max(5, Current - Slider.Main.AbsolutePosition.X)
                         local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                        local maxInnerWidth = math.max(1, Slider.Main.AbsoluteSize.X - (strokeThickness * 2) - (cornerInset * 2))
-                        local insetWidth = math.clamp(math.max(1, newWidth - (strokeThickness * 2) - (cornerInset * 2)), 1, maxInnerWidth)
-                        Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInset, 0.5, 0)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 0, heightPx)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, heightPx)}):Play()
+                        applyProgressPixels(newWidth)
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
@@ -3975,10 +3975,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 					else
                         local width = math.max(5, Location - Slider.Main.AbsolutePosition.X)
                         local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                        local maxInnerWidth = math.max(1, Slider.Main.AbsoluteSize.X - (strokeThickness * 2) - (cornerInset * 2))
-                        local insetWidth = math.clamp(math.max(1, width - (strokeThickness * 2) - (cornerInset * 2)), 1, maxInnerWidth)
-                        Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInset, 0.5, 0)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 0, heightPx)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, heightPx)}):Play()
+                        applyProgressPixels(width)
 						Loop:Disconnect()
 					end
 				end)
@@ -3988,11 +3986,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
 
                 local px = math.max(5, valueToPixels(NewVal))
-                local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                local maxInnerWidth = math.max(1, Slider.Main.AbsoluteSize.X - (strokeThickness * 2) - (cornerInset * 2))
-                local insetWidth = math.clamp(math.max(1, px - (strokeThickness * 2) - (cornerInset * 2)), 1, maxInnerWidth)
-                Slider.Main.Progress.Position = UDim2.new(0, strokeThickness + cornerInset, 0.5, 0)
-                TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 0, heightPx)}):Play()
+                applyProgressPixels(px)
 				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
 
 				local Success, Response = pcall(function()
@@ -4032,11 +4026,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
                 Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
                 Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
-                local stk = (Slider.Main:FindFirstChildOfClass("UIStroke") and Slider.Main:FindFirstChildOfClass("UIStroke").Thickness) or 1
-                local cr = ((Slider.Main:FindFirstChildOfClass("UICorner") and Slider.Main:FindFirstChildOfClass("UICorner").CornerRadius and Slider.Main:FindFirstChildOfClass("UICorner").CornerRadius.Offset) or 6)
-                Slider.Main.Progress.AnchorPoint = Vector2.new(0, 0.5)
-                Slider.Main.Progress.Position = UDim2.new(0, stk + cr, 0.5, 0)
-                applyProgressPixels(Slider.Main.Progress.AbsoluteSize.X + (stk * 2) + (cr * 2))
+                local px = valueToPixels(SliderSettings.CurrentValue)
+                applyProgressPixels(px)
 			end)
 
 			-- Adjust progress height when track resizes
