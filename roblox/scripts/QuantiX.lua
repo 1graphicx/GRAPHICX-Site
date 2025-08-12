@@ -668,6 +668,58 @@ local warned
 local globalLoaded
 local QuantiXDestroyed = false -- True when QuantiXLibrary:Destroy() is called
 
+-- Players refresh system (auto-update list and callbacks)
+local playerChangeCallbacks: { [number]: { cb: (players: {Player}) -> (), includeLocal: boolean? } } = {}
+local nextPlayerCbId = 1
+
+function QuantiXLibrary:GetPlayersList(includeLocal: boolean?): { Player }
+    local list = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if includeLocal or plr ~= Players.LocalPlayer then
+            table.insert(list, plr)
+        end
+    end
+    table.sort(list, function(a, b)
+        return string.lower(a.DisplayName) < string.lower(b.DisplayName)
+    end)
+    return list
+end
+
+local function emitPlayersChanged()
+    for id, entry in pairs(playerChangeCallbacks) do
+        local ok, err = pcall(function()
+            entry.cb(QuantiXLibrary:GetPlayersList(entry.includeLocal))
+        end)
+        if not ok then
+            warn("QuantiX | OnPlayersChanged callback error:", err)
+        end
+    end
+end
+
+function QuantiXLibrary:OnPlayersChanged(callback: (players: {Player}) -> (), includeLocal: boolean?)
+    assert(type(callback) == "function", "OnPlayersChanged expects a function callback")
+    local id = nextPlayerCbId
+    nextPlayerCbId += 1
+    playerChangeCallbacks[id] = { cb = callback, includeLocal = includeLocal and true or false }
+    -- Fire immediately with current list
+    task.spawn(function()
+        callback(QuantiXLibrary:GetPlayersList(includeLocal))
+    end)
+    return {
+        Disconnect = function()
+            playerChangeCallbacks[id] = nil
+        end
+    }
+end
+
+-- Hook into Roblox player events to auto-emit changes
+Players.PlayerAdded:Connect(function()
+    emitPlayersChanged()
+end)
+Players.PlayerRemoving:Connect(function()
+    emitPlayersChanged()
+end)
+
 repeat
 	if QuantiX:FindFirstChild('Build') and QuantiX.Build.Value == InterfaceBuild then
 		correctBuild = true
@@ -2310,6 +2362,69 @@ function QuantiXLibrary:CreateWindow(Settings)
 
 		local Tab = {}
 
+		-- Utility: Create a live player list that auto-refreshes and returns a set of UI elements
+		function Tab:CreatePlayerList(options)
+			-- options: { includeLocal: boolean?, onSelect: (player: Player) -> (), title: string? }
+			local includeLocal = options and options.includeLocal or false
+			local onSelect = options and options.onSelect or function() end
+			local title = (options and options.title) or "Players"
+
+			local Section = Tab:CreateSection(title)
+			local elementsByUserId: { [number]: any } = {}
+			local connection
+
+			local function sync(playersList)
+				-- Remove elements no longer present
+				for userId, elem in pairs(elementsByUserId) do
+					local found = false
+					for _, plr in ipairs(playersList) do
+						if plr.UserId == userId then found = true break end
+					end
+					if not found then
+						pcall(function() elem:Destroy() end)
+						elementsByUserId[userId] = nil
+					end
+				end
+				-- Add or update existing
+				for _, plr in ipairs(playersList) do
+					if not elementsByUserId[plr.UserId] then
+						local btn = Tab:CreateButton({
+							Name = (plr.DisplayName .. " (" .. plr.Name .. ")"),
+							Ext = true,
+							Callback = function()
+								onSelect(plr)
+							end,
+						})
+						elementsByUserId[plr.UserId] = btn
+					else
+						local btn = elementsByUserId[plr.UserId]
+						if typeof(btn.Set) == "function" then
+							pcall(function()
+								btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
+							end)
+						end
+					end
+				end
+			end
+
+			-- Initial sync
+			sync(QuantiXLibrary:GetPlayersList(includeLocal))
+			-- Subscribe
+			connection = QuantiXLibrary:OnPlayersChanged(function(players)
+				sync(players)
+			end, includeLocal)
+
+			return {
+				Destroy = function()
+					if connection and connection.Disconnect then connection:Disconnect() end
+					for _, elem in pairs(elementsByUserId) do
+						pcall(function() elem:Destroy() end)
+					end
+					elementsByUserId = {}
+				end,
+			}
+		end
+
 		-- Button
 		function Tab:CreateButton(ButtonSettings)
 			local ButtonValue = {}
@@ -2374,6 +2489,14 @@ function QuantiXLibrary:CreateWindow(Settings)
 			function ButtonValue:Set(NewButton)
 				Button.Title.Text = NewButton
 				Button.Name = NewButton
+			end
+
+			-- Provide a Destroy method for UI cleanup by external scripts
+			function ButtonValue:Destroy()
+				pcall(function()
+					Button.Visible = false
+					Button:Destroy()
+				end)
 			end
 
 			return ButtonValue
@@ -2771,6 +2894,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Label.UIStroke.Color = IgnoreTheme and (Color or Label.BackgroundColor3) or SelectedTheme.SecondaryElementStroke
 			end)
 
+			function LabelValue:Destroy()
+				pcall(function()
+					Label.Visible = false
+					Label:Destroy()
+				end)
+			end
+
 			return LabelValue
 		end
 
@@ -2896,6 +3026,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Input.InputFrame.BackgroundColor3 = SelectedTheme.InputBackground
 				Input.InputFrame.UIStroke.Color = SelectedTheme.InputStroke
 			end)
+
+			function InputSettings:Destroy()
+				pcall(function()
+					Input.Visible = false
+					Input:Destroy()
+				end)
+			end
 
 			return InputSettings
 		end
@@ -3215,6 +3352,14 @@ function QuantiXLibrary:CreateWindow(Settings)
 				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
+			-- Allow external refresh by exposing a Destroy method
+			function DropdownSettings:Destroy()
+				pcall(function()
+					Dropdown.Visible = false
+					Dropdown:Destroy()
+				end)
+			end
+
 			return DropdownSettings
 		end
 
@@ -3345,6 +3490,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Keybind.KeybindFrame.BackgroundColor3 = SelectedTheme.InputBackground
 				Keybind.KeybindFrame.UIStroke.Color = SelectedTheme.InputStroke
 			end)
+
+			function KeybindSettings:Destroy()
+				pcall(function()
+					Keybind.Visible = false
+					Keybind:Destroy()
+				end)
+			end
 
 			return KeybindSettings
 		end
@@ -3517,6 +3669,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 			end)
 
+			function ToggleSettings:Destroy()
+				pcall(function()
+					Toggle.Visible = false
+					Toggle:Destroy()
+				end)
+			end
+
 			return ToggleSettings
 		end
 
@@ -3688,6 +3847,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
 				Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
 			end)
+
+			function SliderSettings:Destroy()
+				pcall(function()
+					Slider.Visible = false
+					Slider:Destroy()
+				end)
+			end
 
 			return SliderSettings
 		end
