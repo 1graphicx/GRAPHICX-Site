@@ -875,6 +875,9 @@ local Notifications = QuantiX.Notifications
 
 local SelectedTheme = QuantiXLibrary.Theme.Default
 
+-- Global flag to avoid triggering hotkeys while capturing keybinds in settings
+local isCapturingKeybind = false
+
 -- UI scaling and animation controls
 local UserAccentColor: Color3? = nil
 local animationScale = 1 -- Reduced when performance mode is enabled
@@ -3513,10 +3516,12 @@ function QuantiXLibrary:CreateWindow(Settings)
 
             Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
                 CheckingForKey = true
+                isCapturingKeybind = true
                 Keybind.KeybindFrame.KeybindBox.Text = ""
             end)
-			Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
+            Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
+                isCapturingKeybind = false
 				if Keybind.KeybindFrame.KeybindBox.Text == nil or Keybind.KeybindFrame.KeybindBox.Text == "" then
 					Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 					if not KeybindSettings.Ext then
@@ -3541,6 +3546,8 @@ function QuantiXLibrary:CreateWindow(Settings)
                         Keybind.KeybindFrame.KeybindBox.Text = newName
                         KeybindSettings.CurrentKeybind = newName
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
+                        CheckingForKey = false
+                        isCapturingKeybind = false
 						if not KeybindSettings.Ext then
 							SaveConfiguration()
 						end
@@ -4408,6 +4415,7 @@ end
 
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
+    if isCapturingKeybind then return end
     local quantixKeyName = normalizeKeyName(tostring(getSetting("General", "QuantiXOpen") or "K"))
     local searchKeyName = normalizeKeyName(tostring(getSetting("General", "SearchOpen") or "Slash"))
     local qkc = Enum.KeyCode[quantixKeyName]
