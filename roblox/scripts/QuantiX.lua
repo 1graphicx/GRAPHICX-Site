@@ -3511,10 +3511,10 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 			Keybind.KeybindFrame.Size = UDim2.new(0, Keybind.KeybindFrame.KeybindBox.TextBounds.X + 24, 0, 30)
 
-			Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
-				CheckingForKey = true
-				Keybind.KeybindFrame.KeybindBox.Text = ""
-			end)
+            Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
+                CheckingForKey = true
+                Keybind.KeybindFrame.KeybindBox.Text = ""
+            end)
 			Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
 				if Keybind.KeybindFrame.KeybindBox.Text == nil or Keybind.KeybindFrame.KeybindBox.Text == "" then
@@ -3533,20 +3533,20 @@ function QuantiXLibrary:CreateWindow(Settings)
 				TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
-			UserInputService.InputBegan:Connect(function(input, processed)
+            UserInputService.InputBegan:Connect(function(input, processed)
 				if CheckingForKey then
-					if input.KeyCode ~= Enum.KeyCode.Unknown then
-						local SplitMessage = string.split(tostring(input.KeyCode), ".")
-						local NewKeyNoEnum = SplitMessage[3]
-						Keybind.KeybindFrame.KeybindBox.Text = tostring(NewKeyNoEnum)
-						KeybindSettings.CurrentKeybind = tostring(NewKeyNoEnum)
+                    if input.KeyCode ~= Enum.KeyCode.Unknown and not processed then
+                        -- Learn exact Enum.KeyCode and store its Name
+                        local newName = input.KeyCode.Name
+                        Keybind.KeybindFrame.KeybindBox.Text = newName
+                        KeybindSettings.CurrentKeybind = newName
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
 						if not KeybindSettings.Ext then
 							SaveConfiguration()
 						end
 
 						if KeybindSettings.CallOnChange then
-							KeybindSettings.Callback(tostring(NewKeyNoEnum))
+                            KeybindSettings.Callback(newName)
 						end
 					end
 				elseif not KeybindSettings.CallOnChange and KeybindSettings.CurrentKeybind ~= nil and (input.KeyCode == Enum.KeyCode[KeybindSettings.CurrentKeybind] and not processed) then -- Test
@@ -3898,11 +3898,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				-- Initial
-				applyValue(SliderSettings.CurrentValue, 0)
+                applyValue(SliderSettings.CurrentValue, 0.2)
 
 				-- Input handling
 				local dragging = false
-				local function updateFromMouse(tweenTime)
+                local function updateFromMouse(tweenTime)
 					local mouseX = UserInputService:GetMouseLocation().X
 					local left = track.AbsolutePosition.X
 					local width = math.max(1, track.AbsoluteSize.X)
@@ -3916,9 +3916,9 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				track.Interact.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-						dragging = true
-						updateFromMouse(0.1)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        dragging = true
+                        updateFromMouse(0.15)
 					end
 				end)
 
@@ -3928,8 +3928,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 					end
 				end)
 
-				RunService.RenderStepped:Connect(function()
-					if dragging then updateFromMouse(0) end
+                RunService.RenderStepped:Connect(function()
+                    if dragging then updateFromMouse(0.08) end
 				end)
 
 				-- Theme updates
@@ -4406,6 +4406,7 @@ local function normalizeKeyName(name: string): string
     return map[name] or name
 end
 
+if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
     local quantixKeyName = normalizeKeyName(tostring(getSetting("General", "QuantiXOpen") or "K"))
     local searchKeyName = normalizeKeyName(tostring(getSetting("General", "SearchOpen") or "Slash"))
