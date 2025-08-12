@@ -879,6 +879,50 @@ local SelectedTheme = QuantiXLibrary.Theme.Default
 local UserAccentColor: Color3? = nil
 local animationScale = 1 -- Reduced when performance mode is enabled
 
+-- Refresh accent-applied colors on existing elements immediately
+local function refreshAccentedElements()
+    if not Elements or not Elements:GetChildren() then return end
+    for _, TabPage in ipairs(Elements:GetChildren()) do
+        if TabPage.ClassName == "ScrollingFrame" and TabPage.Name ~= "Template" and TabPage.Name ~= "Placeholder" then
+            for _, Element in ipairs(TabPage:GetChildren()) do
+                if Element.ClassName == "Frame" then
+                    -- Slider detection
+                    local MainFrame = Element:FindFirstChild("Main")
+                    if MainFrame and MainFrame:FindFirstChild("Progress") and MainFrame:FindFirstChild("UIStroke") then
+                        MainFrame.BackgroundColor3 = SelectedTheme.SliderBackground
+                        MainFrame.UIStroke.Color = SelectedTheme.SliderStroke
+                        if MainFrame.Progress:FindFirstChild("UIStroke") then
+                            MainFrame.Progress.UIStroke.Color = SelectedTheme.SliderStroke
+                        end
+                        MainFrame.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
+                    end
+                    -- Toggle detection
+                    local Switch = Element:FindFirstChild("Switch")
+                    if Switch and Switch:FindFirstChild("Indicator") and Switch:FindFirstChild("UIStroke") then
+                        Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
+                        local Indicator = Switch.Indicator
+                        -- Determine on/off by position (right ~ on)
+                        local enabled = (Indicator.Position.X.Offset > -30)
+                        if enabled then
+                            if Indicator:FindFirstChild("UIStroke") then
+                                Indicator.UIStroke.Color = SelectedTheme.ToggleEnabledStroke
+                            end
+                            Indicator.BackgroundColor3 = SelectedTheme.ToggleEnabled
+                            Switch.UIStroke.Color = SelectedTheme.ToggleEnabledOuterStroke
+                        else
+                            if Indicator:FindFirstChild("UIStroke") then
+                                Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
+                            end
+                            Indicator.BackgroundColor3 = SelectedTheme.ToggleDisabled
+                            Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
 -- Create a proxy around TweenService to scale tween durations when in performance mode
 do
     local RealTweenService = TweenService
@@ -983,6 +1027,8 @@ local function ChangeTheme(Theme)
 			end
 		end
 	end
+    -- Ensure accent-applied components (sliders/toggles) update immediately
+    refreshAccentedElements()
 end
 
 -- Global UIScale for the entire window
@@ -1855,6 +1901,8 @@ local function createSettings(window)
                             UserAccentColor = color
                             -- Reapply current theme with accent
                             ChangeTheme(SelectedTheme)
+                            -- Immediate refresh for sliders/toggles to avoid waiting for hover/interaction
+                            refreshAccentedElements()
                         end
                     end,
                 })
