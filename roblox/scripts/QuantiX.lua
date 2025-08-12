@@ -4431,6 +4431,7 @@ end
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
     if isCapturingKeybind then return end
+    local focused = UserInputService:GetFocusedTextBox()
     local function resolveKey(name, fallback)
         if not name or name == "" then return Enum.KeyCode[fallback] end
         local nn = normalizeKeyName(tostring(name))
@@ -4439,7 +4440,8 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
     local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "K")
     local skc = resolveKey(getSetting("General", "SearchOpen"), "Slash")
 
-    if (qkc and input.KeyCode == qkc) and not processed then
+    local canHandle = (not focused) -- don't trigger while typing in any textbox
+    if (qkc and input.KeyCode == qkc) and canHandle then
 		if Debounce then return end
 		if Hidden then
 			Hidden = false
@@ -4448,7 +4450,7 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
 			Hidden = true
 			Hide()
 		end
-    elseif (skc and input.KeyCode == skc) and not processed then
+    elseif (skc and input.KeyCode == skc) and canHandle then
         if Debounce or Minimised or Hidden then return end
         if searchOpen then
             closeSearch()
