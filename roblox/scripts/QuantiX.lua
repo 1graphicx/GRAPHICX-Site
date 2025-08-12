@@ -79,13 +79,21 @@ local settingsTable = {
 	General = {
 		-- if needs be in order just make getSetting(name)
 		QuantiXOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
+        SearchOpen = {Type = 'bind', Value = '/', Name = 'Search Keybind'},
 		-- buildwarnings
 		-- QuantiXprompts
 
 	},
 	System = {
 		usageAnalytics = {Type = 'toggle', Value = true, Name = 'Anonymised Analytics'},
-	}
+    },
+    Interface = {
+        uiScale = {Type = 'slider', Value = 1, Name = 'UI Scale', Range = {0.8, 1.4}, Increment = 0.01, Suffix = 'x'},
+        compactMode = {Type = 'toggle', Value = false, Name = 'Compact Mode'},
+        performanceMode = {Type = 'toggle', Value = false, Name = 'Performance Mode'},
+        theme = {Type = 'dropdown', Value = 'Default', Name = 'Theme', Options = nil, MultipleOptions = false},
+        accentColor = {Type = 'color', Value = Color3.fromRGB(50, 138, 220), Name = 'Accent Color'},
+    }
 }
 
 -- Settings that have been overridden by the developer. These will not be saved to the user's configuration file
@@ -755,12 +763,76 @@ local Notifications = QuantiX.Notifications
 
 local SelectedTheme = QuantiXLibrary.Theme.Default
 
+-- UI scaling and animation controls
+local UserAccentColor: Color3? = nil
+local animationScale = 1 -- Reduced when performance mode is enabled
+
+-- Create a proxy around TweenService to scale tween durations when in performance mode
+do
+    local RealTweenService = TweenService
+    TweenService = setmetatable({}, {
+        __index = function(_, k)
+            return RealTweenService[k]
+        end,
+    })
+    function TweenService:Create(instance: Instance, info: TweenInfo, goal: any)
+        local scaledInfo = TweenInfo.new(
+            math.max(0, info.Time * animationScale),
+            info.EasingStyle,
+            info.EasingDirection,
+            info.RepeatCount,
+            info.Reverses,
+            math.max(0, info.DelayTime * animationScale)
+        )
+        return RealTweenService:Create(instance, scaledInfo, goal)
+    end
+end
+
+-- Helper: Deep copy a theme table so we never mutate the originals
+local function deepCopyTheme(themeTable: table): table
+    local clone = {}
+    for k, v in pairs(themeTable) do
+        if type(v) == "table" then
+            clone[k] = deepCopyTheme(v)
+        else
+            clone[k] = v
+        end
+    end
+    return clone
+end
+
+-- Helper: Apply a single accent color to key accent-driven fields of a theme
+local function applyAccentToTheme(baseTheme: table, accent: Color3): table
+    if not accent then return baseTheme end
+    local t = deepCopyTheme(baseTheme)
+    -- Primary accents
+    t.SliderBackground = accent
+    t.SliderProgress = accent
+    t.SliderStroke = accent
+    t.ToggleEnabled = accent
+    -- Subtle strokes derived from accent (slightly lighter)
+    local function lighten(color: Color3, amount: number)
+        local r = math.clamp(color.R + amount, 0, 1)
+        local g = math.clamp(color.G + amount, 0, 1)
+        local b = math.clamp(color.B + amount, 0, 1)
+        return Color3.new(r, g, b)
+    end
+    t.ToggleEnabledStroke = lighten(accent, 0.15)
+    t.SliderStroke = lighten(accent, 0.1)
+    return t
+end
+
 local function ChangeTheme(Theme)
 	if typeof(Theme) == 'string' then
-		SelectedTheme = QuantiXLibrary.Theme[Theme]
+        SelectedTheme = QuantiXLibrary.Theme[Theme]
 	elseif typeof(Theme) == 'table' then
-		SelectedTheme = Theme
+        SelectedTheme = Theme
 	end
+
+    -- Re-apply user accent override if present
+    if UserAccentColor then
+        SelectedTheme = applyAccentToTheme(SelectedTheme, UserAccentColor)
+    end
 
 	QuantiX.Main.BackgroundColor3 = SelectedTheme.Background
 	QuantiX.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
@@ -799,6 +871,59 @@ local function ChangeTheme(Theme)
 			end
 		end
 	end
+end
+
+-- Global UIScale for the entire window
+local GlobalUIScale = Main:FindFirstChild("GlobalScale")
+if not GlobalUIScale then
+    GlobalUIScale = Instance.new("UIScale")
+    GlobalUIScale.Name = "GlobalScale"
+    GlobalUIScale.Scale = 1
+    GlobalUIScale.Parent = Main
+end
+
+-- Compact and performance modes
+local isCompactMode = false
+local isPerformanceMode = false
+
+local function setCompactMode(enabled: boolean)
+    isCompactMode = enabled and true or false
+    -- Adjust padding and some sizes on all tab pages
+    for _, tab in ipairs(Elements:GetChildren()) do
+        if tab.ClassName == "ScrollingFrame" and tab.Name ~= "Template" and tab.Name ~= "Placeholder" then
+            local layout = tab:FindFirstChildOfClass("UIListLayout")
+            if layout then
+                layout.Padding = UDim.new(0, isCompactMode and 4 or 10)
+            end
+        end
+    end
+    -- Tab list button height compacting
+    for _, tabbtn in ipairs(TabList:GetChildren()) do
+        if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Template" and tabbtn.Name ~= "Placeholder" then
+            tabbtn.Size = UDim2.new(tabbtn.Size.X.Scale, tabbtn.Size.X.Offset, 0, isCompactMode and 26 or 30)
+        end
+    end
+end
+
+local function setPerformanceMode(enabled: boolean)
+    isPerformanceMode = enabled and true or false
+    animationScale = isPerformanceMode and 0.25 or 1
+    -- De-emphasize expensive visuals
+    local function setShadowsVisible(visible: boolean)
+        for _, d in ipairs(QuantiX:GetDescendants()) do
+            if d:IsA("ImageLabel") and d.Name == "Shadow" then
+                d.ImageTransparency = visible and 0.6 or 1
+                d.Visible = visible
+            end
+        end
+    end
+    setShadowsVisible(not isPerformanceMode)
+    -- Slightly reduce background transparency to cut overdraw in performance mode
+    if isPerformanceMode then
+        Main.BackgroundTransparency = 0.05
+    else
+        Main.BackgroundTransparency = 0
+    end
 end
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
@@ -1527,11 +1652,11 @@ local function createSettings(window)
 	end
 
 	-- Create sections and elements
-	for categoryName, settingCategory in pairs(settingsTable) do
+    for categoryName, settingCategory in pairs(settingsTable) do
 		newTab:CreateSection(categoryName)
 
 		for settingName, setting in pairs(settingCategory) do
-			if setting.Type == 'input' then
+            if setting.Type == 'input' then
 				setting.Element = newTab:CreateInput({
 					Name = setting.Name,
 					CurrentValue = setting.Value,
@@ -1549,6 +1674,12 @@ local function createSettings(window)
 					Ext = true,
 					Callback = function(Value)
 						updateSetting(categoryName, settingName, Value)
+                        -- Apply side-effects for Interface toggles
+                        if categoryName == 'Interface' and settingName == 'compactMode' then
+                            setCompactMode(Value)
+                        elseif categoryName == 'Interface' and settingName == 'performanceMode' then
+                            setPerformanceMode(Value)
+                        end
 					end,
 				})
 			elseif setting.Type == 'bind' then
@@ -1562,13 +1693,87 @@ local function createSettings(window)
 						updateSetting(categoryName, settingName, Value)
 					end,
 				})
+            elseif setting.Type == 'slider' then
+                setting.Element = newTab:CreateSlider({
+                    Name = setting.Name,
+                    Range = setting.Range or {0.5, 1.5},
+                    Increment = setting.Increment or 0.01,
+                    Suffix = setting.Suffix or 'x',
+                    CurrentValue = setting.Value or 1,
+                    Ext = true,
+                    Callback = function(Value)
+                        updateSetting(categoryName, settingName, Value)
+                        if categoryName == 'Interface' and settingName == 'uiScale' then
+                            GlobalUIScale.Scale = tonumber(Value) or 1
+                        end
+                    end,
+                })
+            elseif setting.Type == 'dropdown' then
+                -- Prepare default theme options if none provided
+                if settingName == 'theme' and not setting.Options then
+                    local thoptions = {}
+                    for themename, _ in pairs(QuantiXLibrary.Theme) do
+                        table.insert(thoptions, themename)
+                    end
+                    table.sort(thoptions)
+                    setting.Options = thoptions
+                end
+                setting.Element = newTab:CreateDropdown({
+                    Name = setting.Name,
+                    Options = setting.Options or {},
+                    CurrentOption = {setting.Value},
+                    MultipleOptions = setting.MultipleOptions or false,
+                    Ext = true,
+                    Callback = function(Options)
+                        local chosen = Options and Options[1]
+                        updateSetting(categoryName, settingName, chosen)
+                        if categoryName == 'Interface' and settingName == 'theme' then
+                            window.ModifyTheme(chosen)
+                        end
+                    end,
+                })
+            elseif setting.Type == 'color' then
+                setting.Element = newTab:CreateColorPicker({
+                    Name = setting.Name,
+                    Color = setting.Value or Color3.fromRGB(50,138,220),
+                    Ext = true,
+                    Callback = function(color: Color3)
+                        updateSetting(categoryName, settingName, color)
+                        if categoryName == 'Interface' and settingName == 'accentColor' then
+                            UserAccentColor = color
+                            -- Reapply current theme with accent
+                            ChangeTheme(SelectedTheme)
+                        end
+                    end,
+                })
 			end
 		end
 	end
 
 	settingsCreated = true
-	loadSettings()
-	saveSettings()
+    loadSettings()
+    -- Re-apply side-effects after settings load (so program state matches UI values)
+    pcall(function()
+        if settingsTable.Interface then
+            if settingsTable.Interface.uiScale and settingsTable.Interface.uiScale.Value then
+                GlobalUIScale.Scale = tonumber(settingsTable.Interface.uiScale.Value) or 1
+            end
+            if settingsTable.Interface.compactMode then
+                setCompactMode(settingsTable.Interface.compactMode.Value and true or false)
+            end
+            if settingsTable.Interface.performanceMode then
+                setPerformanceMode(settingsTable.Interface.performanceMode.Value and true or false)
+            end
+            if settingsTable.Interface.accentColor and settingsTable.Interface.accentColor.Value then
+                UserAccentColor = settingsTable.Interface.accentColor.Value
+                ChangeTheme(SelectedTheme)
+            end
+            if settingsTable.Interface.theme and settingsTable.Interface.theme.Value then
+                window.ModifyTheme(settingsTable.Interface.theme.Value)
+            end
+        end
+    end)
+    saveSettings()
 end
 
 
@@ -3689,7 +3894,7 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 end)
 
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
-	if (input.KeyCode == Enum.KeyCode[getSetting("General", "QuantiXOpen")]) and not processed then
+    if (input.KeyCode == Enum.KeyCode[getSetting("General", "QuantiXOpen")]) and not processed then
 		if Debounce then return end
 		if Hidden then
 			Hidden = false
@@ -3698,6 +3903,13 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
 			Hidden = true
 			Hide()
 		end
+    elseif (input.KeyCode == Enum.KeyCode[getSetting("General", "SearchOpen")]) and not processed then
+        if Debounce or Minimised or Hidden then return end
+        if searchOpen then
+            closeSearch()
+        else
+            openSearch()
+        end
 	end
 end)
 
@@ -4002,5 +4214,4 @@ task.delay(4, function()
 end)
 
 return QuantiXLibrary
-
 
