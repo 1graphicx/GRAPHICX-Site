@@ -3821,16 +3821,29 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Shadow.Visible = false
 			end
 
+			-- Ensure progress renders inside the track
+			Slider.Main.ClipsDescendants = true
 			Slider.Main.BackgroundColor3 = SelectedTheme.SliderBackground
 			Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
-			Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
+			Slider.Main.Progress.AnchorPoint = Vector2.new(0, 0)
+			Slider.Main.Progress.Position = UDim2.new(0, 0, 0, 0)
 			Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
+			Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
+			-- Layering: progress under info and stroke
+			pcall(function()
+				local baseZ = Slider.Main.ZIndex or 1
+				Slider.Main.Progress.ZIndex = baseZ
+				Slider.Main.Information.ZIndex = baseZ + 1
+				Slider.Main.UIStroke.ZIndex = baseZ + 2
+			end)
 
 			TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
-			Slider.Main.Progress.Size =	UDim2.new(0, Slider.Main.AbsoluteSize.X * ((SliderSettings.CurrentValue + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (SliderSettings.CurrentValue / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)
+			-- Initialize progress size inside the bounds (min width 5px)
+			local initialPixels = math.max(5, (Slider.Main.AbsoluteSize.X * (SliderSettings.CurrentValue - SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])))
+			Slider.Main.Progress.Size = UDim2.new(0, initialPixels, 1, 0)
 
 			if not SliderSettings.Suffix then
 				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue)
@@ -3888,11 +3901,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 						elseif Current >= Location and (Location - Start) > 0 then
 							Start = Location
 						end
-						TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Current - Slider.Main.AbsolutePosition.X, 1, 0)}):Play()
+							-- Keep progress clamped inside the track and at least 5px
+							local newWidth = math.max(5, Current - Slider.Main.AbsolutePosition.X)
+							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, newWidth, 1, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
-						NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
+							NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
 
 						if not SliderSettings.Suffix then
 							Slider.Main.Information.Text = tostring(NewValue)
@@ -3922,7 +3937,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 							end
 						end
 					else
-						TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Location - Slider.Main.AbsolutePosition.X > 5 and Location - Slider.Main.AbsolutePosition.X or 5, 1, 0)}):Play()
+							local width = math.max(5, Location - Slider.Main.AbsolutePosition.X)
+							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, width, 1, 0)}):Play()
 						Loop:Disconnect()
 					end
 				end)
@@ -3931,7 +3947,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 			function SliderSettings:Set(NewVal)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
 
-				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Slider.Main.AbsoluteSize.X * ((NewVal + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (NewVal / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)}):Play()
+				local px = math.max(5, Slider.Main.AbsoluteSize.X * ((NewVal - SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])))
+				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, px, 1, 0)}):Play()
 				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
 
 				local Success, Response = pcall(function()
