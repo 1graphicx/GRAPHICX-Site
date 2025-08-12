@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 
 	QuantiX Interface Suite
 	by Sirius
@@ -117,8 +117,10 @@ local useStudio = RunService:IsStudio() or false
 local settingsCreated = false
 local settingsInitialized = false -- Whether the UI elements in the settings page have been set to the proper values
 local cachedSettings
-local prompt = useStudio and require(script.Parent.prompt) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/prompt.lua')
-local requestFunc = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
+-- Avoid remote loading; provide local no-op prompt fallback
+local prompt = useStudio and require(script.Parent.prompt) or { create = function() end }
+-- Disable external request functions to prevent any outbound calls
+local requestFunc = nil
 
 -- Validate prompt loaded correctly
 if not prompt and not useStudio then
@@ -201,7 +203,8 @@ end
 
 local analyticsLib
 local sendReport = function(ev_n, sc_n) warn("Failed to load report function") end
-if not requestsDisabled then
+-- Disable remote analytics loading regardless of settings
+if false and not requestsDisabled then
 	if debugX then
 		warn('Querying Settings for Reporter Information')
 	end	
@@ -236,11 +239,7 @@ if not requestsDisabled then
 			if debugX then warn('Finished Report') end
 		end
 	end
-	if cachedSettings and (#cachedSettings == 0 or (cachedSettings.System and cachedSettings.System.usageAnalytics and cachedSettings.System.usageAnalytics.Value)) then
-		sendReport("execution", "QuantiX")
-	elseif not cachedSettings then
-		sendReport("execution", "QuantiX")
-	end
+    -- analytics disabled
 end
 
 local promptUser = math.random(1,6)
@@ -742,7 +741,8 @@ QuantiX.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
 
 -- Thanks to Latte Softworks for the Lucide integration for Roblox
-local Icons = useStudio and require(script.Parent.icons) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/QuantiX/refs/heads/main/icons.lua')
+-- Avoid remote icon loading; will fall back to default icon in getIcon
+local Icons = useStudio and require(script.Parent.icons) or nil
 -- Variables
 
 local CFileName = nil
@@ -802,34 +802,44 @@ local function ChangeTheme(Theme)
 end
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
-	if not Icons then
-		warn("Lucide Icons: Cannot use icons as icons library is not loaded")
-		return
-	end
-	name = string.match(string.lower(name), "^%s*(.*)%s*$") :: string
-	local sizedicons = Icons['48px']
-	local r = sizedicons[name]
-	if not r then
-		error(`Lucide Icons: Failed to find icon by the name of "{name}"`, 2)
-	end
+    name = string.match(string.lower(name), "^%s*(.*)%s*$") :: string
+    -- Fallback to a default, non-remote icon when icon library is unavailable or icon is missing
+    if not Icons then
+        return {
+            id = 0,
+            imageRectSize = Vector2.new(0, 0),
+            imageRectOffset = Vector2.new(0, 0),
+        }
+    end
+    local sizedicons = Icons['48px']
+    local r = sizedicons and sizedicons[name]
+    if not r then
+        return {
+            id = 0,
+            imageRectSize = Vector2.new(0, 0),
+            imageRectOffset = Vector2.new(0, 0),
+        }
+    end
 
-	local rirs = r[2]
-	local riro = r[3]
+    local rirs = r[2]
+    local riro = r[3]
 
-	if type(r[1]) ~= "number" or type(rirs) ~= "table" or type(riro) ~= "table" then
-		error("Lucide Icons: Internal error: Invalid auto-generated asset entry")
-	end
+    if type(r[1]) ~= "number" or type(rirs) ~= "table" or type(riro) ~= "table" then
+        return {
+            id = 0,
+            imageRectSize = Vector2.new(0, 0),
+            imageRectOffset = Vector2.new(0, 0),
+        }
+    end
 
-	local irs = Vector2.new(rirs[1], rirs[2])
-	local iro = Vector2.new(riro[1], riro[2])
+    local irs = Vector2.new(rirs[1], rirs[2])
+    local iro = Vector2.new(riro[1], riro[2])
 
-	local asset = {
-		id = r[1],
-		imageRectSize = irs,
-		imageRectOffset = iro,
-	}
-
-	return asset
+    return {
+        id = r[1],
+        imageRectSize = irs,
+        imageRectOffset = iro,
+    }
 end
 -- Converts ID to asset URI. Returns rbxassetid://0 if ID is not a number
 local function getAssetUri(id: any): string
@@ -3979,5 +3989,21 @@ if CEnabled and Main:FindFirstChild('Notice') then
 	TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 280, 0, 35), Position = UDim2.new(0.5, 0, 0, -50), BackgroundTransparency = 0.5}):Play()
 	TweenService:Create(Main.Notice.Title, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.1}):Play()
 end
+-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA why :(
+--if not useStudio then
+--	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
+--end
+
+task.delay(4, function()
+	QuantiXLibrary.LoadConfiguration()
+	if Main:FindFirstChild('Notice') and Main.Notice.Visible then
+		TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 100, 0, 25), Position = UDim2.new(0.5, 0, 0, -100), BackgroundTransparency = 1}):Play()
+		TweenService:Create(Main.Notice.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+
+		task.wait(0.5)
+		Main.Notice.Visible = false
+	end
+end)
 
 return QuantiXLibrary
+
