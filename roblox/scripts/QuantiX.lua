@@ -3813,6 +3813,147 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Slider.Visible = true
 			Slider.Parent = TabPage
 
+			-- CLEAN SLIDER IMPLEMENTATION (overrides older logic below)
+			do
+				-- Visual init
+				Slider.BackgroundTransparency = 1
+				Slider.UIStroke.Transparency = 1
+				Slider.Title.TextTransparency = 1
+				TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+				TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+
+				local track = Slider.Main
+				track.ClipsDescendants = true
+				track.BackgroundColor3 = SelectedTheme.SliderBackground
+				track.UIStroke.Color = SelectedTheme.SliderStroke
+				local trackCorner = track:FindFirstChildOfClass("UICorner")
+				if not trackCorner then
+					trackCorner = Instance.new("UICorner")
+					trackCorner.CornerRadius = UDim.new(0, 6)
+					trackCorner.Parent = track
+				end
+
+				local fill = track:FindFirstChild("Progress") or Instance.new("Frame")
+				fill.Name = "Progress"
+				fill.Parent = track
+				fill.BorderSizePixel = 0
+				fill.BackgroundColor3 = SelectedTheme.SliderProgress
+				fill.AnchorPoint = Vector2.new(0, 0)
+				fill.Position = UDim2.new(0, 0, 0, 0)
+				fill.Size = UDim2.new(0, 0, 1, 0)
+				local fillCorner = fill:FindFirstChildOfClass("UICorner")
+				if not fillCorner then
+					fillCorner = Instance.new("UICorner")
+					fillCorner.Parent = fill
+				end
+				fillCorner.CornerRadius = trackCorner.CornerRadius
+				local s = fill:FindFirstChildOfClass("UIStroke")
+				if s then s.Transparency = 1 end
+
+				-- Thumb (handle)
+				local thumb = track:FindFirstChild("Thumb")
+				if not thumb then
+					thumb = Instance.new("Frame")
+					thumb.Name = "Thumb"
+					thumb.Parent = track
+					thumb.Size = UDim2.new(0, 12, 0, 12)
+					thumb.AnchorPoint = Vector2.new(0.5, 0.5)
+					thumb.BackgroundColor3 = SelectedTheme.SliderStroke
+					local c = Instance.new("UICorner")
+					c.CornerRadius = UDim.new(1, 0)
+					c.Parent = thumb
+					thumb.ZIndex = (track.ZIndex or 1) + 2
+				end
+
+				local minVal, maxVal = SliderSettings.Range[1], SliderSettings.Range[2]
+				local function valueToRatio(v)
+					if maxVal == minVal then return 0 end
+					return math.clamp((v - minVal) / (maxVal - minVal), 0, 1)
+				end
+				local function ratioToValue(r)
+					return minVal + r * (maxVal - minVal)
+				end
+
+				local function setVisualsFromRatio(r, tweenTime)
+					local ratio = math.clamp(r, 0, 1)
+					local targetFill = UDim2.new(ratio, 0, 1, 0)
+					if tweenTime and tweenTime > 0 then
+						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+					else
+						fill.Size = targetFill
+					end
+					thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
+				end
+
+				local function applyValue(v, tweenTime)
+					SliderSettings.CurrentValue = v
+					local r = valueToRatio(v)
+					setVisualsFromRatio(r, tweenTime)
+					Slider.Main.Information.Text = tostring(v) .. (SliderSettings.Suffix and (" "..SliderSettings.Suffix) or "")
+					if not SliderSettings.Ext then SaveConfiguration() end
+					pcall(function() SliderSettings.Callback(v) end)
+				end
+
+				-- Initial
+				applyValue(SliderSettings.CurrentValue, 0)
+
+				-- Input handling
+				local dragging = false
+				local function updateFromMouse(tweenTime)
+					local mouseX = UserInputService:GetMouseLocation().X
+					local left = track.AbsolutePosition.X
+					local width = math.max(1, track.AbsoluteSize.X)
+					local ratio = math.clamp((mouseX - left) / width, 0, 1)
+					-- quantize to increment
+					local rawVal = ratioToValue(ratio)
+					local inc = SliderSettings.Increment or 1
+					local q = math.floor((rawVal - minVal) / inc + 0.5) * inc + minVal
+					q = math.clamp(q, minVal, maxVal)
+					applyValue(q, tweenTime)
+				end
+
+				track.Interact.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						dragging = true
+						updateFromMouse(0.1)
+					end
+				end)
+
+				track.Interact.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						dragging = false
+					end
+				end)
+
+				RunService.RenderStepped:Connect(function()
+					if dragging then updateFromMouse(0) end
+				end)
+
+				-- Theme updates
+				QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+					track.BackgroundColor3 = SelectedTheme.SliderBackground
+					track.UIStroke.Color = SelectedTheme.SliderStroke
+					fill.BackgroundColor3 = SelectedTheme.SliderProgress
+					thumb.BackgroundColor3 = SelectedTheme.SliderStroke
+				end)
+
+				-- API
+				function SliderSettings:Set(NewVal)
+					applyValue(NewVal, 0.2)
+				end
+
+				-- Hover visuals
+				Slider.MouseEnter:Connect(function()
+					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				end)
+				Slider.MouseLeave:Connect(function()
+					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				end)
+
+				return SliderSettings
+			end
+
 			Slider.BackgroundTransparency = 1
 			Slider.UIStroke.Transparency = 1
 			Slider.Title.TextTransparency = 1
