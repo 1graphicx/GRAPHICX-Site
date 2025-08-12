@@ -1,5 +1,10 @@
 -- Charger la bibliothèque Rayfield
 local Rayfield = loadstring(game:HttpGet('https://graphicx.store/roblox/scripts/QuantiX.lua'))()
+pcall(function()
+    if Rayfield and Rayfield.Notify then
+        Rayfield:Notify({Title = "Info", Content = "Pour changer un keybind: clique dans la box puis presse 1 touche.", Duration = 5})
+    end
+end)
 
 -- Créer la fenêtre principale de Rayfield
 local Window = Rayfield:CreateWindow({
