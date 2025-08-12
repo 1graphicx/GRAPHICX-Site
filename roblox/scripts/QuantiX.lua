@@ -672,6 +672,42 @@ local QuantiXDestroyed = false -- True when QuantiXLibrary:Destroy() is called
 local playerChangeCallbacks: { [number]: { cb: (players: {Player}) -> (), includeLocal: boolean? } } = {}
 local nextPlayerCbId = 1
 
+-- Global player list sorting
+local function defaultPlayersSort(a: Player, b: Player): boolean
+    return string.lower(a.DisplayName) < string.lower(b.DisplayName)
+end
+
+QuantiXLibrary.Sorters = {
+    Default = defaultPlayersSort,
+    FriendsFirst = function(a: Player, b: Player)
+        local lp = Players.LocalPlayer
+        local af = lp and lp:IsFriendsWith(a.UserId) or false
+        local bf = lp and lp:IsFriendsWith(b.UserId) or false
+        if af ~= bf then
+            return af and not bf
+        end
+        return string.lower(a.DisplayName) < string.lower(b.DisplayName)
+    end
+}
+
+QuantiXLibrary.PlayersSortFunc = defaultPlayersSort
+
+function QuantiXLibrary:SetPlayersSort(sortFunc: ((a: Player, b: Player) -> boolean)?)
+    if sortFunc and type(sortFunc) == "function" then
+        QuantiXLibrary.PlayersSortFunc = sortFunc
+    else
+        QuantiXLibrary.PlayersSortFunc = defaultPlayersSort
+    end
+    -- Force a re-sync for all subscribers
+    task.defer(function()
+        if not QuantiXDestroyed then
+            for _, _ in pairs(playerChangeCallbacks) do end -- touch table
+            -- Emit will rebuild order for listeners
+            emitPlayersChanged()
+        end
+    end)
+end
+
 function QuantiXLibrary:GetPlayersList(includeLocal: boolean?): { Player }
     local list = {}
     for _, plr in ipairs(Players:GetPlayers()) do
@@ -679,9 +715,8 @@ function QuantiXLibrary:GetPlayersList(includeLocal: boolean?): { Player }
             table.insert(list, plr)
         end
     end
-    table.sort(list, function(a, b)
-        return string.lower(a.DisplayName) < string.lower(b.DisplayName)
-    end)
+    local comparator = QuantiXLibrary.PlayersSortFunc or defaultPlayersSort
+    table.sort(list, comparator)
     return list
 end
 
@@ -719,6 +754,41 @@ end)
 Players.PlayerRemoving:Connect(function()
     emitPlayersChanged()
 end)
+
+function QuantiXLibrary:ResyncPlayers()
+    emitPlayersChanged()
+end
+
+-- Generic helpers to use friends-first ordering anywhere
+function QuantiXLibrary:FriendsFirstComparator()
+    return QuantiXLibrary.Sorters.FriendsFirst
+end
+
+function QuantiXLibrary:SortPlayersFriendsFirst(players: { Player }): { Player }
+    local copy = {}
+    for i = 1, #players do copy[i] = players[i] end
+    table.sort(copy, QuantiXLibrary.Sorters.FriendsFirst)
+    return copy
+end
+
+function QuantiXLibrary:GetPlayersListFriendsFirst(includeLocal: boolean?): { Player }
+    local list = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if includeLocal or plr ~= Players.LocalPlayer then
+            table.insert(list, plr)
+        end
+    end
+    table.sort(list, QuantiXLibrary.Sorters.FriendsFirst)
+    return list
+end
+
+function QuantiXLibrary:UseFriendsFirstOrder(enable: boolean)
+    if enable then
+        QuantiXLibrary:SetPlayersSort(QuantiXLibrary.Sorters.FriendsFirst)
+    else
+        QuantiXLibrary:SetPlayersSort(nil) -- reset to default
+    end
+end
 
 repeat
 	if QuantiX:FindFirstChild('Build') and QuantiX.Build.Value == InterfaceBuild then
@@ -2386,7 +2456,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					end
 				end
 				-- Add or update existing
-				for _, plr in ipairs(playersList) do
+				for index, plr in ipairs(playersList) do
 					if not elementsByUserId[plr.UserId] then
 						local btn = Tab:CreateButton({
 							Name = (plr.DisplayName .. " (" .. plr.Name .. ")"),
@@ -2403,6 +2473,15 @@ function QuantiXLibrary:CreateWindow(Settings)
 								btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
 							end)
 						end
+					end
+					-- Try to keep order consistent with playersList by setting LayoutOrder
+					local uiObject = nil
+					pcall(function()
+						-- ButtonValue returned doesn't expose the frame directly; try to infer from last created child
+						uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
+					end)
+					if uiObject and uiObject.ClassName == "Frame" then
+						uiObject.LayoutOrder = index
 					end
 				end
 			end
