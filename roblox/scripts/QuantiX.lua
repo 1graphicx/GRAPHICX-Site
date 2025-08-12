@@ -2514,6 +2514,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Button.Visible = true
 			Button.Parent = TabPage
 
+			-- Optional right-side indicator text (e.g., "Téléporter", "Jouer l'emote")
+			if Button:FindFirstChild("ElementIndicator") and ButtonSettings.IndicatorText then
+				Button.ElementIndicator.Text = tostring(ButtonSettings.IndicatorText)
+			end
+
 			Button.BackgroundTransparency = 1
 			Button.UIStroke.Transparency = 1
 			Button.Title.TextTransparency = 1
@@ -2568,6 +2573,12 @@ function QuantiXLibrary:CreateWindow(Settings)
 			function ButtonValue:Set(NewButton)
 				Button.Title.Text = NewButton
 				Button.Name = NewButton
+			end
+
+			function ButtonValue:SetIndicator(text)
+				if Button:FindFirstChild("ElementIndicator") then
+					Button.ElementIndicator.Text = tostring(text)
+				end
 			end
 
 			-- Provide a Destroy method for UI cleanup by external scripts
@@ -3154,7 +3165,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					Dropdown.Selected.Text = "None"
 				end
 			else
-				Dropdown.Selected.Text = DropdownSettings.CurrentOption[1] or "None"
+			Dropdown.Selected.Text = DropdownSettings.CurrentOption[1] or (DropdownSettings.Placeholder or "None")
 			end
 
 			Dropdown.Toggle.ImageColor3 = SelectedTheme.TextColor
@@ -3263,7 +3274,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 								if #DropdownSettings.CurrentOption == 1 then
 									Dropdown.Selected.Text = DropdownSettings.CurrentOption[1]
 								elseif #DropdownSettings.CurrentOption == 0 then
-									Dropdown.Selected.Text = "None"
+				Dropdown.Selected.Text = DropdownSettings.Placeholder or "None"
 								else
 									Dropdown.Selected.Text = "Various"
 								end
@@ -3279,7 +3290,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 								if #DropdownSettings.CurrentOption == 1 then
 									Dropdown.Selected.Text = DropdownSettings.CurrentOption[1]
 								elseif #DropdownSettings.CurrentOption == 0 then
-									Dropdown.Selected.Text = "None"
+					Dropdown.Selected.Text = DropdownSettings.Placeholder or "None"
 								else
 									Dropdown.Selected.Text = "Various"
 								end
