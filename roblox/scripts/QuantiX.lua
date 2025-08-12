@@ -1,4 +1,4 @@
---[[
+﻿--[[
 
 	QuantiX Interface Suite
 	by Sirius
@@ -69,18 +69,18 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 	return if success then result else nil
 end
 
-local requestsDisabled = true --getgenv and getgenv().DISABLE_RAYFIELD_REQUESTS
+local requestsDisabled = true --getgenv and getgenv().DISABLE_QuantiX_REQUESTS
 local InterfaceBuild = '3K3W'
 local Release = "Build 1.68"
-local RayfieldFolder = "QuantiX"
-local ConfigurationFolder = RayfieldFolder.."/Configurations"
-local ConfigurationExtension = ".qntx"
+local QuantiXFolder = "QuantiX"
+local ConfigurationFolder = QuantiXFolder.."/Configurations"
+local ConfigurationExtension = ".rfld"
 local settingsTable = {
 	General = {
 		-- if needs be in order just make getSetting(name)
-		rayfieldOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
+		QuantiXOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
 		-- buildwarnings
-		-- rayfieldprompts
+		-- QuantiXprompts
 
 	},
 	System = {
@@ -90,7 +90,7 @@ local settingsTable = {
 
 -- Settings that have been overridden by the developer. These will not be saved to the user's configuration file
 -- Overridden settings always take precedence over settings in the configuration file, and are cleared if the user changes the setting in the UI
-local overriddenSettings: { [string]: any } = {} -- For example, overriddenSettings["System.rayfieldOpen"] = "J"
+local overriddenSettings: { [string]: any } = {} -- For example, overriddenSettings["System.QuantiXOpen"] = "J"
 local function overrideSetting(category: string, name: string, value: any)
 	overriddenSettings[`{category}.{name}`] = value
 end
@@ -135,16 +135,16 @@ local function loadSettings()
 
 	local success, result =	pcall(function()
 		task.spawn(function()
-			if isfolder and isfolder(RayfieldFolder) then
-				if isfile and isfile(RayfieldFolder..'/settings'..ConfigurationExtension) then
-					file = readfile(RayfieldFolder..'/settings'..ConfigurationExtension)
+			if isfolder and isfolder(QuantiXFolder) then
+				if isfile and isfile(QuantiXFolder..'/settings'..ConfigurationExtension) then
+					file = readfile(QuantiXFolder..'/settings'..ConfigurationExtension)
 				end
 			end
 
 			-- for debug in studio
 			if useStudio then
-                file = [[
-		{"General":{"rayfieldOpen":{"Value":"K","Type":"bind","Name":"QuantiX Keybind","Element":{"HoldToInteract":false,"Ext":true,"Name":"QuantiX Keybind","Set":null,"CallOnChange":true,"Callback":null,"CurrentKeybind":"K"}}},"System":{"usageAnalytics":{"Value":false,"Type":"toggle","Name":"Anonymised Analytics","Element":{"Ext":true,"Name":"Anonymised Analytics","Set":null,"CurrentValue":false,"Callback":null}}}}
+				file = [[
+		{"General":{"QuantiXOpen":{"Value":"K","Type":"bind","Name":"QuantiX Keybind","Element":{"HoldToInteract":false,"Ext":true,"Name":"QuantiX Keybind","Set":null,"CallOnChange":true,"Callback":null,"CurrentKeybind":"K"}}},"System":{"usageAnalytics":{"Value":false,"Type":"toggle","Name":"Anonymised Analytics","Element":{"Ext":true,"Name":"Anonymised Analytics","Set":null,"CurrentValue":false,"Callback":null}}}}
 	]]
 			end
 
@@ -184,7 +184,7 @@ local function loadSettings()
 
 	if not success then 
 		if writefile then
-			warn('Rayfield had an issue accessing configuration saving capability.')
+			warn('QuantiX had an issue accessing configuration saving capability.')
 		end
 	end
 end
@@ -263,7 +263,7 @@ if debugX then
 	warn('Moving on to continue initialisation')
 end
 
-local RayfieldLibrary = {
+local QuantiXLibrary = {
 	Flags = {},
 	Theme = {
 		Default = {
@@ -307,74 +307,6 @@ local RayfieldLibrary = {
 			InputStroke = Color3.fromRGB(65, 65, 65),
 			PlaceholderColor = Color3.fromRGB(178, 178, 178)
 		},
-
-		Neon = {
-			TextColor = Color3.fromRGB(230, 255, 255),
-			Background = Color3.fromRGB(10, 10, 18),
-			Topbar = Color3.fromRGB(14, 14, 25),
-			Shadow = Color3.fromRGB(5, 5, 10),
-			NotificationBackground = Color3.fromRGB(15, 15, 26),
-			NotificationActionsBackground = Color3.fromRGB(220, 255, 255),
-			TabBackground = Color3.fromRGB(25, 25, 50),
-			TabStroke = Color3.fromRGB(30, 30, 60),
-			TabBackgroundSelected = Color3.fromRGB(110, 120, 200),
-			TabTextColor = Color3.fromRGB(200, 220, 255),
-			SelectedTabTextColor = Color3.fromRGB(20, 20, 40),
-			ElementBackground = Color3.fromRGB(20, 20, 35),
-			ElementBackgroundHover = Color3.fromRGB(25, 25, 45),
-			SecondaryElementBackground = Color3.fromRGB(15, 15, 30),
-			ElementStroke = Color3.fromRGB(35, 35, 65),
-			SecondaryElementStroke = Color3.fromRGB(30, 30, 55),
-			SliderBackground = Color3.fromRGB(120, 90, 255),
-			SliderProgress = Color3.fromRGB(140, 110, 255),
-			SliderStroke = Color3.fromRGB(160, 130, 255),
-			ToggleBackground = Color3.fromRGB(25, 25, 35),
-			ToggleEnabled = Color3.fromRGB(0, 190, 255),
-			ToggleDisabled = Color3.fromRGB(90, 100, 120),
-			ToggleEnabledStroke = Color3.fromRGB(0, 210, 255),
-			ToggleDisabledStroke = Color3.fromRGB(110, 120, 140),
-			ToggleEnabledOuterStroke = Color3.fromRGB(80, 120, 200),
-			ToggleDisabledOuterStroke = Color3.fromRGB(70, 80, 110),
-			DropdownSelected = Color3.fromRGB(25, 25, 45),
-			DropdownUnselected = Color3.fromRGB(20, 20, 35),
-			InputBackground = Color3.fromRGB(20, 20, 35),
-			InputStroke = Color3.fromRGB(60, 60, 100),
-			PlaceholderColor = Color3.fromRGB(170, 185, 210)
-		},
-
-		Crimson = {
-			TextColor = Color3.fromRGB(245, 235, 235),
-			Background = Color3.fromRGB(28, 16, 18),
-			Topbar = Color3.fromRGB(35, 20, 24),
-			Shadow = Color3.fromRGB(18, 10, 12),
-			NotificationBackground = Color3.fromRGB(34, 18, 22),
-			NotificationActionsBackground = Color3.fromRGB(240, 220, 220),
-			TabBackground = Color3.fromRGB(60, 34, 40),
-			TabStroke = Color3.fromRGB(80, 45, 50),
-			TabBackgroundSelected = Color3.fromRGB(180, 80, 90),
-			TabTextColor = Color3.fromRGB(245, 225, 225),
-			SelectedTabTextColor = Color3.fromRGB(40, 20, 24),
-			ElementBackground = Color3.fromRGB(48, 26, 32),
-			ElementBackgroundHover = Color3.fromRGB(56, 30, 36),
-			SecondaryElementBackground = Color3.fromRGB(42, 22, 28),
-			ElementStroke = Color3.fromRGB(85, 45, 50),
-			SecondaryElementStroke = Color3.fromRGB(70, 40, 46),
-			SliderBackground = Color3.fromRGB(200, 80, 90),
-			SliderProgress = Color3.fromRGB(220, 100, 110),
-			SliderStroke = Color3.fromRGB(230, 120, 130),
-			ToggleBackground = Color3.fromRGB(45, 24, 28),
-			ToggleEnabled = Color3.fromRGB(220, 80, 90),
-			ToggleDisabled = Color3.fromRGB(120, 90, 100),
-			ToggleEnabledStroke = Color3.fromRGB(240, 100, 110),
-			ToggleDisabledStroke = Color3.fromRGB(140, 110, 120),
-			ToggleEnabledOuterStroke = Color3.fromRGB(150, 70, 80),
-			ToggleDisabledOuterStroke = Color3.fromRGB(90, 70, 80),
-			DropdownSelected = Color3.fromRGB(58, 30, 36),
-			DropdownUnselected = Color3.fromRGB(48, 26, 32),
-			InputBackground = Color3.fromRGB(48, 26, 32),
-			InputStroke = Color3.fromRGB(100, 60, 70),
-			PlaceholderColor = Color3.fromRGB(200, 170, 175)
-		}
 
 		Ocean = {
 			TextColor = Color3.fromRGB(230, 240, 240),
@@ -722,62 +654,58 @@ local CoreGui = getService("CoreGui")
 
 -- Interface Management
 
-local Rayfield = useStudio and script.Parent:FindFirstChild('QuantiX') or game:GetObjects("rbxassetid://10804731440")[1]
+local QuantiX = useStudio and script.Parent:FindFirstChild('QuantiX') or game:GetObjects("rbxassetid://10804731440")[1]
 local buildAttempts = 0
 local correctBuild = false
 local warned
 local globalLoaded
-local rayfieldDestroyed = false -- True when RayfieldLibrary:Destroy() is called
+local QuantiXDestroyed = false -- True when QuantiXLibrary:Destroy() is called
 
 repeat
-	if Rayfield:FindFirstChild('Build') and Rayfield.Build.Value == InterfaceBuild then
+	if QuantiX:FindFirstChild('Build') and QuantiX.Build.Value == InterfaceBuild then
 		correctBuild = true
 		break
 	end
 
 	correctBuild = false
 
-    if not warned then
-        warn('QuantiX | Build Mismatch')
-        print('QuantiX may encounter issues as you are running an incompatible interface version ('.. ((Rayfield:FindFirstChild('Build') and Rayfield.Build.Value) or 'No Build') ..').\n\nThis version of QuantiX is intended for interface build '..InterfaceBuild..'.')
+	if not warned then
+		warn('QuantiX | Build Mismatch')
+		print('QuantiX may encounter issues as you are running an incompatible interface version ('.. ((QuantiX:FindFirstChild('Build') and QuantiX.Build.Value) or 'No Build') ..').\n\nThis version of QuantiX is intended for interface build '..InterfaceBuild..'.')
 		warned = true
 	end
 
-    toDestroy, Rayfield = Rayfield, useStudio and script.Parent:FindFirstChild('QuantiX') or game:GetObjects("rbxassetid://10804731440")[1]
+	toDestroy, QuantiX = QuantiX, useStudio and script.Parent:FindFirstChild('QuantiX') or game:GetObjects("rbxassetid://10804731440")[1]
 	if toDestroy and not useStudio then toDestroy:Destroy() end
 
 	buildAttempts = buildAttempts + 1
 until buildAttempts >= 2
 
-Rayfield.Enabled = false
--- Ensure GUI is rebranded for clarity when inspecting CoreGui
-pcall(function()
-    Rayfield.Name = "QuantiX"
-end)
+QuantiX.Enabled = false
 
 if gethui then
-	Rayfield.Parent = gethui()
+	QuantiX.Parent = gethui()
 elseif syn and syn.protect_gui then 
-	syn.protect_gui(Rayfield)
-	Rayfield.Parent = CoreGui
+	syn.protect_gui(QuantiX)
+	QuantiX.Parent = CoreGui
 elseif not useStudio and CoreGui:FindFirstChild("RobloxGui") then
-	Rayfield.Parent = CoreGui:FindFirstChild("RobloxGui")
+	QuantiX.Parent = CoreGui:FindFirstChild("RobloxGui")
 elseif not useStudio then
-	Rayfield.Parent = CoreGui
+	QuantiX.Parent = CoreGui
 end
 
 if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
+		if Interface.Name == QuantiX.Name and Interface ~= QuantiX then
 			Interface.Enabled = false
-            Interface.Name = "QuantiX-Old"
+			Interface.Name = "QuantiX-Old"
 		end
 	end
 elseif not useStudio then
 	for _, Interface in ipairs(CoreGui:GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
+		if Interface.Name == QuantiX.Name and Interface ~= QuantiX then
 			Interface.Enabled = false
-            Interface.Name = "QuantiX-Old"
+			Interface.Name = "QuantiX-Old"
 		end
 	end
 end
@@ -786,7 +714,7 @@ end
 local minSize = Vector2.new(1024, 768)
 local useMobileSizing
 
-if Rayfield.AbsoluteSize.X < minSize.X and Rayfield.AbsoluteSize.Y < minSize.Y then
+if QuantiX.AbsoluteSize.X < minSize.X and QuantiX.AbsoluteSize.Y < minSize.Y then
 	useMobileSizing = true
 end
 
@@ -797,24 +725,24 @@ end
 
 -- Object Variables
 
-local Main = Rayfield.Main
-local MPrompt = Rayfield:FindFirstChild('Prompt')
+local Main = QuantiX.Main
+local MPrompt = QuantiX:FindFirstChild('Prompt')
 local Topbar = Main.Topbar
 local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
 local TabList = Main.TabList
-local dragBar = Rayfield:FindFirstChild('Drag')
+local dragBar = QuantiX:FindFirstChild('Drag')
 local dragInteract = dragBar and dragBar.Interact or nil
 local dragBarCosmetic = dragBar and dragBar.Drag or nil
 
 local dragOffset = 255
 local dragOffsetMobile = 150
 
-Rayfield.DisplayOrder = 100
+QuantiX.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
 
 -- Thanks to Latte Softworks for the Lucide integration for Roblox
-local Icons = useStudio and require(script.Parent.icons) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/refs/heads/main/icons.lua')
+local Icons = useStudio and require(script.Parent.icons) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/QuantiX/refs/heads/main/icons.lua')
 -- Variables
 
 local CFileName = nil
@@ -823,28 +751,28 @@ local Minimised = false
 local Hidden = false
 local Debounce = false
 local searchOpen = false
-local Notifications = Rayfield.Notifications
+local Notifications = QuantiX.Notifications
 
-local SelectedTheme = RayfieldLibrary.Theme.Default
+local SelectedTheme = QuantiXLibrary.Theme.Default
 
 local function ChangeTheme(Theme)
 	if typeof(Theme) == 'string' then
-		SelectedTheme = RayfieldLibrary.Theme[Theme]
+		SelectedTheme = QuantiXLibrary.Theme[Theme]
 	elseif typeof(Theme) == 'table' then
 		SelectedTheme = Theme
 	end
 
-	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
-	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
-	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
-	Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+	QuantiX.Main.BackgroundColor3 = SelectedTheme.Background
+	QuantiX.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+	QuantiX.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+	QuantiX.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
+	QuantiX.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
+	QuantiX.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
+	QuantiX.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
 	if Topbar:FindFirstChild('Settings') then
-		Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
-		Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
+		QuantiX.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
+		QuantiX.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
 	end
 
 	Main.Search.BackgroundColor3 = SelectedTheme.TextColor
@@ -857,7 +785,7 @@ local function ChangeTheme(Theme)
 		Main.Notice.BackgroundColor3 = SelectedTheme.Background
 	end
 
-	for _, text in ipairs(Rayfield:GetDescendants()) do
+	for _, text in ipairs(QuantiX:GetDescendants()) do
 		if text.Parent.Parent ~= Notifications then
 			if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
 		end
@@ -909,7 +837,7 @@ local function getAssetUri(id: any): string
 	if type(id) == "number" then
 		assetUri = "rbxassetid://" .. id
 	elseif type(id) == "string" and not Icons then
-			warn("QuantiX | Cannot use Lucide icons as icons library is not loaded")
+		warn("QuantiX | Cannot use Lucide icons as icons library is not loaded")
 	else
 		warn("QuantiX | The icon argument must either be an icon ID (number) or a Lucide icon name (string)")
 	end
@@ -1007,10 +935,10 @@ local function LoadConfiguration(Configuration)
 	local success, Data = pcall(function() return HttpService:JSONDecode(Configuration) end)
 	local changed
 
-	if not success then warn('Rayfield had an issue decoding the configuration file, please try delete the file and reopen Rayfield.') return end
+	if not success then warn('QuantiX had an issue decoding the configuration file, please try delete the file and reopen QuantiX.') return end
 
 	-- Iterate through current UI elements' flags
-	for FlagName, Flag in pairs(RayfieldLibrary.Flags) do
+	for FlagName, Flag in pairs(QuantiXLibrary.Flags) do
 		local FlagValue = Data[FlagName]
 
 		if (typeof(FlagValue) == 'boolean' and FlagValue == false) or FlagValue then
@@ -1026,9 +954,9 @@ local function LoadConfiguration(Configuration)
 				end
 			end)
 		else
-			warn("Rayfield | Unable to find '"..FlagName.. "' in the save file.")
+			warn("QuantiX | Unable to find '"..FlagName.. "' in the save file.")
 			print("The error above may not be an issue if new elements have been added or not been set values.")
-							--RayfieldLibrary:Notify({Title = "QuantiX Flags", Content = "QuantiX was unable to find '"..FlagName.. "' in the save file. Check sirius.menu/discord for help.", Image = 3944688398})
+			--QuantiXLibrary:Notify({Title = "QuantiX Flags", Content = "QuantiX was unable to find '"..FlagName.. "' in the save file. Check sirius.menu/discord for help.", Image = 3944688398})
 		end
 	end
 
@@ -1043,7 +971,7 @@ local function SaveConfiguration()
 	end
 
 	local Data = {}
-	for i, v in pairs(RayfieldLibrary.Flags) do
+	for i, v in pairs(QuantiXLibrary.Flags) do
 		if v.Type == "ColorPicker" then
 			Data[i] = PackColor(v.Color)
 		else
@@ -1084,52 +1012,7 @@ local function SaveConfiguration()
 	end
 end
 
--- Convenience helpers for external scripts
-function RayfieldLibrary:ExportConfiguration()
-    if not (CEnabled and CFileName) then return nil end
-    local data = {}
-    for flagName, flag in pairs(self.Flags) do
-        if flag.Type == "ColorPicker" then
-            data[flagName] = PackColor(flag.Color)
-        else
-            data[flagName] = flag.CurrentValue or flag.CurrentKeybind or flag.CurrentOption or flag.Color
-        end
-    end
-    return HttpService:JSONEncode(data)
-end
-
-function RayfieldLibrary:ImportConfiguration(jsonString)
-    assert(type(jsonString) == "string", "ImportConfiguration expects a JSON string")
-    return LoadConfiguration(jsonString)
-end
-
-function RayfieldLibrary:ToggleUI()
-    if Hidden then
-        Hidden = false
-        Unhide()
-    else
-        Hidden = true
-        Hide()
-    end
-end
-
-function RayfieldLibrary:IsOpen()
-    return not Hidden
-end
-
-function RayfieldLibrary:SetToggleKeybind(key)
-    if type(key) == "string" then
-        key = string.upper(key)
-        assert(pcall(function() return Enum.KeyCode[key] end), "Invalid KeyCode string")
-        overrideSetting("General", "rayfieldOpen", key)
-    elseif typeof(key) == "EnumItem" and key.EnumType == Enum.KeyCode then
-        overrideSetting("General", "rayfieldOpen", key.Name)
-    else
-        error("SetToggleKeybind expects a string KeyCode name or Enum.KeyCode")
-    end
-end
-
-function RayfieldLibrary:Notify(data) -- action e.g open messages
+function QuantiXLibrary:Notify(data) -- action e.g open messages
 	task.spawn(function()
 
 		-- Notification Object Creation
@@ -1179,7 +1062,7 @@ function RayfieldLibrary:Notify(data) -- action e.g open messages
 		newNotification.Visible = true
 
 		if data.Actions then
-			warn('Rayfield | Not seeing your actions in notifications?')
+			warn('QuantiX | Not seeing your actions in notifications?')
 			print("Notification Actions are being sunset for now, keep up to date on when they're back in the discord. (sirius.menu/discord)")
 		end
 
@@ -1291,7 +1174,7 @@ local function closeSearch()
 end
 
 local function Hide(notify: boolean?)
-    if MPrompt then
+	if MPrompt then
 		MPrompt.Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 		MPrompt.Position = UDim2.new(0.5, 0, 0, -50)
 		MPrompt.Size = UDim2.new(0, 40, 0, 10)
@@ -1305,9 +1188,9 @@ local function Hide(notify: boolean?)
 	Debounce = true
 	if notify then
 		if useMobilePrompt then 
-            RayfieldLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping 'Show'.", Duration = 7, Image = 4400697855})
+			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping 'Show'.", Duration = 7, Image = 4400697855})
 		else
-            RayfieldLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping {getSetting("General", "rayfieldOpen")}.`, Duration = 7, Image = 4400697855})
+			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping {getSetting("General", "QuantiXOpen")}.`, Duration = 7, Image = 4400697855})
 		end
 	end
 
@@ -1601,7 +1484,7 @@ local function saveSettings() -- Save settings to config file
 			end
 		end
 		if writefile then
-			writefile(RayfieldFolder..'/settings'..ConfigurationExtension, encoded)
+			writefile(QuantiXFolder..'/settings'..ConfigurationExtension, encoded)
 		end
 	end
 end
@@ -1680,24 +1563,24 @@ end
 
 
 
-function RayfieldLibrary:CreateWindow(Settings)
+function QuantiXLibrary:CreateWindow(Settings)
 	print('creating window')
-	if Rayfield:FindFirstChild('Loading') then
-		if getgenv and not getgenv().rayfieldCached then
-			Rayfield.Enabled = true
-			Rayfield.Loading.Visible = true
+	if QuantiX:FindFirstChild('Loading') then
+		if getgenv and not getgenv().QuantiXCached then
+			QuantiX.Enabled = true
+			QuantiX.Loading.Visible = true
 
 			task.wait(1.4)
-			Rayfield.Loading.Visible = false
+			QuantiX.Loading.Visible = false
 		end
 	end
 
-	if getgenv then getgenv().rayfieldCached = true end
+	if getgenv then getgenv().QuantiXCached = true end
 
-	if not correctBuild and not (Settings.DisableBuildWarnings or Settings.DisableQuantiXBuildWarnings) then
+	if not correctBuild and not Settings.DisableBuildWarnings then
 		task.delay(3, 
 			function() 
-				RayfieldLibrary:Notify({Title = 'Build Mismatch', Content = 'QuantiX may encounter issues as you are running an incompatible interface version ('.. ((Rayfield:FindFirstChild('Build') and Rayfield.Build.Value) or 'No Build') ..').\n\nThis version of QuantiX is intended for interface build '..InterfaceBuild..'.\n\nTry rejoining and then run the script twice.', Image = 4335487866, Duration = 15})		
+				QuantiXLibrary:Notify({Title = 'Build Mismatch', Content = 'QuantiX may encounter issues as you are running an incompatible interface version ('.. ((QuantiX:FindFirstChild('Build') and QuantiX.Build.Value) or 'No Build') ..').\n\nThis version of QuantiX is intended for interface build '..InterfaceBuild..'.\n\nTry rejoining and then run the script twice.', Image = 4335487866, Duration = 15})		
 			end)
 	end
 
@@ -1708,17 +1591,17 @@ function RayfieldLibrary:CreateWindow(Settings)
 			assert(pcall(function()
 				return Enum.KeyCode[keybind]
 			end), "ToggleUIKeybind must be a valid KeyCode")
-			overrideSetting("General", "rayfieldOpen", keybind)
+			overrideSetting("General", "QuantiXOpen", keybind)
 		elseif typeof(keybind) == "EnumItem" then
 			assert(keybind.EnumType == Enum.KeyCode, "ToggleUIKeybind must be a KeyCode enum")
-			overrideSetting("General", "rayfieldOpen", keybind.Name)
+			overrideSetting("General", "QuantiXOpen", keybind.Name)
 		else
 			error("ToggleUIKeybind must be a string or KeyCode enum")
 		end
 	end
 
-	if isfolder and not isfolder(RayfieldFolder) then
-		makefolder(RayfieldFolder)
+	if isfolder and not isfolder(QuantiXFolder) then
+		makefolder(QuantiXFolder)
 	end
 
 	-- Attempt to report an event to analytics
@@ -1791,11 +1674,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Elements.Visible = false
 	LoadingFrame.Visible = true
 
-	if not (Settings.DisableQuantiXPrompts or Settings.DisableRayfieldPrompts) then
+	if not Settings.DisableQuantiXPrompts then
 		task.spawn(function()
 			while true do
 				task.wait(math.random(180, 600))
-				RayfieldLibrary:Notify({
+				QuantiXLibrary:Notify({
 					Title = "QuantiX Interface",
 					Content = "Enjoying this UI library? Find it at sirius.menu/discord",
 					Duration = 7,
@@ -1839,11 +1722,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 	end
 
 	if Settings.Discord and Settings.Discord.Enabled and not useStudio then
-		if isfolder and not isfolder(RayfieldFolder.."/Discord Invites") then
-			makefolder(RayfieldFolder.."/Discord Invites")
+		if isfolder and not isfolder(QuantiXFolder.."/Discord Invites") then
+			makefolder(QuantiXFolder.."/Discord Invites")
 		end
 
-		if isfile and not isfile(RayfieldFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
+		if isfile and not isfile(QuantiXFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
 			if requestFunc then
 				pcall(function()
 					requestFunc({
@@ -1862,8 +1745,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end)
 			end
 
-				if Settings.Discord.RememberJoins then -- We do logic this way so if the developer changes this setting, the user still won't be prompted, only new users
-					writefile(RayfieldFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension,"QuantiX RememberJoins is true for this invite, this invite will not ask you to join again")
+			if Settings.Discord.RememberJoins then -- We do logic this way so if the developer changes this setting, the user still won't be prompted, only new users
+				writefile(QuantiXFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension,"QuantiX RememberJoins is true for this invite, this invite will not ask you to join again")
 			end
 		end
 	end
@@ -1874,8 +1757,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 			return
 		end
 
-		if isfolder and not isfolder(RayfieldFolder.."/Key System") then
-			makefolder(RayfieldFolder.."/Key System")
+		if isfolder and not isfolder(QuantiXFolder.."/Key System") then
+			makefolder(QuantiXFolder.."/Key System")
 		end
 
 		if typeof(Settings.KeySettings.Key) == "string" then Settings.KeySettings.Key = {Settings.KeySettings.Key} end
@@ -1887,8 +1770,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					Settings.KeySettings.Key[i] = string.gsub(Settings.KeySettings.Key[i], " ", "")
 				end)
 				if not Success then
-						print("QuantiX | "..Key.." Error " ..tostring(Response))
-						warn('Check docs.sirius.menu for help with QuantiX specific development.')
+					print("QuantiX | "..Key.." Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 				end
 			end
 		end
@@ -1897,9 +1780,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Settings.KeySettings.FileName = "No file name specified"
 		end
 
-		if isfile and isfile(RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) then
+		if isfile and isfile(QuantiXFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) then
 			for _, MKey in ipairs(Settings.KeySettings.Key) do
-				if string.find(readfile(RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension), MKey) then
+				if string.find(readfile(QuantiXFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension), MKey) then
 					Passthrough = true
 				end
 			end
@@ -1907,7 +1790,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		if not Passthrough then
 			local AttemptsRemaining = math.random(2, 5)
-			Rayfield.Enabled = false
+			QuantiX.Enabled = false
 			local KeyUI = useStudio and script.Parent:FindFirstChild('Key') or game:GetObjects("rbxassetid://11380036235")[1]
 
 			KeyUI.Enabled = true
@@ -2010,9 +1893,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 					KeyMain.Visible = false
 					if Settings.KeySettings.SaveKey then
 						if writefile then
-							writefile(RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension, FoundKey)
+							writefile(QuantiXFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension, FoundKey)
 						end
-						RayfieldLibrary:Notify({Title = "Key System", Content = "The key for this script has been saved successfully.", Image = 3605522284})
+						QuantiXLibrary:Notify({Title = "Key System", Content = "The key for this script has been saved successfully.", Image = 3605522284})
 					end
 				else
 					if AttemptsRemaining == 0 then
@@ -2058,7 +1941,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				TweenService:Create(KeyMain.NoteMessage, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 				TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
 				task.wait(0.51)
-				RayfieldLibrary:Destroy()
+				QuantiXLibrary:Destroy()
 				KeyUI:Destroy()
 			end)
 		else
@@ -2071,7 +1954,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 	Notifications.Template.Visible = false
 	Notifications.Visible = true
-	Rayfield.Enabled = true
+	QuantiX.Enabled = true
 
 	task.wait(0.5)
 	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
@@ -2233,8 +2116,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			Button.Interact.MouseButton1Click:Connect(function()
 				local Success, Response = pcall(ButtonSettings.Callback)
-				-- Prevents animation from trying to play if the button's callback called RayfieldLibrary:Destroy()
-				if rayfieldDestroyed then
+				-- Prevents animation from trying to play if the button's callback called QuantiXLibrary:Destroy()
+				if QuantiXDestroyed then
 					return
 				end
 				if not Success then
@@ -2242,8 +2125,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Button.Title.Text = "Callback Error"
-					print("Rayfield | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Button.Title.Text = ButtonSettings.Name
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2341,7 +2224,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(ColorPicker.HexInput, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Position = UDim2.new(0, 17, 0, 73)}):Play()
 					TweenService:Create(ColorPicker.Interact, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(0.574, 0, 1, 0)}):Play()
 					TweenService:Create(Main.MainPoint, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-					TweenService:Create(Main, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {ImageTransparency = SelectedTheme ~= RayfieldLibrary.Theme.Default and 0.25 or 0.1}):Play()
+					TweenService:Create(Main, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {ImageTransparency = SelectedTheme ~= QuantiXLibrary.Theme.Default and 0.25 or 0.1}):Play()
 					TweenService:Create(Background, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				else
 					opened = false
@@ -2501,7 +2384,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and ColorPickerSettings.Flag then
-					RayfieldLibrary.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
+					QuantiXLibrary.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
 				end
 			end
 
@@ -2520,7 +2403,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				TweenService:Create(ColorPicker, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				for _, rgbinput in ipairs(ColorPicker.RGB:GetChildren()) do
 					if rgbinput:IsA("Frame") then
 						rgbinput.BackgroundColor3 = SelectedTheme.InputBackground
@@ -2668,7 +2551,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Label.BackgroundColor3 = IgnoreTheme and (Color or Label.BackgroundColor3) or SelectedTheme.SecondaryElementBackground
 				Label.UIStroke.Color = IgnoreTheme and (Color or Label.BackgroundColor3) or SelectedTheme.SecondaryElementStroke
 			end)
@@ -2704,7 +2587,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				Paragraph.Content.Text = NewParagraphSettings.Content
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Paragraph.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
 				Paragraph.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 			end)
@@ -2746,8 +2629,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Input.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Input.Title.Text = "Callback Error"
-					print("Rayfield | "..InputSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..InputSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Input.Title.Text = InputSettings.Name
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2790,11 +2673,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and InputSettings.Flag then
-					RayfieldLibrary.Flags[InputSettings.Flag] = InputSettings
+					QuantiXLibrary.Flags[InputSettings.Flag] = InputSettings
 				end
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Input.InputFrame.BackgroundColor3 = SelectedTheme.InputBackground
 				Input.InputFrame.UIStroke.Color = SelectedTheme.InputStroke
 			end)
@@ -2986,8 +2869,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 							Dropdown.Title.Text = "Callback Error"
-							print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-							warn('Check docs.sirius.menu for help with Rayfield specific development.')
+							print("QuantiX | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
+							warn('Check docs.sirius.menu for help with QuantiX specific development.')
 							task.wait(0.5)
 							Dropdown.Title.Text = DropdownSettings.Name
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3020,7 +2903,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 						end
 					end)
 
-					Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+					QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 						DropdownOption.UIStroke.Color = SelectedTheme.ElementStroke
 					end)
 				end
@@ -3035,7 +2918,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 						droption.BackgroundColor3 = SelectedTheme.DropdownSelected
 					end
 
-					Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+					QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 						if not table.find(DropdownSettings.CurrentOption, droption.Name) then
 							droption.BackgroundColor3 = SelectedTheme.DropdownUnselected
 						else
@@ -3076,8 +2959,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Dropdown.Title.Text = "Callback Error"
-					print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Dropdown.Title.Text = DropdownSettings.Name
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3108,11 +2991,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and DropdownSettings.Flag then
-					RayfieldLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
+					QuantiXLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
 				end
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Dropdown.Toggle.ImageColor3 = SelectedTheme.TextColor
 				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
@@ -3197,8 +3080,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 							Keybind.Title.Text = "Callback Error"
-							print("Rayfield | "..KeybindSettings.Name.." Callback Error " ..tostring(Response))
-							warn('Check docs.sirius.menu for help with Rayfield specific development.')
+							print("QuantiX | "..KeybindSettings.Name.." Callback Error " ..tostring(Response))
+							warn('Check docs.sirius.menu for help with QuantiX specific development.')
 							task.wait(0.5)
 							Keybind.Title.Text = KeybindSettings.Name
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3239,11 +3122,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and KeybindSettings.Flag then
-					RayfieldLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
+					QuantiXLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
 				end
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Keybind.KeybindFrame.BackgroundColor3 = SelectedTheme.InputBackground
 				Keybind.KeybindFrame.UIStroke.Color = SelectedTheme.InputStroke
 			end)
@@ -3266,7 +3149,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Toggle.Title.TextTransparency = 1
 			Toggle.Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
 
-			if SelectedTheme ~= RayfieldLibrary.Theme.Default then
+			if SelectedTheme ~= QuantiXLibrary.Theme.Default then
 				Toggle.Switch.Shadow.Visible = false
 			end
 
@@ -3327,8 +3210,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("Rayfield | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3377,8 +3260,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("Rayfield | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3393,16 +3276,16 @@ function RayfieldLibrary:CreateWindow(Settings)
 			if not ToggleSettings.Ext then
 				if Settings.ConfigurationSaving then
 					if Settings.ConfigurationSaving.Enabled and ToggleSettings.Flag then
-						RayfieldLibrary.Flags[ToggleSettings.Flag] = ToggleSettings
+						QuantiXLibrary.Flags[ToggleSettings.Flag] = ToggleSettings
 					end
 				end
 			end
 
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 				Toggle.Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
 
-				if SelectedTheme ~= RayfieldLibrary.Theme.Default then
+				if SelectedTheme ~= QuantiXLibrary.Theme.Default then
 					Toggle.Switch.Shadow.Visible = false
 				end
 
@@ -3435,7 +3318,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Slider.UIStroke.Transparency = 1
 			Slider.Title.TextTransparency = 1
 
-			if SelectedTheme ~= RayfieldLibrary.Theme.Default then
+			if SelectedTheme ~= QuantiXLibrary.Theme.Default then
 				Slider.Main.Shadow.Visible = false
 			end
 
@@ -3526,8 +3409,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 								TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 								Slider.Title.Text = "Callback Error"
-								print("Rayfield | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-								warn('Check docs.sirius.menu for help with Rayfield specific development.')
+								print("QuantiX | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
+								warn('Check docs.sirius.menu for help with QuantiX specific development.')
 								task.wait(0.5)
 								Slider.Title.Text = SliderSettings.Name
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3560,8 +3443,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Slider.Title.Text = "Callback Error"
-					print("Rayfield | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					print("QuantiX | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
+					warn('Check docs.sirius.menu for help with QuantiX specific development.')
 					task.wait(0.5)
 					Slider.Title.Text = SliderSettings.Name
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3576,12 +3459,12 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
-					RayfieldLibrary.Flags[SliderSettings.Flag] = SliderSettings
+					QuantiXLibrary.Flags[SliderSettings.Flag] = SliderSettings
 				end
 			end
 
-			Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
-				if SelectedTheme ~= RayfieldLibrary.Theme.Default then
+			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+				if SelectedTheme ~= QuantiXLibrary.Theme.Default then
 					Slider.Main.Shadow.Visible = false
 				end
 
@@ -3594,7 +3477,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			return SliderSettings
 		end
 
-		Rayfield.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+		QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
 			TabButton.UIStroke.Color = SelectedTheme.TabStroke
 
 			if Elements.UIPageLayout.CurrentPage == TabPage then
@@ -3663,9 +3546,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 	function Window.ModifyTheme(NewTheme)
 		local success = pcall(ChangeTheme, NewTheme)
 		if not success then
-			RayfieldLibrary:Notify({Title = 'Unable to Change Theme', Content = 'We are unable find a theme on file.', Image = 4400704299})
+			QuantiXLibrary:Notify({Title = 'Unable to Change Theme', Content = 'We are unable find a theme on file.', Image = 4400704299})
 		else
-			RayfieldLibrary:Notify({Title = 'Theme Changed', Content = 'Successfully changed theme to '..(typeof(NewTheme) == 'string' and NewTheme or 'Custom Theme')..'.', Image = 4483362748})
+			QuantiXLibrary:Notify({Title = 'Theme Changed', Content = 'Successfully changed theme to '..(typeof(NewTheme) == 'string' and NewTheme or 'Custom Theme')..'.', Image = 4483362748})
 		end
 	end
 
@@ -3673,7 +3556,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		createSettings(Window)
 	end)
 
-	if not success then warn('Rayfield had an issue creating settings.') end
+	if not success then warn('QuantiX had an issue creating settings.') end
 
 	return Window
 end
@@ -3689,19 +3572,19 @@ local function setVisibility(visibility: boolean, notify: boolean?)
 	end
 end
 
-function RayfieldLibrary:SetVisibility(visibility: boolean)
+function QuantiXLibrary:SetVisibility(visibility: boolean)
 	setVisibility(visibility, false)
 end
 
-function RayfieldLibrary:IsVisible(): boolean
+function QuantiXLibrary:IsVisible(): boolean
 	return not Hidden
 end
 
 local hideHotkeyConnection -- Has to be initialized here since the connection is made later in the script
-function RayfieldLibrary:Destroy()
-	rayfieldDestroyed = true
+function QuantiXLibrary:Destroy()
+	QuantiXDestroyed = true
 	hideHotkeyConnection:Disconnect()
-	Rayfield:Destroy()
+	QuantiX:Destroy()
 end
 
 Topbar.ChangeSize.MouseButton1Click:Connect(function()
@@ -3784,7 +3667,7 @@ if Topbar:FindFirstChild('Settings') then
 				end
 			end
 
-				Elements.UIPageLayout:JumpTo(Elements['QuantiX Settings'])
+			Elements.UIPageLayout:JumpTo(Elements['QuantiX Settings'])
 		end)
 	end)
 
@@ -3796,7 +3679,7 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 end)
 
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
-	if (input.KeyCode == Enum.KeyCode[getSetting("General", "rayfieldOpen")]) and not processed then
+	if (input.KeyCode == Enum.KeyCode[getSetting("General", "QuantiXOpen")]) and not processed then
 		if Debounce then return end
 		if Hidden then
 			Hidden = false
@@ -3831,7 +3714,7 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 end
 
 
-function RayfieldLibrary:LoadConfiguration()
+function QuantiXLibrary:LoadConfiguration()
 	local config
 
 	if debugX then
@@ -3858,15 +3741,15 @@ function RayfieldLibrary:LoadConfiguration()
 				end
 			else
 				notified = true
-				RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We couldn't enable Configuration Saving as you are not using software with filesystem support.", Image = 4384402990})
+				QuantiXLibrary:Notify({Title = "QuantiX Configurations", Content = "We couldn't enable Configuration Saving as you are not using software with filesystem support.", Image = 4384402990})
 			end
 		end)
 
 		if success and loaded and not notified then
-			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
+			QuantiXLibrary:Notify({Title = "QuantiX Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
 		elseif not success and not notified then
-			warn('Rayfield Configurations Error | '..tostring(result))
-			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We've encountered an issue loading your configuration correctly.\n\nCheck the Developer Console for more information.", Image = 4384402990})
+			warn('QuantiX Configurations Error | '..tostring(result))
+			QuantiXLibrary:Notify({Title = "QuantiX Configurations", Content = "We've encountered an issue loading your configuration correctly.\n\nCheck the Developer Console for more information.", Image = 4384402990})
 		end
 	end
 
@@ -3880,9 +3763,9 @@ if useStudio then
 	-- Feel free to place your own script here to see how it'd work in Roblox Studio before running it on your execution software.
 
 
-	--local Window = RayfieldLibrary:CreateWindow({
-	--	Name = "Rayfield Example Window",
-	--	LoadingTitle = "Rayfield Interface Suite",
+	--local Window = QuantiXLibrary:CreateWindow({
+	--	Name = "QuantiX Example Window",
+	--	LoadingTitle = "QuantiX Interface Suite",
 	--	Theme = 'Default',
 	--	Icon = 0,
 	--	LoadingSubtitle = "by Sirius",
@@ -3901,9 +3784,9 @@ if useStudio then
 	--		Title = "Untitled",
 	--		Subtitle = "Key System",
 	--		Note = "No method of obtaining the key is provided",
-	--		FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+	--		FileName = "Key", -- It is recommended to use something unique as other scripts using QuantiX may overwrite your key file
 	--		SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-	--		GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+	--		GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like QuantiX to get the key from
 	--		Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
 	--	}
 	--})
@@ -3950,7 +3833,7 @@ if useStudio then
 	--})
 
 
-	----RayfieldLibrary:Notify({Title = "Rayfield Interface", Content = "Welcome to Rayfield. These - are the brand new notification design for Rayfield, with custom sizing and Rayfield calculated wait times.", Image = 4483362458})
+	----QuantiXLibrary:Notify({Title = "QuantiX Interface", Content = "Welcome to QuantiX. These - are the brand new notification design for QuantiX, with custom sizing and QuantiX calculated wait times.", Image = 4483362458})
 
 	--local Section = Tab:CreateSection("Section Example")
 
@@ -4008,7 +3891,7 @@ if useStudio then
 	--})
 
 	--local thoptions = {}
-	--for themename, theme in pairs(RayfieldLibrary.Theme) do
+	--for themename, theme in pairs(QuantiXLibrary.Theme) do
 	--	table.insert(thoptions, themename)
 	--end
 
@@ -4096,22 +3979,5 @@ if CEnabled and Main:FindFirstChild('Notice') then
 	TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 280, 0, 35), Position = UDim2.new(0.5, 0, 0, -50), BackgroundTransparency = 0.5}):Play()
 	TweenService:Create(Main.Notice.Title, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.1}):Play()
 end
--- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA why :(
---if not useStudio then
---	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
---end
 
-task.delay(4, function()
-	RayfieldLibrary.LoadConfiguration()
-	if Main:FindFirstChild('Notice') and Main.Notice.Visible then
-		TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 100, 0, 25), Position = UDim2.new(0.5, 0, 0, -100), BackgroundTransparency = 1}):Play()
-		TweenService:Create(Main.Notice.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-
-		task.wait(0.5)
-		Main.Notice.Visible = false
-	end
-end)
-
--- Back-compat shim if someone still requires Rayfield by mistake
-local QuantiXLibrary = RayfieldLibrary
 return QuantiXLibrary
