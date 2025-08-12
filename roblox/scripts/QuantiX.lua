@@ -3865,6 +3865,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 					c.Parent = thumb
 					thumb.ZIndex = (track.ZIndex or 1) + 2
 				end
+				-- Hide thumb per user preference (visual only)
+				thumb.Visible = false
 
 				local minVal, maxVal = SliderSettings.Range[1], SliderSettings.Range[2]
 				local function valueToRatio(v)
@@ -4384,9 +4386,29 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 	setVisibility(Hidden, not useMobileSizing)
 end)
 
+-- Normalize some common printable/special keys to Enum names
+local function normalizeKeyName(name: string): string
+    if not name or name == "" then return "Unknown" end
+    local map = {
+        ["/"] = "Slash",
+        [" "] = "Space",
+        ["."] = "Period",
+        [","] = "Comma",
+        ["-"] = "Minus",
+        ["="] = "Equals",
+        ["["] = "LeftBracket",
+        ["]"] = "RightBracket",
+        ["\\"] = "BackSlash",
+        [";"] = "Semicolon",
+        ["'"] = "Quote",
+        ["`"] = "Backquote",
+    }
+    return map[name] or name
+end
+
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
-    local quantixKeyName = tostring(getSetting("General", "QuantiXOpen") or "K")
-    local searchKeyName = tostring(getSetting("General", "SearchOpen") or "Slash")
+    local quantixKeyName = normalizeKeyName(tostring(getSetting("General", "QuantiXOpen") or "K"))
+    local searchKeyName = normalizeKeyName(tostring(getSetting("General", "SearchOpen") or "Slash"))
     local qkc = Enum.KeyCode[quantixKeyName]
     local skc = Enum.KeyCode[searchKeyName]
 
