@@ -79,7 +79,7 @@ local settingsTable = {
 	General = {
 		-- if needs be in order just make getSetting(name)
 		QuantiXOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
-        SearchOpen = {Type = 'bind', Value = '/', Name = 'Search Keybind'},
+        SearchOpen = {Type = 'bind', Value = 'Slash', Name = 'Search Keybind'},
 		-- buildwarnings
 		-- QuantiXprompts
 
@@ -1840,15 +1840,15 @@ local function createSettings(window)
                         end
 					end,
 				})
-			elseif setting.Type == 'bind' then
+            elseif setting.Type == 'bind' then
 				setting.Element = newTab:CreateKeybind({
 					Name = setting.Name,
 					CurrentKeybind = setting.Value,
 					HoldToInteract = false,
 					Ext = true,
 					CallOnChange = true,
-					Callback = function(Value)
-						updateSetting(categoryName, settingName, Value)
+                    Callback = function(Value)
+                        updateSetting(categoryName, settingName, Value)
 					end,
 				})
             elseif setting.Type == 'slider' then
@@ -4248,7 +4248,12 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 end)
 
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
-    if (input.KeyCode == Enum.KeyCode[getSetting("General", "QuantiXOpen")]) and not processed then
+    local quantixKeyName = tostring(getSetting("General", "QuantiXOpen") or "K")
+    local searchKeyName = tostring(getSetting("General", "SearchOpen") or "Slash")
+    local qkc = Enum.KeyCode[quantixKeyName]
+    local skc = Enum.KeyCode[searchKeyName]
+
+    if (qkc and input.KeyCode == qkc) and not processed then
 		if Debounce then return end
 		if Hidden then
 			Hidden = false
@@ -4257,7 +4262,7 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
 			Hidden = true
 			Hide()
 		end
-    elseif (input.KeyCode == Enum.KeyCode[getSetting("General", "SearchOpen")]) and not processed then
+    elseif (skc and input.KeyCode == skc) and not processed then
         if Debounce or Minimised or Hidden then return end
         if searchOpen then
             closeSearch()
