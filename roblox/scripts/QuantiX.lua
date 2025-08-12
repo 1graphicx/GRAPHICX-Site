@@ -3936,10 +3936,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 							Start = Location
 						end
 							-- Keep progress clamped inside the track and at least 5px
-                        local newWidth = math.max(5, Current - Slider.Main.AbsolutePosition.X)
-                        local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, heightPx)}):Play()
-                        applyProgressPixels(newWidth)
+                        local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
@@ -3973,10 +3971,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 							end
 						end
 					else
-                        local width = math.max(5, Location - Slider.Main.AbsolutePosition.X)
-                        local heightPx = math.max(1, Slider.Main.AbsoluteSize.Y - (strokeThickness * 2))
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, heightPx)}):Play()
-                        applyProgressPixels(width)
+                        local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						Loop:Disconnect()
 					end
 				end)
