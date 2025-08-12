@@ -3821,29 +3821,30 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Shadow.Visible = false
 			end
 
-			-- Ensure progress renders inside the track
+			-- Ensure progress renders inside the track with insets for stroke
 			Slider.Main.ClipsDescendants = true
 			Slider.Main.BackgroundColor3 = SelectedTheme.SliderBackground
 			Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
+			local strokeObj = Slider.Main:FindFirstChildOfClass("UIStroke")
+			local strokeThickness = (strokeObj and strokeObj.Thickness) or 1
 			Slider.Main.Progress.AnchorPoint = Vector2.new(0, 0)
-			Slider.Main.Progress.Position = UDim2.new(0, 0, 0, 0)
+			Slider.Main.Progress.Position = UDim2.new(0, strokeThickness, 0, strokeThickness)
 			Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
 			Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
-			-- Layering: progress under info and stroke
+			-- Layering: progress under info; stroke is an adornment on Main
 			pcall(function()
 				local baseZ = Slider.Main.ZIndex or 1
 				Slider.Main.Progress.ZIndex = baseZ
 				Slider.Main.Information.ZIndex = baseZ + 1
-				Slider.Main.UIStroke.ZIndex = baseZ + 2
 			end)
 
 			TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
-			-- Initialize progress size inside the bounds (min width 5px)
+			-- Initialize progress size inside the bounds (min width 5px) and inset by stroke
 			local initialPixels = math.max(5, (Slider.Main.AbsoluteSize.X * (SliderSettings.CurrentValue - SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])))
-			Slider.Main.Progress.Size = UDim2.new(0, initialPixels, 1, 0)
+			Slider.Main.Progress.Size = UDim2.new(0, math.max(1, initialPixels - (strokeThickness * 2)), 1, -(strokeThickness * 2))
 
 			if not SliderSettings.Suffix then
 				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue)
@@ -3901,9 +3902,10 @@ function QuantiXLibrary:CreateWindow(Settings)
 						elseif Current >= Location and (Location - Start) > 0 then
 							Start = Location
 						end
-							-- Keep progress clamped inside the track and at least 5px
+							-- Keep progress clamped inside the track and at least 5px, with inset for stroke
 							local newWidth = math.max(5, Current - Slider.Main.AbsolutePosition.X)
-							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, newWidth, 1, 0)}):Play()
+							local insetWidth = math.max(1, newWidth - (strokeThickness * 2))
+							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 1, -(strokeThickness * 2))}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
@@ -3938,7 +3940,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 					else
 							local width = math.max(5, Location - Slider.Main.AbsolutePosition.X)
-							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, width, 1, 0)}):Play()
+							local insetWidth = math.max(1, width - (strokeThickness * 2))
+							TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 1, -(strokeThickness * 2))}):Play()
 						Loop:Disconnect()
 					end
 				end)
@@ -3948,7 +3951,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
 
 				local px = math.max(5, Slider.Main.AbsoluteSize.X * ((NewVal - SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])))
-				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, px, 1, 0)}):Play()
+				local insetWidth = math.max(1, px - (strokeThickness * 2))
+				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, insetWidth, 1, -(strokeThickness * 2))}):Play()
 				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
 
 				local Success, Response = pcall(function()
@@ -3988,6 +3992,10 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
 				Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
 				Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
+				local stk = (Slider.Main:FindFirstChildOfClass("UIStroke") and Slider.Main:FindFirstChildOfClass("UIStroke").Thickness) or 1
+				Slider.Main.Progress.Position = UDim2.new(0, stk, 0, stk)
+				local curWidth = Slider.Main.Progress.AbsoluteSize.X
+				Slider.Main.Progress.Size = UDim2.new(0, curWidth, 1, -(stk * 2))
 			end)
 
 			function SliderSettings:Destroy()
