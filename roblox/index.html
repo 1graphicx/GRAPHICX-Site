@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GRAPHICX - Roblox Scripts</title>
+  <link rel="icon" href="/assets/images/logo.ico" type="image/x-icon">
+  <style>
+    :root {
+      --accent: #ff4757;
+      --bg: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --text: #fff;
+      --muted: #888;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header moderne */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .home-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #e74c3c 100%);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    }
+
+    .home-btn:hover {
+      background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+    }
+
+    .platform-indicator {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    /* Header principal */
+    header {
+      background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+      border-bottom: 2px solid var(--accent);
+      box-shadow: 0 4px 20px rgba(255, 71, 87, 0.2);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 12px var(--accent);
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Barre de recherche */
+    .search-container {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 500px;
+      padding: 15px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    /* Grille des scripts */
+    .script-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .script-card {
+      background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 25px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .script-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 71, 87, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .script-card:hover::before {
+      left: 100%;
+    }
+
+    .script-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 0 8px 25px rgba(230, 57, 70, 0.2);
+    }
+
+    .script-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .script-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent) 0%, #9b1d2c 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      flex-shrink: 0;
+    }
+
+    .script-card:hover .script-icon {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+    }
+
+    .script-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+
+    .script-description {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .script-url {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .script-link {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 5px 0;
+      display: block;
+      word-break: break-all;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      user-select: all;
+      text-decoration: none;
+    }
+
+    .script-link:hover {
+      background: rgba(0, 255, 136, 0.2);
+      border-color: rgba(0, 255, 136, 0.5);
+      transform: scale(1.02);
+    }
+
+    .script-link:active {
+      transform: scale(0.98);
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 71, 87, 0.9);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .copy-notification.show {
+      opacity: 1;
+    }
+
+    .script-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #e74c3c 100%);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .action-btn:hover {
+      background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+    }
+
+    .action-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      h1.main-title {
+        font-size: 2.2rem;
+      }
+      .script-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .script-card {
+        padding: 20px;
+      }
+      .script-title {
+        font-size: 1.1rem;
+      }
+      .script-link {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-header">
+    <a href="/" class="home-btn">Accueil</a>
+    <div class="platform-indicator">ROBLOX</div>
+  </div>
+
+  <header>
+    <h1>GRAPHICX BY HYRAX</h1>
+    <p>Scripts Lua pour Roblox - Copiez ou utilisez les liens directs</p>
+  </header>
+
+  <div class="container">
+    <div class="search-container">
+      <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un script..." onkeyup="filterScripts()">
+    </div>
+
+    <div class="script-grid" id="scriptGrid">
+      <!-- Les scripts seront générés automatiquement ici -->
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">Lien copié !</div>
+
+  <script>
+    // Configuration des scripts - Facile à modifier !
+    const scriptsData = [
+      {
+        icon: "📚",
+        title: "QuantiX Library",
+        description: "Interface rapide et modulable.",
+        filename: "QuantiX.lua"
+      },
+      {
+        icon: "🔧",
+        title: "Dex Explorer",
+        description: "Script d'exploration avancée pour Roblox. Permet d'analyser et modifier les propriétés des objets en temps réel.",
+        filename: "Dex.lua"
+      },
+      {
+        icon: "🎮",
+        title: "Panel",
+        description: "Interface graphique avancée avec de nombreuses fonctionnalités pour améliorer l'expérience de jeu.",
+        filename: "Panel.lua"
+      },
+      {
+        icon: "⚡",
+        title: "Button Core",
+        description: "Système de boutons interactifs pour créer des interfaces utilisateur dynamiques.",
+        filename: "ButtonCore.lua"
+      },
+      {
+        icon: "🧟",
+        title: "Zombie Korrupt",
+        description: "Script spécialisé pour les jeux de zombies avec des fonctionnalités de corruption et de modification.",
+        filename: "Zombie Korrupt.lua"
+      }
+    ];
+
+    // Configuration du site
+    const siteConfig = {
+      baseUrl: "https://graphicx.store/roblox/scripts/",
+      translations: {
+        fr: {
+          homeBtn: "Accueil",
+          copyNotification: "Lien copié !",
+          searchPlaceholder: "Rechercher un script...",
+          headerTitle: "GRAPHICX BY HYRAX",
+          headerSubtitle: "Scripts Lua pour Roblox - Copiez ou utilisez les liens directs"
+        },
+        en: {
+          homeBtn: "Home",
+          copyNotification: "Link copied!",
+          searchPlaceholder: "Search for a script...",
+          headerTitle: "GRAPHICX BY HYRAX",
+          headerSubtitle: "Lua scripts for Roblox - Copy or use direct links"
+        }
+      }
+    };
+
+    function detectLanguage() {
+      const lang = navigator.language || navigator.userLanguage;
+      return lang.startsWith('fr') ? 'fr' : 'en';
+    }
+
+    function generateScriptCard(script, index) {
+      const scriptUrl = siteConfig.baseUrl + script.filename;
+      
+      return `
+        <div class="script-card">
+          <div class="script-header">
+            <div class="script-icon">${script.icon}</div>
+            <h3 class="script-title">${script.title}</h3>
+          </div>
+          <div class="script-description">
+            ${script.description}
+          </div>
+          <div class="script-url">
+            <code class="script-link" onclick="copyToClipboard(this)">${scriptUrl}</code>
+          </div>
+          <div class="script-actions">
+            <button class="action-btn" onclick="copyToClipboard(document.querySelectorAll('.script-card')[${index}].querySelector('.script-link'))">
+              📋 Copier
+            </button>
+            <a href="${scriptUrl}" target="_blank" class="action-btn secondary">
+              🔗 Ouvrir
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderScripts() {
+      const scriptGrid = document.getElementById('scriptGrid');
+      scriptGrid.innerHTML = scriptsData.map((script, index) => 
+        generateScriptCard(script, index)
+      ).join('');
+    }
+
+    function applyTranslations() {
+      const lang = detectLanguage();
+      const t = siteConfig.translations[lang] || siteConfig.translations.en;
+      
+      // Home button
+      document.querySelector('.home-btn').textContent = t.homeBtn;
+      
+      // Header content
+      document.querySelector('header h1').textContent = t.headerTitle;
+      document.querySelector('header p').textContent = t.headerSubtitle;
+      
+      // Search placeholder
+      document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+      
+      // Copy notification
+      document.getElementById('copyNotification').textContent = t.copyNotification;
+    }
+
+    function copyToClipboard(element) {
+      const text = element.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showCopyNotification();
+      }).catch(err => {
+        console.error('Erreur lors de la copie:', err);
+        // Fallback pour les navigateurs plus anciens
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showCopyNotification();
+      });
+    }
+
+    function showCopyNotification() {
+      const notification = document.getElementById('copyNotification');
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 2000);
+    }
+
+    function filterScripts() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const scriptCards = document.querySelectorAll('.script-card');
+      
+      scriptCards.forEach(card => {
+        const title = card.querySelector('.script-title').textContent.toLowerCase();
+        const description = card.querySelector('.script-description').textContent.toLowerCase();
+        const link = card.querySelector('.script-link').textContent.toLowerCase();
+        
+        const hasMatch = title.includes(searchTerm) || 
+                        description.includes(searchTerm) || 
+                        link.includes(searchTerm);
+        
+        if (hasMatch) {
+          card.classList.remove('hidden');
+          card.style.display = 'block';
+        } else {
+          card.classList.add('hidden');
+          // Hide after animation completes
+          setTimeout(() => {
+            if (card.classList.contains('hidden')) {
+              card.style.display = 'none';
+            }
+          }, 300);
+        }
+      });
+    }
+
+    window.onload = () => {
+      applyTranslations();
+      renderScripts();
+    };
+  </script>
+</body>
+</html> 
