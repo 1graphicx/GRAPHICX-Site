@@ -3522,11 +3522,26 @@ function QuantiXLibrary:CreateWindow(Settings)
             Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
                 isCapturingKeybind = false
-				if Keybind.KeybindFrame.KeybindBox.Text == nil or Keybind.KeybindFrame.KeybindBox.Text == "" then
+                local boxText = Keybind.KeybindFrame.KeybindBox.Text
+                if boxText == nil or boxText == "" then
 					Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 					if not KeybindSettings.Ext then
 						SaveConfiguration()
 					end
+                else
+                    -- User typed a key name; normalise and validate against Enum
+                    local proposed = normalizeKeyName(boxText)
+                    if Enum.KeyCode[proposed] then
+                        KeybindSettings.CurrentKeybind = proposed
+                        Keybind.KeybindFrame.KeybindBox.Text = proposed
+                        if not KeybindSettings.Ext then SaveConfiguration() end
+                        if KeybindSettings.CallOnChange then
+                            KeybindSettings.Callback(proposed)
+                        end
+                    else
+                        -- Revert if invalid
+                        Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
+                    end
 				end
 			end)
 
@@ -4416,10 +4431,13 @@ end
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
 hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
     if isCapturingKeybind then return end
-    local quantixKeyName = normalizeKeyName(tostring(getSetting("General", "QuantiXOpen") or "K"))
-    local searchKeyName = normalizeKeyName(tostring(getSetting("General", "SearchOpen") or "Slash"))
-    local qkc = Enum.KeyCode[quantixKeyName]
-    local skc = Enum.KeyCode[searchKeyName]
+    local function resolveKey(name, fallback)
+        if not name or name == "" then return Enum.KeyCode[fallback] end
+        local nn = normalizeKeyName(tostring(name))
+        return Enum.KeyCode[nn] or Enum.KeyCode[fallback]
+    end
+    local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "K")
+    local skc = resolveKey(getSetting("General", "SearchOpen"), "Slash")
 
     if (qkc and input.KeyCode == qkc) and not processed then
 		if Debounce then return end
