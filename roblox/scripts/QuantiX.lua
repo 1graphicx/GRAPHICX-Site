@@ -83,9 +83,6 @@ local settingsTable = {
 		-- buildwarnings
 		-- QuantiXprompts
 
-	},
-	System = {
-		usageAnalytics = {Type = 'toggle', Value = true, Name = 'Anonymised Analytics'},
     },
     Interface = {
         uiScale = {Type = 'slider', Value = 1, Name = 'UI Scale', Range = {0.8, 1.4}, Increment = 0.01, Suffix = 'x'},
@@ -111,10 +108,7 @@ local function getSetting(category: string, name: string): any
 	end
 end
 
--- If requests/analytics have been disabled by developer, set the user-facing setting to false as well
-if requestsDisabled then
-	overrideSetting("System", "usageAnalytics", false)
-end
+-- Analytics removed entirely
 
 local HttpService = getService('HttpService')
 local RunService = getService('RunService')
@@ -199,15 +193,11 @@ local function loadSettings()
 	end
 end
 
-if debugX then
-	warn('Now Loading Settings Configuration')
-end
+if debugX then end
 
 loadSettings()
 
-if debugX then
-	warn('Settings Loaded')
-end
+if debugX then end
 
 local analyticsLib
 local sendReport = function(ev_n, sc_n) warn("Failed to load report function") end
@@ -1941,10 +1931,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 		makefolder(QuantiXFolder)
 	end
 
-	-- Attempt to report an event to analytics
-	if not requestsDisabled then
-		sendReport("window_created", Settings.Name or "Unknown")
-	end
+		-- Analytics removed
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
 
