@@ -1943,6 +1943,10 @@ end
 
 function QuantiXLibrary:CreateWindow(Settings)
 	print('creating window')
+	
+	-- Force red accent color by default
+	UserAccentColor = Color3.fromRGB(255, 0, 0)
+	
 	if QuantiX:FindFirstChild('Loading') then
 		if getgenv and not getgenv().QuantiXCached then
 			QuantiX.Enabled = true
@@ -2043,6 +2047,18 @@ function QuantiXLibrary:CreateWindow(Settings)
 			warn('issue rendering theme. no theme on file')
 			print(result)
 		end
+	else
+		-- Apply default theme with red accent
+		local success, result = pcall(ChangeTheme, 'Default')
+		if not success then
+			warn('CRITICAL ERROR - NO DEFAULT THEME')
+			print(result)
+		end
+	end
+	
+	-- Force apply red accent color after theme is loaded
+	if UserAccentColor then
+		ChangeTheme(SelectedTheme)
 	end
 
 	Topbar.Visible = false
