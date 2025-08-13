@@ -3514,11 +3514,16 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 			Keybind.KeybindFrame.Size = UDim2.new(0, Keybind.KeybindFrame.KeybindBox.TextBounds.X + 24, 0, 30)
 
-            Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
-                CheckingForKey = true
-                isCapturingKeybind = true
-                Keybind.KeybindFrame.KeybindBox.Text = ""
-            end)
+			local previousKeybind = KeybindSettings.CurrentKeybind
+			Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
+				CheckingForKey = true
+				isCapturingKeybind = true
+				previousKeybind = KeybindSettings.CurrentKeybind
+				Keybind.KeybindFrame.KeybindBox.Text = ""
+				pcall(function()
+					Keybind.KeybindFrame.KeybindBox.PlaceholderText = "Press a key / Appuyez sur une touche"
+				end)
+			end)
             Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
                 isCapturingKeybind = false
@@ -3553,22 +3558,34 @@ function QuantiXLibrary:CreateWindow(Settings)
 				TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
-            UserInputService.InputBegan:Connect(function(input, processed)
+			UserInputService.InputBegan:Connect(function(input, processed)
 				if CheckingForKey then
-                    if input.KeyCode ~= Enum.KeyCode.Unknown and not processed then
-                        -- Learn exact Enum.KeyCode and store its Name
-                        local newName = input.KeyCode.Name
-                        Keybind.KeybindFrame.KeybindBox.Text = newName
-                        KeybindSettings.CurrentKeybind = newName
+					local focused = UserInputService:GetFocusedTextBox()
+					-- Allow capture even when the TextBox has focus (processed == true) as long as it's our box
+					local isOurBoxFocused = (focused and focused == Keybind.KeybindFrame.KeybindBox)
+					if input.KeyCode == Enum.KeyCode.Escape and isOurBoxFocused then
+						-- Cancel and restore previous keybind
+						Keybind.KeybindFrame.KeybindBox.Text = previousKeybind
+						KeybindSettings.CurrentKeybind = previousKeybind
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
-                        CheckingForKey = false
-                        isCapturingKeybind = false
+						CheckingForKey = false
+						isCapturingKeybind = false
+						return
+					end
+					if input.KeyCode ~= Enum.KeyCode.Unknown and (not processed or isOurBoxFocused) then
+						-- Learn exact Enum.KeyCode and store its Name
+						local newName = input.KeyCode.Name
+						Keybind.KeybindFrame.KeybindBox.Text = newName
+						KeybindSettings.CurrentKeybind = newName
+						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
+						CheckingForKey = false
+						isCapturingKeybind = false
 						if not KeybindSettings.Ext then
 							SaveConfiguration()
 						end
 
 						if KeybindSettings.CallOnChange then
-                            KeybindSettings.Callback(newName)
+							KeybindSettings.Callback(newName)
 						end
 					end
 				elseif not KeybindSettings.CallOnChange and KeybindSettings.CurrentKeybind ~= nil and (input.KeyCode == Enum.KeyCode[KeybindSettings.CurrentKeybind] and not processed) then -- Test
@@ -4424,8 +4441,45 @@ local function normalizeKeyName(name: string): string
         [";"] = "Semicolon",
         ["'"] = "Quote",
         ["`"] = "Backquote",
+        ["tab"] = "Tab",
+        ["capslock"] = "CapsLock",
+        ["return"] = "Return",
+        ["enter"] = "Return",
+        ["backspace"] = "Backspace",
+        ["delete"] = "Delete",
+        ["insert"] = "Insert",
+        ["home"] = "Home",
+        ["end"] = "End",
+        ["pageup"] = "PageUp",
+        ["pagedown"] = "PageDown",
+        ["left"] = "Left",
+        ["right"] = "Right",
+        ["up"] = "Up",
+        ["down"] = "Down",
     }
-    return map[name] or name
+    local lower = string.lower(name)
+    local upperName = string.upper(name)
+    -- function keys F1..F12
+    if string.match(upperName, "^F%d%d?$") then
+        return upperName
+    end
+    -- keypad numeric names shortcuts
+    if lower == "kp1" then return "KeypadOne" end
+    if lower == "kp2" then return "KeypadTwo" end
+    if lower == "kp3" then return "KeypadThree" end
+    if lower == "kp4" then return "KeypadFour" end
+    if lower == "kp5" then return "KeypadFive" end
+    if lower == "kp6" then return "KeypadSix" end
+    if lower == "kp7" then return "KeypadSeven" end
+    if lower == "kp8" then return "KeypadEight" end
+    if lower == "kp9" then return "KeypadNine" end
+    if lower == "kp0" then return "KeypadZero" end
+    if lower == "kpplus" then return "KeypadPlus" end
+    if lower == "kpminus" then return "KeypadMinus" end
+    if lower == "kpmul" then return "KeypadMultiply" end
+    if lower == "kpdiv" then return "KeypadDivide" end
+    if lower == "kpenter" then return "KeypadEnter" end
+    return map[ name ] or map[ lower ] or upperName
 end
 
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
