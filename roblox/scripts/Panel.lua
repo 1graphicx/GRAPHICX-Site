@@ -1635,7 +1635,7 @@ function MagnetLoopInverse()
                 local distanceToTarget = (HeadPosition - Character.PrimaryPart.Position).magnitude
 
                 -- Ajustement dynamique basé sur la hauteur de la tête
-                local DefaultCF = CharacterFound.PrimaryPart.CFrame * CFrame.new(0, TargetHeight + HeightOffset, -2)  -- Déplacer devant la tête avec ajustement de hauteur
+                local DefaultCF = CharacterFound.PrimaryPart.CFrame * CFrame.new(0, TargetHeight + HeightOffset, 2)  -- Se placer devant la tête (face à face)
 
                 -- Calculer l'oscillation en fonction du temps mais limiter la distance maximale
                 local oscillation = math.sin(tick() * oscillationSpeed) * oscillationAmplitude
