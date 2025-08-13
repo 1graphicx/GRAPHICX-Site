@@ -78,8 +78,8 @@ local ConfigurationExtension = ".rfld"
 local settingsTable = {
 	General = {
 		-- if needs be in order just make getSetting(name)
-		QuantiXOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
-        SearchOpen = {Type = 'bind', Value = 'Slash', Name = 'Search Keybind'},
+		QuantiXOpen = {Type = 'bind', Value = 'F1', Name = 'QuantiX Keybind'},
+        SearchOpen = {Type = 'bind', Value = 'F2', Name = 'Search Keybind'},
 		-- buildwarnings
 		-- QuantiXprompts
 
@@ -920,7 +920,22 @@ local function refreshAccentedElements()
                             Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
                         end
                     end
+                    -- Apply accent to all element strokes
+                    if Element:FindFirstChild("UIStroke") then
+                        Element.UIStroke.Color = SelectedTheme.ElementStroke
+                    end
                 end
+            end
+        end
+    end
+    -- Apply accent to tab buttons
+    for _, tabbtn in ipairs(TabList:GetChildren()) do
+        if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Template" and tabbtn.Name ~= "Placeholder" then
+            if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
+                tabbtn.BackgroundColor3 = SelectedTheme.TabBackgroundSelected
+            end
+            if tabbtn:FindFirstChild("UIStroke") then
+                tabbtn.UIStroke.Color = SelectedTheme.TabStroke
             end
         end
     end
@@ -978,6 +993,10 @@ local function applyAccentToTheme(baseTheme: table, accent: Color3): table
     end
     t.ToggleEnabledStroke = lighten(accent, 0.15)
     t.SliderStroke = lighten(accent, 0.1)
+    -- Apply accent to more elements
+    t.TabBackgroundSelected = lighten(accent, 0.2)
+    t.ElementStroke = lighten(accent, 0.05)
+    t.SecondaryElementStroke = lighten(accent, 0.05)
     return t
 end
 
@@ -1218,12 +1237,6 @@ local function makeDraggable(object, dragObject, enableTaptic, tapticOffset)
 	local renderStepped = RunService.RenderStepped:Connect(function()
 		if dragging and not Hidden then
 			local position = UserInputService:GetMouseLocation() + relative + offset
-			-- Ensure the interface stays within screen bounds
-			local screenSize = workspace.CurrentCamera.ViewportSize
-			local objectSize = object.AbsoluteSize
-			position.X = math.clamp(position.X, 0, screenSize.X - objectSize.X)
-			position.Y = math.clamp(position.Y, 0, screenSize.Y - objectSize.Y)
-			
 			if enableTaptic and tapticOffset then
 				TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromOffset(position.X, position.Y)}):Play()
 				TweenService:Create(dragObject.Parent, TweenInfo.new(0.05, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromOffset(position.X, position.Y + ((useMobileSizing and tapticOffset[2]) or tapticOffset[1]))}):Play()
@@ -1513,7 +1526,7 @@ local function Hide(notify: boolean?)
 		if useMobilePrompt then 
 			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping 'Show'.", Duration = 7, Image = 4400697855})
 		else
-			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping {getSetting("General", "QuantiXOpen")}.`, Duration = 7, Image = 4400697855})
+			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping ${getSetting("General", "QuantiXOpen")}.`, Duration = 7, Image = 4400697855})
 		end
 	end
 
@@ -3813,12 +3826,12 @@ function QuantiXLibrary:CreateWindow(Settings)
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
 			if ToggleSettings.CurrentValue == true then
-				Toggle.Switch.Indicator.Position = UDim2.new(1, -20, 0.5, 0)
+				Toggle.Switch.Indicator.Position = UDim2.new(1, -30, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleEnabledStroke
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleEnabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleEnabledOuterStroke
 			else
-				Toggle.Switch.Indicator.Position = UDim2.new(1, -40, 0.5, 0)
+				Toggle.Switch.Indicator.Position = UDim2.new(0, 30, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleDisabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
@@ -3847,7 +3860,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					-- Enhanced click animation with bounce
 					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 30, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
 					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
@@ -3858,7 +3871,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					-- Enhanced click animation with bounce
 					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -30, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
 					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
@@ -3894,7 +3907,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					ToggleSettings.CurrentValue = true
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -30, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0,12,0,12)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
@@ -3906,7 +3919,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					ToggleSettings.CurrentValue = false
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 30, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0,12,0,12)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
@@ -4078,8 +4091,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 					local ratio = math.clamp(r, 0, 1)
 					local targetFill = UDim2.new(ratio, 0, 1, 0)
 					if tweenTime and tweenTime > 0 then
-						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = targetFill}):Play()
-						TweenService:Create(thumb, TweenInfo.new(tweenTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(ratio, 0, 0.5, 0)}):Play()
+						TweenService:Create(fill, TweenInfo.new(tweenTime * 2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+						TweenService:Create(thumb, TweenInfo.new(tweenTime * 2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(ratio, 0, 0.5, 0)}):Play()
 					else
 						fill.Size = targetFill
 						thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
@@ -4098,7 +4111,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				-- Initial
-                applyValue(SliderSettings.CurrentValue, 0.4)
+                applyValue(SliderSettings.CurrentValue, 0.8)
 
 				-- Input handling
 				local dragging = false
@@ -4125,7 +4138,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end)
 
                 RunService.RenderStepped:Connect(function()
-                    if dragging then updateFromMouse(0.15) end
+                    if dragging then updateFromMouse(0.3) end
 				end)
 
 				-- Theme updates
@@ -4275,7 +4288,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 							-- Keep progress clamped inside the track and at least 5px
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.9, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 						NewValue = quantize(NewValue, SliderSettings.Increment or 1)
 						local text = formatNumber(NewValue, SliderSettings.Increment or 1)
@@ -4304,7 +4317,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 					else
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						Loop:Disconnect()
 					end
 				end)
@@ -4681,21 +4694,27 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
     local focused = UserInputService:GetFocusedTextBox()
     local function resolveKey(name, fallback)
         if not name or name == "" then return Enum.KeyCode[fallback] end
-        local nn = normalizeKeyName(tostring(name))
-        local keyCode = Enum.KeyCode[nn]
-        if keyCode then
-            return keyCode
-        end
-        -- Try direct mapping for common keys
+        -- Try direct mapping first
         if name == "/" then return Enum.KeyCode.Slash end
         if name == "\\" then return Enum.KeyCode.BackSlash end
         if name == ";" then return Enum.KeyCode.Semicolon end
         if name == "'" then return Enum.KeyCode.Quote end
         if name == "`" then return Enum.KeyCode.Backquote end
+        -- Try normalized name
+        local nn = normalizeKeyName(tostring(name))
+        local keyCode = Enum.KeyCode[nn]
+        if keyCode then
+            return keyCode
+        end
+        -- Try direct enum access
+        keyCode = Enum.KeyCode[name]
+        if keyCode then
+            return keyCode
+        end
         return Enum.KeyCode[fallback]
     end
-    local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "K")
-    local skc = resolveKey(getSetting("General", "SearchOpen"), "Slash")
+    local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "F1")
+    local skc = resolveKey(getSetting("General", "SearchOpen"), "F2")
 
     local canHandle = (not focused) -- don't trigger while typing in any textbox
     if (qkc and input.KeyCode == qkc) and canHandle then
