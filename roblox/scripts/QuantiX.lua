@@ -873,13 +873,13 @@ local Debounce = false
 local searchOpen = false
 local Notifications = QuantiX.Notifications
 
-local SelectedTheme = QuantiXLibrary.Theme.Default
+local SelectedTheme = applyAccentToTheme(QuantiXLibrary.Theme.Default, UserAccentColor)
 
 -- Global flag to avoid triggering hotkeys while capturing keybinds in settings
 local isCapturingKeybind = false
 
 -- UI scaling and animation controls
-local UserAccentColor: Color3? = nil
+local UserAccentColor: Color3? = Color3.fromRGB(255, 0, 0) -- Set default accent color to red
 local animationScale = 1 -- Reduced when performance mode is enabled
 
 -- Refresh accent-applied colors on existing elements immediately
@@ -4829,4 +4829,3 @@ task.delay(4, function()
 end)
 
 return QuantiXLibrary
-
