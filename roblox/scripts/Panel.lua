@@ -1313,10 +1313,28 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
+local isUpdatingMagnetToggles = false
+
 local MagnetToggle = FunTab:CreateToggle({
     Name = "Magnet",
     Description = "Magnet.",
     Callback = function()
+        if isUpdatingMagnetToggles then return end
+        -- If inverse is active, turn it off first and reflect in UI
+        if MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then
+            isUpdatingMagnetToggles = true
+            -- Disable inverse logic
+            MagnetSettingsInverse.CanMagnet = false
+            MagnetSettingsInverse.Target = nil
+            if SleepAnimation then
+                pcall(function() SleepAnimation:Stop() end)
+                SleepAnimation = nil
+            end
+            if typeof(MagnetInverseToggle) == "table" and MagnetInverseToggle.Set then
+                pcall(function() MagnetInverseToggle:Set(false) end)
+            end
+            isUpdatingMagnetToggles = false
+        end
         toggleMagnet()
     end
 })
@@ -1660,12 +1678,28 @@ end
 spawn(MagnetLoopInverse)
 
 -- Création du bouton "Magnet Inversé"
-FunTab:CreateToggle({
+local MagnetInverseToggle = FunTab:CreateToggle({
     Name = "Magnet Inversé",
     Callback = function(Value)
+        if isUpdatingMagnetToggles then return end
+        -- If turning on inverse while normal magnet is active, switch off normal magnet first
+        if Value and isMagnetEnabled then
+            isUpdatingMagnetToggles = true
+            -- Turn off normal magnet and reflect in UI
+            toggleMagnet() -- will disable and show notification
+            if typeof(MagnetToggle) == "table" and MagnetToggle.Set then
+                pcall(function() MagnetToggle:Set(false) end)
+            end
+            isUpdatingMagnetToggles = false
+        end
+
         MagnetSettingsInverse.CanMagnet = Value
         if not Value then
             MagnetSettingsInverse.Target = nil
+            if SleepAnimation then
+                pcall(function() SleepAnimation:Stop() end)
+                SleepAnimation = nil
+            end
         end
     end
 })
