@@ -1463,7 +1463,23 @@ end
 
 -- Fonction pour activer ou désactiver le "Magnet"
 function toggleMagnet()
-    isMagnetEnabled = not isMagnetEnabled
+    local newState = not isMagnetEnabled
+    -- If enabling, ensure inverse is disabled first and reflect UI
+    if newState and MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then
+        isUpdatingMagnetToggles = true
+        MagnetSettingsInverse.CanMagnet = false
+        MagnetSettingsInverse.Target = nil
+        if SleepAnimation then
+            pcall(function() SleepAnimation:Stop() end)
+            SleepAnimation = nil
+        end
+        if typeof(MagnetInverseToggle) == "table" and MagnetInverseToggle.Set then
+            pcall(function() MagnetInverseToggle:Set(false) end)
+        end
+        isUpdatingMagnetToggles = false
+    end
+
+    isMagnetEnabled = newState
     if isMagnetEnabled then
         StarterGui:SetCore("SendNotification", {
             Title = "Magnet Activé",
@@ -1493,6 +1509,8 @@ end
 
 -- Fonction pour détecter un clic sur un joueur
 function onPlayerClick()
+    -- Ignore normal magnet selection when inverse magnet is active
+    if MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then return end
     local mouse = game.Players.LocalPlayer:GetMouse()
     local target = mouse.Target
 
@@ -1561,22 +1579,16 @@ game:GetService("RunService").Heartbeat:Connect(function()
             local playerHRP = playerCharacter:FindFirstChild("HumanoidRootPart")
             local targetHRP = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
             if playerHRP and targetHRP then
-                local backwardDirection = -targetHRP.CFrame.LookVector
-
-                -- Position pour le va-et-vient derrière la cible
-                local targetPosition1 = targetHRP.Position + backwardDirection * 0.1
-                local targetPosition2 = targetHRP.Position + backwardDirection * 4
-
-                -- Choisir la position X et Z pour le va-et-vient
-                local moveToPosition = (math.sin(tick() * oscillationSpeed) > 0) and targetPosition1 or targetPosition2
-
-                -- Synchronisation stricte de la position Y
+                -- Always position behind the target
+                local behindDir = -targetHRP.CFrame.LookVector
+                local baseBehind = targetHRP.Position + behindDir * 2.5
+                local osc = math.sin(tick() * oscillationSpeed)
+                local distance = (osc > 0 and 2.0 or 3.5)
+                local moveToPosition = targetHRP.Position + behindDir * distance
                 moveToPosition = Vector3.new(moveToPosition.X, targetHRP.Position.Y, moveToPosition.Z)
 
-                local tweenInfo = TweenInfo.new(tweenDuration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
                 local newCFrame = CFrame.new(moveToPosition, targetHRP.Position)
-                local tween = TweenService:Create(playerHRP, tweenInfo, {CFrame = newCFrame})
-                tween:Play()
+                playerHRP.CFrame = newCFrame
             end
         end
     end
@@ -1740,6 +1752,8 @@ end)
 
 -- Clic sur un joueur pour activer ou réactiver le magnétisme
 Mouse.Button1Down:Connect(function()
+    -- Ignore inverse selection when normal magnet is active
+    if isMagnetEnabled then return end
     -- Si Ctrl est appuyé, ignorer le clic
     if isCtrlPressed then return end
 
