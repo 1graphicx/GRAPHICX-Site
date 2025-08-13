@@ -285,14 +285,14 @@ local QuantiXLibrary = {
 			ElementStroke = Color3.fromRGB(50, 50, 50),
 			SecondaryElementStroke = Color3.fromRGB(40, 40, 40),
 
-			SliderBackground = Color3.fromRGB(50, 138, 220),
-			SliderProgress = Color3.fromRGB(50, 138, 220),
-			SliderStroke = Color3.fromRGB(58, 163, 255),
+			SliderBackground = Color3.fromRGB(255, 0, 0),
+			SliderProgress = Color3.fromRGB(255, 0, 0),
+			SliderStroke = Color3.fromRGB(255, 50, 50),
 
 			ToggleBackground = Color3.fromRGB(30, 30, 30),
-			ToggleEnabled = Color3.fromRGB(0, 146, 214),
+			ToggleEnabled = Color3.fromRGB(255, 0, 0),
 			ToggleDisabled = Color3.fromRGB(100, 100, 100),
-			ToggleEnabledStroke = Color3.fromRGB(0, 170, 255),
+			ToggleEnabledStroke = Color3.fromRGB(255, 50, 50),
 			ToggleDisabledStroke = Color3.fromRGB(125, 125, 125),
 			ToggleEnabledOuterStroke = Color3.fromRGB(100, 100, 100),
 			ToggleDisabledOuterStroke = Color3.fromRGB(65, 65, 65),
@@ -873,13 +873,13 @@ local Debounce = false
 local searchOpen = false
 local Notifications = QuantiX.Notifications
 
-local SelectedTheme = applyAccentToTheme(QuantiXLibrary.Theme.Default, UserAccentColor)
+local SelectedTheme = QuantiXLibrary.Theme.Default
 
 -- Global flag to avoid triggering hotkeys while capturing keybinds in settings
 local isCapturingKeybind = false
 
 -- UI scaling and animation controls
-local UserAccentColor: Color3? = Color3.fromRGB(255, 0, 0) -- Set default accent color to red
+local UserAccentColor: Color3? = nil
 local animationScale = 1 -- Reduced when performance mode is enabled
 
 -- Refresh accent-applied colors on existing elements immediately
