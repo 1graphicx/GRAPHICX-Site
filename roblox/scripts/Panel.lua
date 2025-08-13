@@ -209,6 +209,20 @@ local function setAirWalkStates(enabled)
     end
 end
 
+-- Aide: calculer la hauteur minimale autorisée (dessus du sol) pour éviter le clip dans les parts
+local rayParams = RaycastParams.new()
+rayParams.FilterType = Enum.RaycastFilterType.Exclude
+rayParams.FilterDescendantsInstances = {character}
+local function getMinAllowedY()
+    if not humanoidRootPart or not humanoid then return -math.huge end
+    local origin = humanoidRootPart.Position
+    local result = workspace:Raycast(origin, Vector3.new(0, -1000, 0), rayParams)
+    if result then
+        return result.Position.Y + (humanoid.HipHeight + humanoidRootPart.Size.Y/2)
+    end
+    return -math.huge
+end
+
 -- Créer le "sol invisible" sous le joueur
 -- Suppression du sol invisible: simulation d'air walk sans partie physique
 
@@ -227,7 +241,8 @@ MainTab:CreateToggle({
         
         if lockYEnabled then
             -- Verrouillage Y sans support physique
-            lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
+            local minY = getMinAllowedY()
+            lockedYPosition = math.max(humanoidRootPart.Position.Y, minY)
             humanoid.JumpPower = 0
             setAirWalkStates(true)
             print("Air walk enabled.")
@@ -247,7 +262,8 @@ player.CharacterAdded:Connect(function(newCharacter)
     
     if lockYEnabled then
         wait(1)
-        lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
+        local minY = getMinAllowedY()
+        lockedYPosition = math.max(humanoidRootPart.Position.Y, minY)
         humanoid.JumpPower = 0
         setAirWalkStates(true)
     end
@@ -300,9 +316,11 @@ runService.Heartbeat:Connect(function()
     local desiredVel = Vector3.new(moveDir.X, 0, moveDir.Z) * speed
     hrp.AssemblyLinearVelocity = Vector3.new(desiredVel.X, 0, desiredVel.Z)
 
-    -- Corriger la composante Y à lockedYPosition
+    -- Corriger la composante Y à lockedYPosition (en respectant un minY pour éviter de clip)
     local pos = hrp.Position
     -- Conserver une orientation droite (annuler pitch/roll), garder le yaw existant
+    local minY = getMinAllowedY()
+    lockedYPosition = math.max(lockedYPosition, minY)
     local _, yaw, _ = hrp.CFrame:ToOrientation()
     hrp.CFrame = CFrame.new(Vector3.new(pos.X, lockedYPosition, pos.Z)) * CFrame.Angles(0, yaw, 0)
 
