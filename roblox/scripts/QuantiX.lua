@@ -71,22 +71,22 @@ end
 
 local requestsDisabled = true --getgenv and getgenv().DISABLE_QuantiX_REQUESTS
 local InterfaceBuild = '3K3W'
-local Release = "Build 1.68 Enhanced"
+local Release = "Build 1.68"
 local QuantiXFolder = "QuantiX"
 local ConfigurationFolder = QuantiXFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
 local settingsTable = {
 	General = {
 		-- if needs be in order just make getSetting(name)
-		QuantiXOpen = {Type = 'bind', Value = 'F1', Name = 'QuantiX Keybind'},
-        SearchOpen = {Type = 'bind', Value = 'F2', Name = 'Search Keybind'},
+		QuantiXOpen = {Type = 'bind', Value = 'K', Name = 'QuantiX Keybind'},
+        SearchOpen = {Type = 'bind', Value = 'Slash', Name = 'Search Keybind'},
 		-- buildwarnings
 		-- QuantiXprompts
 
     },
     Interface = {
         uiScale = {Type = 'slider', Value = 1, Name = 'UI Scale', Range = {0.8, 1.4}, Increment = 0.01, Suffix = 'x'},
-        compactMode = {Type = 'toggle', Value = true, Name = 'Compact Mode'},
+        compactMode = {Type = 'toggle', Value = false, Name = 'Compact Mode'},
         performanceMode = {Type = 'toggle', Value = false, Name = 'Performance Mode'},
         theme = {Type = 'dropdown', Value = 'Default', Name = 'Theme', Options = nil, MultipleOptions = false},
         accentColor = {Type = 'color', Value = Color3.fromRGB(255, 0, 0), Name = 'Accent Color'},
@@ -885,19 +885,11 @@ local animationScale = 1 -- Reduced when performance mode is enabled
 -- Refresh accent-applied colors on existing elements immediately
 local function refreshAccentedElements()
     if not Elements or not Elements:GetChildren() then return end
-    
-    -- Apply accent to all tab pages and their elements
     for _, TabPage in ipairs(Elements:GetChildren()) do
         if TabPage.ClassName == "ScrollingFrame" and TabPage.Name ~= "Template" and TabPage.Name ~= "Placeholder" then
             for _, Element in ipairs(TabPage:GetChildren()) do
                 if Element.ClassName == "Frame" then
-                    -- Apply accent to element background and stroke
-                    Element.BackgroundColor3 = SelectedTheme.ElementBackground
-                    if Element:FindFirstChild("UIStroke") then
-                        Element.UIStroke.Color = SelectedTheme.ElementStroke
-                    end
-                    
-                    -- Slider detection and accent application
+                    -- Slider detection
                     local MainFrame = Element:FindFirstChild("Main")
                     if MainFrame and MainFrame:FindFirstChild("Progress") and MainFrame:FindFirstChild("UIStroke") then
                         MainFrame.BackgroundColor3 = SelectedTheme.SliderBackground
@@ -907,14 +899,13 @@ local function refreshAccentedElements()
                         end
                         MainFrame.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
                     end
-                    
-                    -- Toggle detection and accent application
+                    -- Toggle detection
                     local Switch = Element:FindFirstChild("Switch")
                     if Switch and Switch:FindFirstChild("Indicator") and Switch:FindFirstChild("UIStroke") then
                         Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
                         local Indicator = Switch.Indicator
                         -- Determine on/off by position (right ~ on)
-                        local enabled = (Indicator.Position.X.Offset > -20)
+                        local enabled = (Indicator.Position.X.Offset > -30)
                         if enabled then
                             if Indicator:FindFirstChild("UIStroke") then
                                 Indicator.UIStroke.Color = SelectedTheme.ToggleEnabledStroke
@@ -929,46 +920,8 @@ local function refreshAccentedElements()
                             Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
                         end
                     end
-                    
-                    -- Apply accent to text elements
-                    if Element:FindFirstChild("Title") then
-                        Element.Title.TextColor3 = SelectedTheme.TextColor
-                    end
-                    if Element:FindFirstChild("Information") then
-                        Element.Information.TextColor3 = SelectedTheme.TextColor
-                    end
                 end
             end
-        end
-    end
-    
-    -- Apply accent to tab buttons
-    for _, tabbtn in ipairs(TabList:GetChildren()) do
-        if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Template" and tabbtn.Name ~= "Placeholder" then
-            if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-                tabbtn.BackgroundColor3 = SelectedTheme.TabBackgroundSelected
-            else
-                tabbtn.BackgroundColor3 = SelectedTheme.TabBackground
-            end
-            if tabbtn:FindFirstChild("UIStroke") then
-                tabbtn.UIStroke.Color = SelectedTheme.TabStroke
-            end
-            if tabbtn:FindFirstChild("Title") then
-                tabbtn.Title.TextColor3 = SelectedTheme.TextColor
-            end
-        end
-    end
-    
-    -- Apply accent to topbar elements
-    if QuantiX and QuantiX.Main and QuantiX.Main.Topbar then
-        local Topbar = QuantiX.Main.Topbar
-        for _, element in ipairs(Topbar:GetChildren()) do
-            if element:IsA("ImageButton") and element.Name ~= "Icon" then
-                element.ImageColor3 = SelectedTheme.TextColor
-            end
-        end
-        if Topbar:FindFirstChild("Divider") then
-            Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
         end
     end
 end
@@ -1011,42 +964,20 @@ end
 local function applyAccentToTheme(baseTheme: table, accent: Color3): table
     if not accent then return baseTheme end
     local t = deepCopyTheme(baseTheme)
-    
-    -- Helper function to lighten colors
+    -- Primary accents
+    t.SliderBackground = accent
+    t.SliderProgress = accent
+    t.SliderStroke = accent
+    t.ToggleEnabled = accent
+    -- Subtle strokes derived from accent (slightly lighter)
     local function lighten(color: Color3, amount: number)
         local r = math.clamp(color.R + amount, 0, 1)
         local g = math.clamp(color.G + amount, 0, 1)
         local b = math.clamp(color.B + amount, 0, 1)
         return Color3.new(r, g, b)
     end
-    
-    -- Helper function to darken colors
-    local function darken(color: Color3, amount: number)
-        local r = math.clamp(color.R - amount, 0, 1)
-        local g = math.clamp(color.G - amount, 0, 1)
-        local b = math.clamp(color.B - amount, 0, 1)
-        return Color3.new(r, g, b)
-    end
-    
-    -- Primary accent elements (direct accent color)
-    t.SliderBackground = accent
-    t.SliderProgress = accent
-    t.ToggleEnabled = accent
-    
-    -- Stroke elements (slightly lighter accent)
-    t.SliderStroke = lighten(accent, 0.1)
     t.ToggleEnabledStroke = lighten(accent, 0.15)
-    t.ElementStroke = lighten(accent, 0.05)
-    t.SecondaryElementStroke = lighten(accent, 0.05)
-    t.TabStroke = lighten(accent, 0.05)
-    
-    -- Background elements (lighter accent)
-    t.TabBackgroundSelected = lighten(accent, 0.2)
-    t.ElementBackgroundHover = lighten(accent, 0.1)
-    
-    -- Text elements (darker accent for contrast)
-    t.TextColor = darken(accent, 0.3)
-    
+    t.SliderStroke = lighten(accent, 0.1)
     return t
 end
 
@@ -1101,10 +1032,6 @@ local function ChangeTheme(Theme)
 	end
     -- Ensure accent-applied components (sliders/toggles) update immediately
     refreshAccentedElements()
-    
-    -- Force refresh all elements with accent color
-    task.wait(0.1) -- Small delay to ensure UI is ready
-    refreshAccentedElements()
 end
 
 -- Global UIScale for the entire window
@@ -1115,20 +1042,6 @@ if not GlobalUIScale then
     GlobalUIScale.Scale = 1
     GlobalUIScale.Parent = Main
 end
-
--- Initialize accent color application
-local function initializeAccentColor()
-    if UserAccentColor then
-        SelectedTheme = applyAccentToTheme(SelectedTheme, UserAccentColor)
-        refreshAccentedElements()
-    end
-end
-
--- Call initialization after a short delay to ensure UI is ready
-task.spawn(function()
-    task.wait(0.5)
-    initializeAccentColor()
-end)
 
 -- Compact and performance modes
 local isCompactMode = false
@@ -1169,26 +1082,8 @@ local function setPerformanceMode(enabled: boolean)
     -- Slightly reduce background transparency to cut overdraw in performance mode
     if isPerformanceMode then
         Main.BackgroundTransparency = 0.05
-        -- Disable complex animations in performance mode
-        for _, element in ipairs(QuantiX:GetDescendants()) do
-            if element:IsA("Frame") and element:FindFirstChildOfClass("UIStroke") then
-                local stroke = element:FindFirstChildOfClass("UIStroke")
-                if stroke then
-                    stroke.Thickness = 1
-                end
-            end
-        end
     else
         Main.BackgroundTransparency = 0
-        -- Restore normal stroke thickness
-        for _, element in ipairs(QuantiX:GetDescendants()) do
-            if element:IsA("Frame") and element:FindFirstChildOfClass("UIStroke") then
-                local stroke = element:FindFirstChildOfClass("UIStroke")
-                if stroke then
-                    stroke.Thickness = 1
-                end
-            end
-        end
     end
 end
 
@@ -1474,39 +1369,36 @@ function QuantiXLibrary:Notify(data) -- action e.g open messages
 		newNotification.Icon.Size = UDim2.new(0, 32, 0, 32)
 		newNotification.Icon.Position = UDim2.new(0, 20, 0.5, 0)
 
-		-- Enhanced entrance animation with bounce effect
-		TweenService:Create(newNotification, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))}):Play()
 
-		task.wait(0.2)
-		-- Enhanced fade-in with staggered timing
-		TweenService:Create(newNotification, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.3}):Play()
-		TweenService:Create(newNotification.Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+		task.wait(0.15)
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.45}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
-		task.wait(0.1)
-		TweenService:Create(newNotification.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+		task.wait(0.05)
 
-		task.wait(0.1)
-		TweenService:Create(newNotification.Description, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
-		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0.9}):Play()
-		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
+		TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+
+		task.wait(0.05)
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
 		task.wait(data.Duration or waitDuration)
 
-		-- Enhanced exit animation with smooth transitions
 		newNotification.Icon.Visible = false
-		TweenService:Create(newNotification, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-		TweenService:Create(newNotification.Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-		TweenService:Create(newNotification.Description, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
-		-- Enhanced slide out with bounce effect
-		TweenService:Create(newNotification, TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(1, -90, 0, 0)}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
-		task.wait(1.2)
+		task.wait(1)
 
-		TweenService:Create(newNotification, TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)}):Play()
 
 		newNotification.Visible = false
 		newNotification:Destroy()
@@ -1594,7 +1486,7 @@ local function Hide(notify: boolean?)
 		if useMobilePrompt then 
 			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping 'Show'.", Duration = 7, Image = 4400697855})
 		else
-			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping ${getSetting("General", "QuantiXOpen")}.`, Duration = 7, Image = 4400697855})
+			QuantiXLibrary:Notify({Title = "Interface Hidden", Content = `The interface has been hidden, you can unhide the interface by tapping {getSetting("General", "QuantiXOpen")}.`, Duration = 7, Image = 4400697855})
 		end
 	end
 
@@ -2588,55 +2480,20 @@ function QuantiXLibrary:CreateWindow(Settings)
 			local Section = Tab:CreateSection(title)
 			local elementsByUserId: { [number]: any } = {}
 			local connection
-			local lastPlayerCount = 0
 
 			local function sync(playersList)
-				-- Only update if the player count actually changed
-				if #playersList == lastPlayerCount then
-					-- Just update names if needed, don't recreate everything
-					for index, plr in ipairs(playersList) do
-						if elementsByUserId[plr.UserId] then
-							local btn = elementsByUserId[plr.UserId]
-							if typeof(btn.Set) == "function" then
-								pcall(function()
-									btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
-								end)
-							end
-						end
-					end
-					return
-				end
-				
-				lastPlayerCount = #playersList
-				
-				-- Remove elements no longer present with smooth animation
+				-- Remove elements no longer present
 				for userId, elem in pairs(elementsByUserId) do
 					local found = false
 					for _, plr in ipairs(playersList) do
 						if plr.UserId == userId then found = true break end
 					end
 					if not found then
-						-- Smooth fade out animation before destroying
-						local uiObject = nil
-						pcall(function()
-							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(elem.Name or "")
-						end)
-						if uiObject and uiObject.ClassName == "Frame" then
-							TweenService:Create(uiObject, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
-								BackgroundTransparency = 1,
-								Size = UDim2.new(0, 0, 0, uiObject.Size.Y.Offset)
-							}):Play()
-							task.delay(0.3, function()
-								pcall(function() elem:Destroy() end)
-							end)
-						else
-							pcall(function() elem:Destroy() end)
-						end
+						pcall(function() elem:Destroy() end)
 						elementsByUserId[userId] = nil
 					end
 				end
-				
-				-- Add new players with smooth animation
+				-- Add or update existing
 				for index, plr in ipairs(playersList) do
 					if not elementsByUserId[plr.UserId] then
 						local btn = Tab:CreateButton({
@@ -2647,53 +2504,36 @@ function QuantiXLibrary:CreateWindow(Settings)
 							end,
 						})
 						elementsByUserId[plr.UserId] = btn
-						
-						-- Set proper order
-						local uiObject = nil
-						pcall(function()
-							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
-						end)
-						if uiObject and uiObject.ClassName == "Frame" then
-							uiObject.LayoutOrder = index
-						end
 					else
-						-- Update existing button name if needed
 						local btn = elementsByUserId[plr.UserId]
 						if typeof(btn.Set) == "function" then
 							pcall(function()
 								btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
 							end)
 						end
-						
-						-- Update order
-						local uiObject = nil
-						pcall(function()
-							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
-						end)
-						if uiObject and uiObject.ClassName == "Frame" then
-							uiObject.LayoutOrder = index
-						end
+					end
+					-- Try to keep order consistent with playersList by setting LayoutOrder
+					local uiObject = nil
+					pcall(function()
+						-- ButtonValue returned doesn't expose the frame directly; try to infer from last created child
+						uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
+					end)
+					if uiObject and uiObject.ClassName == "Frame" then
+						uiObject.LayoutOrder = index
 					end
 				end
 			end
 
 			-- Initial sync
 			sync(QuantiXLibrary:GetPlayersList(includeLocal))
-			-- Subscribe with debouncing to prevent excessive updates
-			local debounceTimer = nil
+			-- Subscribe
 			connection = QuantiXLibrary:OnPlayersChanged(function(players)
-				if debounceTimer then
-					task.cancel(debounceTimer)
-				end
-				debounceTimer = task.delay(0.1, function()
-					sync(players)
-				end)
+				sync(players)
 			end, includeLocal)
 
 			return {
 				Destroy = function()
 					if connection and connection.Disconnect then connection:Disconnect() end
-					if debounceTimer then task.cancel(debounceTimer) end
 					for _, elem in pairs(elementsByUserId) do
 						pcall(function() elem:Destroy() end)
 					end
@@ -2717,13 +2557,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Button.ElementIndicator.Text = tostring(ButtonSettings.IndicatorText)
 			end
 
-			-- Enhanced button properties
 			Button.BackgroundTransparency = 1
 			Button.UIStroke.Transparency = 1
 			Button.Title.TextTransparency = 1
 
-			-- Enhanced entrance animation with bounce effect
-			TweenService:Create(Button, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+			TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Button.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Button.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -2750,66 +2588,24 @@ function QuantiXLibrary:CreateWindow(Settings)
 					if not ButtonSettings.Ext then
 						SaveConfiguration(ButtonSettings.Name..'\n')
 					end
-					
-					-- Enhanced click animation with bounce and rotation
-					TweenService:Create(Button, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-						Size = Button.Size - UDim2.new(0, 2, 0, 1)
-					}):Play()
-					
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					
-					task.wait(0.15)
-					
-					-- Reset size with bounce
-					TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-						Size = Button.Size + UDim2.new(0, 2, 0, 1)
-					}):Play()
-					
+					task.wait(0.2)
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 				end
 			end)
 
-			-- Enhanced hover effects with scale and glow
 			Button.MouseEnter:Connect(function()
-				-- Scale effect
-				TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-					Size = Button.Size + UDim2.new(0, 3, 0, 1)
-				}):Play()
-				
-				-- Color change
-				TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.7}):Play()
-				
-				-- Enhanced stroke effect
-				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 2}):Play()
-				
-				-- Add subtle glow effect
-				if Button:FindFirstChild("UIStroke") then
-					TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.3}):Play()
-				end
+				TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.7}):Play()
 			end)
 
 			Button.MouseLeave:Connect(function()
-				-- Reset scale
-				TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-					Size = Button.Size - UDim2.new(0, 3, 0, 1)
-				}):Play()
-				
-				-- Reset color
-				TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
-				
-				-- Reset stroke
-				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 1}):Play()
-				
-				-- Reset glow effect
-				if Button:FindFirstChild("UIStroke") then
-					TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
-				end
+				TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
 			end)
 
 			function ButtonValue:Set(NewButton)
@@ -3888,8 +3684,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Toggle.Switch.Shadow.Visible = false
 			end
 
-			-- Enhanced entrance animation with bounce effect
-			TweenService:Create(Toggle, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+			TweenService:Create(Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -3899,52 +3694,41 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleEnabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleEnabledOuterStroke
 			else
-				Toggle.Switch.Indicator.Position = UDim2.new(0, 20, 0.5, 0)
+				Toggle.Switch.Indicator.Position = UDim2.new(1, -40, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleDisabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
 			end
 
-			-- Enhanced hover effects with scale
 			Toggle.MouseEnter:Connect(function()
-				TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				-- Subtle scale effect on the switch
-				TweenService:Create(Toggle.Switch, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-					Size = Toggle.Switch.Size + UDim2.new(0, 2, 0, 2)
-				}):Play()
+				TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 			end)
 
 			Toggle.MouseLeave:Connect(function()
-				TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				-- Reset scale
-				TweenService:Create(Toggle.Switch, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-					Size = Toggle.Switch.Size - UDim2.new(0, 2, 0, 2)
-				}):Play()
+				TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
 			Toggle.Interact.MouseButton1Click:Connect(function()
 				if ToggleSettings.CurrentValue == true then
 					ToggleSettings.CurrentValue = false
-					-- Enhanced click animation with bounce
-					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 20, 0.5, 0)}):Play()
-					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
-					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
-					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()	
+					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
+					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
+					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()	
 				else
 					ToggleSettings.CurrentValue = true
-					-- Enhanced click animation with bounce
-					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
-					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
-					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
-					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()		
+					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
+					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
+					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()		
 				end
 
 				local Success, Response = pcall(function()
@@ -3987,7 +3771,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					ToggleSettings.CurrentValue = false
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 20, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0,12,0,12)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
@@ -4159,12 +3943,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 					local ratio = math.clamp(r, 0, 1)
 					local targetFill = UDim2.new(ratio, 0, 1, 0)
 					if tweenTime and tweenTime > 0 then
-						TweenService:Create(fill, TweenInfo.new(tweenTime * 2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = targetFill}):Play()
-						TweenService:Create(thumb, TweenInfo.new(tweenTime * 2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(ratio, 0, 0.5, 0)}):Play()
+						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = targetFill}):Play()
 					else
 						fill.Size = targetFill
-						thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 					end
+					thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 				end
 
 				local function applyValue(v, tweenTime)
@@ -4179,7 +3962,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				-- Initial
-                applyValue(SliderSettings.CurrentValue, 0.8)
+                applyValue(SliderSettings.CurrentValue, 0.2)
 
 				-- Input handling
 				local dragging = false
@@ -4206,7 +3989,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end)
 
                 RunService.RenderStepped:Connect(function()
-                    if dragging then updateFromMouse(0.3) end
+                    if dragging then updateFromMouse(0.08) end
 				end)
 
 				-- Theme updates
@@ -4303,13 +4086,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Information.Text = initialText .. (SliderSettings.Suffix and (" " .. SliderSettings.Suffix) or "")
 
 			Slider.MouseEnter:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 2}):Play()
+				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 			end)
 
 			Slider.MouseLeave:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 1}):Play()
+				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
 			Slider.Main.Interact.InputBegan:Connect(function(Input)
@@ -4356,7 +4137,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 							-- Keep progress clamped inside the track and at least 5px
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.9, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 						NewValue = quantize(NewValue, SliderSettings.Increment or 1)
 						local text = formatNumber(NewValue, SliderSettings.Increment or 1)
@@ -4385,7 +4166,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 					else
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						Loop:Disconnect()
 					end
 				end)
@@ -4397,8 +4178,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 
                 local px = math.max(5, valueToPixels(NewVal))
                 applyProgressPixels(px)
-				local text = formatNumber(NewVal, SliderSettings.Increment or 1)
-				Slider.Main.Information.Text = text .. " " .. (SliderSettings.Suffix or "")
+					local text = formatNumber(NewVal, SliderSettings.Increment or 1)
+					Slider.Main.Information.Text = text .. " " .. (SliderSettings.Suffix or "")
 
 				local Success, Response = pcall(function()
 					SliderSettings.Callback(NewVal)
@@ -4579,72 +4360,36 @@ Topbar.ChangeSize.MouseButton1Click:Connect(function()
 end)
 
 Main.Search.Input:GetPropertyChangedSignal('Text'):Connect(function()
-	local searchText = string.lower(Main.Search.Input.Text)
-	
-	if #searchText > 0 then
-		-- Search across all tabs
-		for _, tabPage in ipairs(Elements:GetChildren()) do
-			if tabPage.ClassName == "ScrollingFrame" and tabPage.Name ~= "Template" and tabPage.Name ~= "Placeholder" then
-				local hasResults = false
-				
-				-- Check if this tab has any matching elements
-				for _, element in ipairs(tabPage:GetChildren()) do
-					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
-						if element.Name ~= 'SectionTitle' then
-							if string.lower(element.Name):find(searchText, 1, true) then
-								hasResults = true
-								break
-							end
-						end
-					end
-				end
-				
-				-- Show/hide elements based on search
-				for _, element in ipairs(tabPage:GetChildren()) do
-					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
-						if element.Name == 'SectionTitle' then
-							element.Visible = hasResults
-						else
-							if string.lower(element.Name):find(searchText, 1, true) then
-								element.Visible = true
-							else
-								element.Visible = false
-							end
-						end
-					end
-				end
-				
-				-- Add search title if this tab has results
-				if hasResults then
-					if not tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks') then 
-						local searchTitle = Elements.Template.SectionTitle:Clone()
-						searchTitle.Parent = tabPage
-						searchTitle.Name = 'SearchTitle-fsefsefesfsefesfesfThanks'
-						searchTitle.LayoutOrder = -100
-						searchTitle.Title.Text = "Results from '"..tabPage.Name.."'"
-						searchTitle.Visible = true
-					end
-				else
-					local searchTitle = tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
-					if searchTitle then
-						searchTitle:Destroy()
-					end
-				end
-			end
+	if #Main.Search.Input.Text > 0 then
+		if not Elements.UIPageLayout.CurrentPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks') then 
+			local searchTitle = Elements.Template.SectionTitle:Clone()
+			searchTitle.Parent = Elements.UIPageLayout.CurrentPage
+			searchTitle.Name = 'SearchTitle-fsefsefesfsefesfesfThanks'
+			searchTitle.LayoutOrder = -100
+			searchTitle.Title.Text = "Results from '"..Elements.UIPageLayout.CurrentPage.Name.."'"
+			searchTitle.Visible = true
 		end
 	else
-		-- Clear search - show all elements and remove search titles
-		for _, tabPage in ipairs(Elements:GetChildren()) do
-			if tabPage.ClassName == "ScrollingFrame" and tabPage.Name ~= "Template" and tabPage.Name ~= "Placeholder" then
-				local searchTitle = tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
-				if searchTitle then
-					searchTitle:Destroy()
+		local searchTitle = Elements.UIPageLayout.CurrentPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
+
+		if searchTitle then
+			searchTitle:Destroy()
+		end
+	end
+
+	for _, element in ipairs(Elements.UIPageLayout.CurrentPage:GetChildren()) do
+		if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
+			if element.Name == 'SectionTitle' then
+				if #Main.Search.Input.Text == 0 then
+					element.Visible = true
+				else
+					element.Visible = false
 				end
-				
-				for _, element in ipairs(tabPage:GetChildren()) do
-					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
-						element.Visible = true
-					end
+			else
+				if string.lower(element.Name):find(string.lower(Main.Search.Input.Text), 1, true) then
+					element.Visible = true
+				else
+					element.Visible = false
 				end
 			end
 		end
@@ -4697,14 +4442,8 @@ end)
 -- Normalize some common printable/special keys to Enum names
 local function normalizeKeyName(name: string): string
     if not name or name == "" then return "Unknown" end
-    
-    -- Direct character mappings
-    local charMap = {
+    local map = {
         ["/"] = "Slash",
-        ["\\"] = "BackSlash",
-        [";"] = "Semicolon",
-        ["'"] = "Quote",
-        ["`"] = "Backquote",
         [" "] = "Space",
         ["."] = "Period",
         [","] = "Comma",
@@ -4712,10 +4451,10 @@ local function normalizeKeyName(name: string): string
         ["="] = "Equals",
         ["["] = "LeftBracket",
         ["]"] = "RightBracket",
-    }
-    
-    -- Word mappings
-    local wordMap = {
+        ["\\"] = "BackSlash",
+        [";"] = "Semicolon",
+        ["'"] = "Quote",
+        ["`"] = "Backquote",
         ["tab"] = "Tab",
         ["capslock"] = "CapsLock",
         ["return"] = "Return",
@@ -4731,57 +4470,30 @@ local function normalizeKeyName(name: string): string
         ["right"] = "Right",
         ["up"] = "Up",
         ["down"] = "Down",
-        ["slash"] = "Slash",
-        ["backslash"] = "BackSlash",
-        ["semicolon"] = "Semicolon",
-        ["quote"] = "Quote",
-        ["backquote"] = "Backquote",
     }
-    
     local lower = string.lower(name)
     local upperName = string.upper(name)
-    
-    -- Function keys F1..F12
+    -- function keys F1..F12
     if string.match(upperName, "^F%d%d?$") then
         return upperName
     end
-    
-    -- Keypad mappings
-    local keypadMap = {
-        ["kp1"] = "KeypadOne",
-        ["kp2"] = "KeypadTwo", 
-        ["kp3"] = "KeypadThree",
-        ["kp4"] = "KeypadFour",
-        ["kp5"] = "KeypadFive",
-        ["kp6"] = "KeypadSix",
-        ["kp7"] = "KeypadSeven",
-        ["kp8"] = "KeypadEight",
-        ["kp9"] = "KeypadNine",
-        ["kp0"] = "KeypadZero",
-        ["kpplus"] = "KeypadPlus",
-        ["kpminus"] = "KeypadMinus",
-        ["kpmul"] = "KeypadMultiply",
-        ["kpdiv"] = "KeypadDivide",
-        ["kpenter"] = "KeypadEnter"
-    }
-    
-    -- Check character map first
-    if charMap[name] then
-        return charMap[name]
-    end
-    
-    -- Check word map
-    if wordMap[lower] then
-        return wordMap[lower]
-    end
-    
-    -- Check keypad map
-    if keypadMap[lower] then
-        return keypadMap[lower]
-    end
-    
-    -- Return uppercase if no mapping found
-    return upperName
+    -- keypad numeric names shortcuts
+    if lower == "kp1" then return "KeypadOne" end
+    if lower == "kp2" then return "KeypadTwo" end
+    if lower == "kp3" then return "KeypadThree" end
+    if lower == "kp4" then return "KeypadFour" end
+    if lower == "kp5" then return "KeypadFive" end
+    if lower == "kp6" then return "KeypadSix" end
+    if lower == "kp7" then return "KeypadSeven" end
+    if lower == "kp8" then return "KeypadEight" end
+    if lower == "kp9" then return "KeypadNine" end
+    if lower == "kp0" then return "KeypadZero" end
+    if lower == "kpplus" then return "KeypadPlus" end
+    if lower == "kpminus" then return "KeypadMinus" end
+    if lower == "kpmul" then return "KeypadMultiply" end
+    if lower == "kpdiv" then return "KeypadDivide" end
+    if lower == "kpenter" then return "KeypadEnter" end
+    return map[ name ] or map[ lower ] or upperName
 end
 
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
@@ -4790,25 +4502,11 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
     local focused = UserInputService:GetFocusedTextBox()
     local function resolveKey(name, fallback)
         if not name or name == "" then return Enum.KeyCode[fallback] end
-        
-        -- Try direct enum access first (for standard keys like F1, F2, etc.)
-        local keyCode = Enum.KeyCode[name]
-        if keyCode then
-            return keyCode
-        end
-        
-        -- Try normalized name
         local nn = normalizeKeyName(tostring(name))
-        keyCode = Enum.KeyCode[nn]
-        if keyCode then
-            return keyCode
-        end
-        
-        -- Fallback
-        return Enum.KeyCode[fallback]
+        return Enum.KeyCode[nn] or Enum.KeyCode[fallback]
     end
-    local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "F1")
-    local skc = resolveKey(getSetting("General", "SearchOpen"), "F2")
+    local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "K")
+    local skc = resolveKey(getSetting("General", "SearchOpen"), "Slash")
 
     local canHandle = (not focused) -- don't trigger while typing in any textbox
     if (qkc and input.KeyCode == qkc) and canHandle then
