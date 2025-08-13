@@ -89,7 +89,7 @@ local settingsTable = {
         compactMode = {Type = 'toggle', Value = false, Name = 'Compact Mode'},
         performanceMode = {Type = 'toggle', Value = false, Name = 'Performance Mode'},
         theme = {Type = 'dropdown', Value = 'Default', Name = 'Theme', Options = nil, MultipleOptions = false},
-        accentColor = {Type = 'color', Value = Color3.fromRGB(255, 000, 000), Name = 'Accent Color'},
+        accentColor = {Type = 'color', Value = Color3.fromRGB(255, 0, 0), Name = 'Accent Color'},
     }
 }
 
@@ -4829,6 +4829,4 @@ task.delay(4, function()
 end)
 
 return QuantiXLibrary
-
-
 
