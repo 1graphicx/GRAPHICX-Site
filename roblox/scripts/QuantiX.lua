@@ -3916,6 +3916,29 @@ function QuantiXLibrary:CreateWindow(Settings)
 					return minVal + r * (maxVal - minVal)
 				end
 
+				local function quantize(value, inc)
+					local increment = inc or 1
+					if increment <= 0 then increment = 1 end
+					local q = math.floor(((value - minVal) / increment) + 0.5) * increment + minVal
+					return math.clamp(q, minVal, maxVal)
+				end
+
+				local function decimalsForIncrement(inc)
+					if not inc or inc >= 1 then return 0 end
+					local d = math.ceil(math.log10(1 / inc))
+					if d < 0 then d = 0 end
+					if d > 6 then d = 6 end
+					return d
+				end
+
+				local function formatNumber(value, inc)
+					local d = decimalsForIncrement(inc)
+					local s = string.format("%."..tostring(d).."f", value)
+					-- trim trailing zeros and dot
+					s = s:gsub("(%..-)0+$", "%1"):gsub("%.$", "")
+					return s
+				end
+
 				local function setVisualsFromRatio(r, tweenTime)
 					local ratio = math.clamp(r, 0, 1)
 					local targetFill = UDim2.new(ratio, 0, 1, 0)
@@ -3928,12 +3951,14 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				local function applyValue(v, tweenTime)
-					SliderSettings.CurrentValue = v
+					local q = quantize(v, SliderSettings.Increment or 1)
+					SliderSettings.CurrentValue = q
 					local r = valueToRatio(v)
 					setVisualsFromRatio(r, tweenTime)
-					Slider.Main.Information.Text = tostring(v) .. (SliderSettings.Suffix and (" "..SliderSettings.Suffix) or "")
+					local text = formatNumber(q, SliderSettings.Increment or 1)
+					Slider.Main.Information.Text = text .. (SliderSettings.Suffix and (" "..SliderSettings.Suffix) or "")
 					if not SliderSettings.Ext then SaveConfiguration() end
-					pcall(function() SliderSettings.Callback(v) end)
+					pcall(function() SliderSettings.Callback(q) end)
 				end
 
 				-- Initial
@@ -3941,17 +3966,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 
 				-- Input handling
 				local dragging = false
-                local function updateFromMouse(tweenTime)
+				local function updateFromMouse(tweenTime)
 					local mouseX = UserInputService:GetMouseLocation().X
 					local left = track.AbsolutePosition.X
 					local width = math.max(1, track.AbsoluteSize.X)
 					local ratio = math.clamp((mouseX - left) / width, 0, 1)
-					-- quantize to increment
 					local rawVal = ratioToValue(ratio)
-					local inc = SliderSettings.Increment or 1
-					local q = math.floor((rawVal - minVal) / inc + 0.5) * inc + minVal
-					q = math.clamp(q, minVal, maxVal)
-					applyValue(q, tweenTime)
+					applyValue(quantize(rawVal, SliderSettings.Increment or 1), tweenTime)
 				end
 
 				track.Interact.InputBegan:Connect(function(input)
@@ -4061,11 +4082,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 			local initialPixels = math.max(5, valueToPixels(SliderSettings.CurrentValue))
 			applyProgressPixels(initialPixels)
 
-			if not SliderSettings.Suffix then
-				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue)
-			else
-				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue) .. " " .. SliderSettings.Suffix
-			end
+				local initialText = formatNumber(SliderSettings.CurrentValue, SliderSettings.Increment or 1)
+				Slider.Main.Information.Text = initialText .. (SliderSettings.Suffix and (" " .. SliderSettings.Suffix) or "")
 
 			Slider.MouseEnter:Connect(function()
 				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
@@ -4121,15 +4139,9 @@ function QuantiXLibrary:CreateWindow(Settings)
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
                         TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
-
-						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
-							NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
-
-						if not SliderSettings.Suffix then
-							Slider.Main.Information.Text = tostring(NewValue)
-						else
-							Slider.Main.Information.Text = tostring(NewValue) .. " " .. SliderSettings.Suffix
-						end
+						NewValue = quantize(NewValue, SliderSettings.Increment or 1)
+						local text = formatNumber(NewValue, SliderSettings.Increment or 1)
+						Slider.Main.Information.Text = text .. (SliderSettings.Suffix and (" " .. SliderSettings.Suffix) or "")
 
 						if SliderSettings.CurrentValue ~= NewValue then
 							local Success, Response = pcall(function()
@@ -4162,14 +4174,16 @@ function QuantiXLibrary:CreateWindow(Settings)
 
 			function SliderSettings:Set(NewVal)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
+				NewVal = quantize(NewVal, SliderSettings.Increment or 1)
 
-                local px = math.max(5, valueToPixels(NewVal))
-                applyProgressPixels(px)
-				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
+					local px = math.max(5, valueToPixels(NewVal))
+					applyProgressPixels(px)
+					local text = formatNumber(NewVal, SliderSettings.Increment or 1)
+					Slider.Main.Information.Text = text .. " " .. (SliderSettings.Suffix or "")
 
-				local Success, Response = pcall(function()
-					SliderSettings.Callback(NewVal)
-				end)
+					local Success, Response = pcall(function()
+						SliderSettings.Callback(NewVal)
+					end)
 
 				if not Success then
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
