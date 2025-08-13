@@ -3500,13 +3500,24 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Keybind.Visible = true
 			Keybind.Parent = TabPage
 
+			-- Enhanced visual setup with better animations
 			Keybind.BackgroundTransparency = 1
 			Keybind.UIStroke.Transparency = 1
 			Keybind.Title.TextTransparency = 1
 
+			-- Improved keybind frame styling
 			Keybind.KeybindFrame.BackgroundColor3 = SelectedTheme.InputBackground
 			Keybind.KeybindFrame.UIStroke.Color = SelectedTheme.InputStroke
+			
+			-- Add corner radius for modern look
+			local corner = Keybind.KeybindFrame:FindFirstChildOfClass("UICorner")
+			if not corner then
+				corner = Instance.new("UICorner")
+				corner.CornerRadius = UDim.new(0, 6)
+				corner.Parent = Keybind.KeybindFrame
+			end
 
+			-- Smooth entrance animation
 			TweenService:Create(Keybind, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Keybind.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
@@ -3515,18 +3526,39 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Keybind.KeybindFrame.Size = UDim2.new(0, Keybind.KeybindFrame.KeybindBox.TextBounds.X + 24, 0, 30)
 
 			local previousKeybind = KeybindSettings.CurrentKeybind
+			
+			-- Enhanced key capture with visual feedback
             Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
                 CheckingForKey = true
                 isCapturingKeybind = true
 				previousKeybind = KeybindSettings.CurrentKeybind
                 Keybind.KeybindFrame.KeybindBox.Text = ""
+				
+				-- Visual feedback for capturing state
+				TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+					BackgroundColor3 = SelectedTheme.SliderProgress
+				}):Play()
+				TweenService:Create(Keybind.KeybindFrame.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+					Color = SelectedTheme.SliderStroke
+				}):Play()
+				
 				pcall(function()
 					Keybind.KeybindFrame.KeybindBox.PlaceholderText = "Press a key / Appuyez sur une touche"
 				end)
             end)
+            
             Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
                 isCapturingKeybind = false
+                
+                -- Restore normal appearance
+                TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+					BackgroundColor3 = SelectedTheme.InputBackground
+				}):Play()
+				TweenService:Create(Keybind.KeybindFrame.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+					Color = SelectedTheme.InputStroke
+				}):Play()
+                
                 local boxText = Keybind.KeybindFrame.KeybindBox.Text
                 if boxText == nil or boxText == "" then
 					Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
@@ -3563,15 +3595,28 @@ function QuantiXLibrary:CreateWindow(Settings)
 					local focused = UserInputService:GetFocusedTextBox()
 					-- Allow capture even when the TextBox has focus (processed == true) as long as it's our box
 					local isOurBoxFocused = (focused and focused == Keybind.KeybindFrame.KeybindBox)
+					
+					-- Enhanced escape handling with visual feedback
 					if input.KeyCode == Enum.KeyCode.Escape and isOurBoxFocused then
-						-- Cancel and restore previous keybind
+						-- Cancel and restore previous keybind with animation
 						Keybind.KeybindFrame.KeybindBox.Text = previousKeybind
 						KeybindSettings.CurrentKeybind = previousKeybind
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
 						CheckingForKey = false
 						isCapturingKeybind = false
+						
+						-- Visual feedback for cancellation
+						TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+						}):Play()
+						task.wait(0.2)
+						TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = SelectedTheme.InputBackground
+						}):Play()
 						return
 					end
+					
+					-- Enhanced key capture with better validation
 					if input.KeyCode ~= Enum.KeyCode.Unknown and (not processed or isOurBoxFocused) then
                         -- Learn exact Enum.KeyCode and store its Name
                         local newName = input.KeyCode.Name
@@ -3580,6 +3625,16 @@ function QuantiXLibrary:CreateWindow(Settings)
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
                         CheckingForKey = false
                         isCapturingKeybind = false
+						
+						-- Visual feedback for successful key capture
+						TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = Color3.fromRGB(100, 255, 100)
+						}):Play()
+						task.wait(0.2)
+						TweenService:Create(Keybind.KeybindFrame, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = SelectedTheme.InputBackground
+						}):Play()
+						
 						if not KeybindSettings.Ext then
 							SaveConfiguration()
 						end
@@ -3942,12 +3997,29 @@ function QuantiXLibrary:CreateWindow(Settings)
 				local function setVisualsFromRatio(r, tweenTime)
 					local ratio = math.clamp(r, 0, 1)
 					local targetFill = UDim2.new(ratio, 0, 1, 0)
+					
+					-- Enhanced slider animations with spring-like effects
 					if tweenTime and tweenTime > 0 then
-						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+						-- Smooth fill animation with bounce effect
+						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+						
+						-- Thumb animation with slight bounce
+						TweenService:Create(thumb, TweenInfo.new(tweenTime * 0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+							Position = UDim2.new(ratio, 0, 0.5, 0)
+						}):Play()
+						
+						-- Scale effect on thumb for feedback
+						TweenService:Create(thumb, TweenInfo.new(tweenTime * 0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+							Size = UDim2.new(0, 16, 0, 16)
+						}):Play()
+						task.wait(tweenTime * 0.3)
+						TweenService:Create(thumb, TweenInfo.new(tweenTime * 0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+							Size = UDim2.new(0, 12, 0, 12)
+						}):Play()
 					else
 						fill.Size = targetFill
+						thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 					end
-					thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 				end
 
 				local function applyValue(v, tweenTime)
@@ -3975,9 +4047,19 @@ function QuantiXLibrary:CreateWindow(Settings)
 					applyValue(quantize(rawVal, SliderSettings.Increment or 1), tweenTime)
 				end
 
+				-- Enhanced slider interactions with visual feedback
 				track.Interact.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                         dragging = true
+                        
+                        -- Visual feedback when starting to drag
+                        TweenService:Create(track, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = SelectedTheme.SliderProgress
+						}):Play()
+						TweenService:Create(track.UIStroke, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+							Color = SelectedTheme.SliderStroke
+						}):Play()
+						
                         updateFromMouse(0.15)
 					end
 				end)
@@ -3985,6 +4067,14 @@ function QuantiXLibrary:CreateWindow(Settings)
 				track.Interact.InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						dragging = false
+						
+						-- Restore normal appearance when done dragging
+						TweenService:Create(track, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+							BackgroundColor3 = SelectedTheme.SliderBackground
+						}):Play()
+						TweenService:Create(track.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+							Color = SelectedTheme.SliderStroke
+						}):Play()
 					end
 				end)
 
@@ -4005,12 +4095,35 @@ function QuantiXLibrary:CreateWindow(Settings)
 					applyValue(NewVal, 0.2)
 				end
 
-				-- Hover visuals
+				-- Enhanced hover visuals with slider-specific effects
 				Slider.MouseEnter:Connect(function()
 					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+					
+					-- Subtle glow effect on track
+					TweenService:Create(track.UIStroke, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+						Color = SelectedTheme.SliderProgress
+					}):Play()
+					
+					-- Slight scale effect on thumb
+					TweenService:Create(thumb, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+						Size = UDim2.new(0, 14, 0, 14)
+					}):Play()
 				end)
+				
 				Slider.MouseLeave:Connect(function()
 					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					
+					-- Restore normal track appearance
+					if not dragging then
+						TweenService:Create(track.UIStroke, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+							Color = SelectedTheme.SliderStroke
+						}):Play()
+					end
+					
+					-- Restore thumb size
+					TweenService:Create(thumb, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {
+						Size = UDim2.new(0, 12, 0, 12)
+					}):Play()
 				end)
 
 				return SliderSettings
