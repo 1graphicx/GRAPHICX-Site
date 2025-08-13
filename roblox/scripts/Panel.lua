@@ -182,6 +182,33 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
+-- Forcer une posture droite et empêcher les états de chute lorsque l'air walk est actif
+local originalStateEnabled = {}
+local function setAirWalkStates(enabled)
+    if not humanoid then return end
+    local states = {
+        Enum.HumanoidStateType.Freefall,
+        Enum.HumanoidStateType.FallingDown,
+        Enum.HumanoidStateType.Ragdoll,
+    }
+    if enabled then
+        for _, st in ipairs(states) do
+            originalStateEnabled[st] = humanoid:GetStateEnabled(st)
+            humanoid:SetStateEnabled(st, false)
+        end
+        humanoid.AutoRotate = true
+    else
+        for _, st in ipairs(states) do
+            local prev = originalStateEnabled[st]
+            if prev ~= nil then
+                humanoid:SetStateEnabled(st, prev)
+            else
+                humanoid:SetStateEnabled(st, true)
+            end
+        end
+    end
+end
+
 -- Créer le "sol invisible" sous le joueur
 -- Suppression du sol invisible: simulation d'air walk sans partie physique
 
@@ -202,9 +229,11 @@ MainTab:CreateToggle({
             -- Verrouillage Y sans support physique
             lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
             humanoid.JumpPower = 0
+            setAirWalkStates(true)
             print("Air walk enabled.")
         else
             humanoid.JumpPower = 50
+            setAirWalkStates(false)
             print("Air walk disabled.")
         end
     end
@@ -220,6 +249,7 @@ player.CharacterAdded:Connect(function(newCharacter)
         wait(1)
         lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
         humanoid.JumpPower = 0
+        setAirWalkStates(true)
     end
 end)
 
@@ -272,8 +302,14 @@ runService.Heartbeat:Connect(function()
 
     -- Corriger la composante Y à lockedYPosition
     local pos = hrp.Position
-    if math.abs(pos.Y - lockedYPosition) > 0.05 then
-        hrp.CFrame = CFrame.new(Vector3.new(pos.X, lockedYPosition, pos.Z), pos + hrp.CFrame.LookVector)
+    -- Conserver une orientation droite (annuler pitch/roll), garder le yaw existant
+    local _, yaw, _ = hrp.CFrame:ToOrientation()
+    hrp.CFrame = CFrame.new(Vector3.new(pos.X, lockedYPosition, pos.Z)) * CFrame.Angles(0, yaw, 0)
+
+    -- Forcer un état de course pour maintenir l'animation de marche
+    if humanoid then
+        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        humanoid:Move(moveDir, true)
     end
 end)
 
