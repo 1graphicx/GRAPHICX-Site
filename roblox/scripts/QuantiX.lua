@@ -285,14 +285,14 @@ local QuantiXLibrary = {
 			ElementStroke = Color3.fromRGB(50, 50, 50),
 			SecondaryElementStroke = Color3.fromRGB(40, 40, 40),
 
-			SliderBackground = Color3.fromRGB(255, 0, 0),
-			SliderProgress = Color3.fromRGB(255, 0, 0),
-			SliderStroke = Color3.fromRGB(255, 50, 50),
+			SliderBackground = Color3.fromRGB(50, 138, 220),
+			SliderProgress = Color3.fromRGB(50, 138, 220),
+			SliderStroke = Color3.fromRGB(58, 163, 255),
 
 			ToggleBackground = Color3.fromRGB(30, 30, 30),
-			ToggleEnabled = Color3.fromRGB(255, 0, 0),
+			ToggleEnabled = Color3.fromRGB(0, 146, 214),
 			ToggleDisabled = Color3.fromRGB(100, 100, 100),
-			ToggleEnabledStroke = Color3.fromRGB(255, 50, 50),
+			ToggleEnabledStroke = Color3.fromRGB(0, 170, 255),
 			ToggleDisabledStroke = Color3.fromRGB(125, 125, 125),
 			ToggleEnabledOuterStroke = Color3.fromRGB(100, 100, 100),
 			ToggleDisabledOuterStroke = Color3.fromRGB(65, 65, 65),
@@ -3514,17 +3514,39 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 			Keybind.KeybindFrame.Size = UDim2.new(0, Keybind.KeybindFrame.KeybindBox.TextBounds.X + 24, 0, 30)
 
-			Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
-				CheckingForKey = true
-				Keybind.KeybindFrame.KeybindBox.Text = ""
-			end)
-			Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
+			local previousKeybind = KeybindSettings.CurrentKeybind
+            Keybind.KeybindFrame.KeybindBox.Focused:Connect(function()
+                CheckingForKey = true
+                isCapturingKeybind = true
+				previousKeybind = KeybindSettings.CurrentKeybind
+                Keybind.KeybindFrame.KeybindBox.Text = ""
+				pcall(function()
+					Keybind.KeybindFrame.KeybindBox.PlaceholderText = "Press a key / Appuyez sur une touche"
+				end)
+            end)
+            Keybind.KeybindFrame.KeybindBox.FocusLost:Connect(function()
 				CheckingForKey = false
-				if Keybind.KeybindFrame.KeybindBox.Text == nil or Keybind.KeybindFrame.KeybindBox.Text == "" then
+                isCapturingKeybind = false
+                local boxText = Keybind.KeybindFrame.KeybindBox.Text
+                if boxText == nil or boxText == "" then
 					Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
 					if not KeybindSettings.Ext then
 						SaveConfiguration()
 					end
+                else
+                    -- User typed a key name; normalise and validate against Enum
+                    local proposed = normalizeKeyName(boxText)
+                    if Enum.KeyCode[proposed] then
+                        KeybindSettings.CurrentKeybind = proposed
+                        Keybind.KeybindFrame.KeybindBox.Text = proposed
+                        if not KeybindSettings.Ext then SaveConfiguration() end
+                        if KeybindSettings.CallOnChange then
+                            KeybindSettings.Callback(proposed)
+                        end
+                    else
+                        -- Revert if invalid
+                        Keybind.KeybindFrame.KeybindBox.Text = KeybindSettings.CurrentKeybind
+                    end
 				end
 			end)
 
@@ -3538,18 +3560,32 @@ function QuantiXLibrary:CreateWindow(Settings)
 
             UserInputService.InputBegan:Connect(function(input, processed)
 				if CheckingForKey then
-					if input.KeyCode ~= Enum.KeyCode.Unknown then
-						local SplitMessage = string.split(tostring(input.KeyCode), ".")
-						local NewKeyNoEnum = SplitMessage[3]
-						Keybind.KeybindFrame.KeybindBox.Text = tostring(NewKeyNoEnum)
-						KeybindSettings.CurrentKeybind = tostring(NewKeyNoEnum)
+					local focused = UserInputService:GetFocusedTextBox()
+					-- Allow capture even when the TextBox has focus (processed == true) as long as it's our box
+					local isOurBoxFocused = (focused and focused == Keybind.KeybindFrame.KeybindBox)
+					if input.KeyCode == Enum.KeyCode.Escape and isOurBoxFocused then
+						-- Cancel and restore previous keybind
+						Keybind.KeybindFrame.KeybindBox.Text = previousKeybind
+						KeybindSettings.CurrentKeybind = previousKeybind
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
+						CheckingForKey = false
+						isCapturingKeybind = false
+						return
+					end
+					if input.KeyCode ~= Enum.KeyCode.Unknown and (not processed or isOurBoxFocused) then
+                        -- Learn exact Enum.KeyCode and store its Name
+                        local newName = input.KeyCode.Name
+                        Keybind.KeybindFrame.KeybindBox.Text = newName
+                        KeybindSettings.CurrentKeybind = newName
+						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
+                        CheckingForKey = false
+                        isCapturingKeybind = false
 						if not KeybindSettings.Ext then
 							SaveConfiguration()
 						end
 
 						if KeybindSettings.CallOnChange then
-							KeybindSettings.Callback(tostring(NewKeyNoEnum))
+                            KeybindSettings.Callback(newName)
 						end
 					end
 				elseif not KeybindSettings.CallOnChange and KeybindSettings.CurrentKeybind ~= nil and (input.KeyCode == Enum.KeyCode[KeybindSettings.CurrentKeybind] and not processed) then -- Test
@@ -3816,6 +3852,170 @@ function QuantiXLibrary:CreateWindow(Settings)
 			Slider.Visible = true
 			Slider.Parent = TabPage
 
+			-- CLEAN SLIDER IMPLEMENTATION (overrides older logic below)
+			do
+				-- Visual init
+				Slider.BackgroundTransparency = 1
+				Slider.UIStroke.Transparency = 1
+				Slider.Title.TextTransparency = 1
+				TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+				TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
+
+				local track = Slider.Main
+				track.ClipsDescendants = true
+				track.BackgroundColor3 = SelectedTheme.SliderBackground
+				track.UIStroke.Color = SelectedTheme.SliderStroke
+				local trackCorner = track:FindFirstChildOfClass("UICorner")
+				if not trackCorner then
+					trackCorner = Instance.new("UICorner")
+					trackCorner.CornerRadius = UDim.new(0, 6)
+					trackCorner.Parent = track
+				end
+
+				local fill = track:FindFirstChild("Progress") or Instance.new("Frame")
+				fill.Name = "Progress"
+				fill.Parent = track
+				fill.BorderSizePixel = 0
+				fill.BackgroundColor3 = SelectedTheme.SliderProgress
+				fill.AnchorPoint = Vector2.new(0, 0)
+				fill.Position = UDim2.new(0, 0, 0, 0)
+				fill.Size = UDim2.new(0, 0, 1, 0)
+				local fillCorner = fill:FindFirstChildOfClass("UICorner")
+				if not fillCorner then
+					fillCorner = Instance.new("UICorner")
+					fillCorner.Parent = fill
+				end
+				fillCorner.CornerRadius = trackCorner.CornerRadius
+				local s = fill:FindFirstChildOfClass("UIStroke")
+				if s then s.Transparency = 1 end
+
+				-- Thumb (handle)
+				local thumb = track:FindFirstChild("Thumb")
+				if not thumb then
+					thumb = Instance.new("Frame")
+					thumb.Name = "Thumb"
+					thumb.Parent = track
+					thumb.Size = UDim2.new(0, 12, 0, 12)
+					thumb.AnchorPoint = Vector2.new(0.5, 0.5)
+					thumb.BackgroundColor3 = SelectedTheme.SliderStroke
+					local c = Instance.new("UICorner")
+					c.CornerRadius = UDim.new(1, 0)
+					c.Parent = thumb
+					thumb.ZIndex = (track.ZIndex or 1) + 2
+				end
+				-- Hide thumb per user preference (visual only)
+				thumb.Visible = false
+
+				local minVal, maxVal = SliderSettings.Range[1], SliderSettings.Range[2]
+				local function valueToRatio(v)
+					if maxVal == minVal then return 0 end
+					return math.clamp((v - minVal) / (maxVal - minVal), 0, 1)
+				end
+				local function ratioToValue(r)
+					return minVal + r * (maxVal - minVal)
+				end
+
+				local function quantize(value, inc)
+					local increment = inc or 1
+					if increment <= 0 then increment = 1 end
+					local q = math.floor(((value - minVal) / increment) + 0.5) * increment + minVal
+					return math.clamp(q, minVal, maxVal)
+				end
+
+				local function decimalsForIncrement(inc)
+					if not inc or inc >= 1 then return 0 end
+					local d = math.ceil(math.log10(1 / inc))
+					if d < 0 then d = 0 end
+					if d > 6 then d = 6 end
+					return d
+				end
+
+				local function formatNumber(value, inc)
+					local d = decimalsForIncrement(inc)
+					local s = string.format("%."..tostring(d).."f", value)
+					-- trim trailing zeros and dot
+					s = s:gsub("(%..-)0+$", "%1"):gsub("%.$", "")
+					return s
+				end
+
+				local function setVisualsFromRatio(r, tweenTime)
+					local ratio = math.clamp(r, 0, 1)
+					local targetFill = UDim2.new(ratio, 0, 1, 0)
+					if tweenTime and tweenTime > 0 then
+						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+					else
+						fill.Size = targetFill
+					end
+					thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
+				end
+
+				local function applyValue(v, tweenTime)
+					local q = quantize(v, SliderSettings.Increment or 1)
+					SliderSettings.CurrentValue = q
+					local r = valueToRatio(v)
+					setVisualsFromRatio(r, tweenTime)
+					local text = formatNumber(q, SliderSettings.Increment or 1)
+					Slider.Main.Information.Text = text .. (SliderSettings.Suffix and (" "..SliderSettings.Suffix) or "")
+					if not SliderSettings.Ext then SaveConfiguration() end
+					pcall(function() SliderSettings.Callback(q) end)
+				end
+
+				-- Initial
+                applyValue(SliderSettings.CurrentValue, 0.2)
+
+				-- Input handling
+				local dragging = false
+                local function updateFromMouse(tweenTime)
+					local mouseX = UserInputService:GetMouseLocation().X
+					local left = track.AbsolutePosition.X
+					local width = math.max(1, track.AbsoluteSize.X)
+					local ratio = math.clamp((mouseX - left) / width, 0, 1)
+					local rawVal = ratioToValue(ratio)
+					applyValue(quantize(rawVal, SliderSettings.Increment or 1), tweenTime)
+				end
+
+				track.Interact.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        dragging = true
+                        updateFromMouse(0.15)
+					end
+				end)
+
+				track.Interact.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						dragging = false
+					end
+				end)
+
+                RunService.RenderStepped:Connect(function()
+                    if dragging then updateFromMouse(0.08) end
+				end)
+
+				-- Theme updates
+				QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
+					track.BackgroundColor3 = SelectedTheme.SliderBackground
+					track.UIStroke.Color = SelectedTheme.SliderStroke
+					fill.BackgroundColor3 = SelectedTheme.SliderProgress
+					thumb.BackgroundColor3 = SelectedTheme.SliderStroke
+				end)
+
+				-- API
+				function SliderSettings:Set(NewVal)
+					applyValue(NewVal, 0.2)
+				end
+
+				-- Hover visuals
+				Slider.MouseEnter:Connect(function()
+					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				end)
+				Slider.MouseLeave:Connect(function()
+					TweenService:Create(Slider, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				end)
+
+				return SliderSettings
+			end
+
 			Slider.BackgroundTransparency = 1
 			Slider.UIStroke.Transparency = 1
 			Slider.Title.TextTransparency = 1
@@ -3824,159 +4024,31 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Shadow.Visible = false
 			end
 
+			-- Ensure progress renders inside the track with insets for stroke
+			Slider.Main.ClipsDescendants = true
 			Slider.Main.BackgroundColor3 = SelectedTheme.SliderBackground
 			Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
-			Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
+            local strokeObj = Slider.Main:FindFirstChildOfClass("UIStroke")
+            local strokeThickness = (strokeObj and strokeObj.Thickness) or 1
+			-- Sync rounded corners between track and progress so the fill never bleeds out
+			local trackCorner = Slider.Main:FindFirstChildOfClass("UICorner")
+			if not trackCorner then
+				trackCorner = Instance.new("UICorner")
+				trackCorner.CornerRadius = UDim.new(0, 6)
+				trackCorner.Parent = Slider.Main
+			end
+			local progressCorner = Slider.Main.Progress:FindFirstChildOfClass("UICorner")
+			if not progressCorner then
+				progressCorner = Instance.new("UICorner")
+				progressCorner.Parent = Slider.Main.Progress
+			end
+            progressCorner.CornerRadius = trackCorner.CornerRadius
+			Slider.Main.Progress.BorderSizePixel = 0
+            Slider.Main.Progress.AnchorPoint = Vector2.new(0, 0.5)
 			Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
-
-			TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
-			TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
-			TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
-
-			Slider.Main.Progress.Size =	UDim2.new(0, Slider.Main.AbsoluteSize.X * ((SliderSettings.CurrentValue + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (SliderSettings.CurrentValue / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)
-
-			if not SliderSettings.Suffix then
-				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue)
-			else
-				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue) .. " " .. SliderSettings.Suffix
+			if Slider.Main.Progress:FindFirstChildOfClass("UIStroke") then
+				Slider.Main.Progress:FindFirstChildOfClass("UIStroke").Transparency = 1
 			end
-
-			Slider.MouseEnter:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-			end)
-
-			Slider.MouseLeave:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-			end)
-
-			Slider.Main.Interact.InputBegan:Connect(function(Input)
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
-					TweenService:Create(Slider.Main.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Slider.Main.Progress.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					SLDragging = true 
-				end 
-			end)
-
-			Slider.Main.Interact.InputEnded:Connect(function(Input) 
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
-					TweenService:Create(Slider.Main.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0.4}):Play()
-					TweenService:Create(Slider.Main.Progress.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0.3}):Play()
-					SLDragging = false 
-				end 
-			end)
-
-			Slider.Main.Interact.MouseButton1Down:Connect(function(X)
-				local Current = Slider.Main.Progress.AbsolutePosition.X + Slider.Main.Progress.AbsoluteSize.X
-				local Start = Current
-				local Location = X
-				local Loop; Loop = RunService.Stepped:Connect(function()
-					if SLDragging then
-						Location = UserInputService:GetMouseLocation().X
-						Current = Current + 0.025 * (Location - Start)
-
-						if Location < Slider.Main.AbsolutePosition.X then
-							Location = Slider.Main.AbsolutePosition.X
-						elseif Location > Slider.Main.AbsolutePosition.X + Slider.Main.AbsoluteSize.X then
-							Location = Slider.Main.AbsolutePosition.X + Slider.Main.AbsoluteSize.X
-						end
-
-						if Current < Slider.Main.AbsolutePosition.X + 5 then
-							Current = Slider.Main.AbsolutePosition.X + 5
-						elseif Current > Slider.Main.AbsolutePosition.X + Slider.Main.AbsoluteSize.X then
-							Current = Slider.Main.AbsolutePosition.X + Slider.Main.AbsoluteSize.X
-						end
-
-						if Current <= Location and (Location - Start) < 0 then
-							Start = Location
-						elseif Current >= Location and (Location - Start) > 0 then
-							Start = Location
-						end
-						TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Current - Slider.Main.AbsolutePosition.X, 1, 0)}):Play()
-						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
-
-						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
-						NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
-
-						if not SliderSettings.Suffix then
-							Slider.Main.Information.Text = tostring(NewValue)
-						else
-							Slider.Main.Information.Text = tostring(NewValue) .. " " .. SliderSettings.Suffix
-						end
-
-						if SliderSettings.CurrentValue ~= NewValue then
-							local Success, Response = pcall(function()
-								SliderSettings.Callback(NewValue)
-							end)
-							if not Success then
-								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
-								TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-								Slider.Title.Text = "Callback Error"
-								print("QuantiX | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-								warn('Check docs.sirius.menu for help with QuantiX specific development.')
-								task.wait(0.5)
-								Slider.Title.Text = SliderSettings.Name
-								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-								TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
-							end
-
-							SliderSettings.CurrentValue = NewValue
-							if not SliderSettings.Ext then
-								SaveConfiguration()
-							end
-						end
-					else
-						TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Location - Slider.Main.AbsolutePosition.X > 5 and Location - Slider.Main.AbsolutePosition.X or 5, 1, 0)}):Play()
-						Loop:Disconnect()
-					end
-				end)
-			end)
-
-			function SliderSettings:Set(NewVal)
-				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
-
-				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Slider.Main.AbsoluteSize.X * ((NewVal + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (NewVal / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)}):Play()
-				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
-
-				local Success, Response = pcall(function()
-					SliderSettings.Callback(NewVal)
-				end)
-
-				if not Success then
-					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
-					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					Slider.Title.Text = "Callback Error"
-					print("QuantiX | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with QuantiX specific development.')
-					task.wait(0.5)
-					Slider.Title.Text = SliderSettings.Name
-					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
-				end
-
-				SliderSettings.CurrentValue = NewVal
-				if not SliderSettings.Ext then
-					SaveConfiguration()
-				end
-			end
-
-			if Settings.ConfigurationSaving then
-				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
-					QuantiXLibrary.Flags[SliderSettings.Flag] = SliderSettings
-				end
-			end
-
-			QuantiX.Main:GetPropertyChangedSignal('BackgroundColor3'):Connect(function()
-				if SelectedTheme ~= QuantiXLibrary.Theme.Default then
-					Slider.Main.Shadow.Visible = false
-				end
-
-				Slider.Main.BackgroundColor3 = SelectedTheme.SliderBackground
-				Slider.Main.UIStroke.Color = SelectedTheme.SliderStroke
-				Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
-				Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
-			end)
-
-			return SliderSettings
 			-- Layering: progress under info; stroke is an adornment on Main
 			pcall(function()
 				local baseZ = Slider.Main.ZIndex or 1
@@ -4757,3 +4829,4 @@ task.delay(4, function()
 end)
 
 return QuantiXLibrary
+
