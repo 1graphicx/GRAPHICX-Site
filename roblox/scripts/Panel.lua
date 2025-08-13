@@ -316,6 +316,8 @@ local flyEnabled = false
 local flySpeed = 50
 local flyConnections = {}
 local isLanding = false
+local lastSpaceTime = 0
+local doubleTapThreshold = 0.3
 
 -- Fonction pour activer le vol
 local function startFlying()
@@ -411,6 +413,27 @@ local function stopFlying()
 		flyConnections = {}
 	end
 end
+
+-- Double-appui sur Espace pour toggler le fly à la manière de Minecraft
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode ~= Enum.KeyCode.Space then return end
+	if game:GetService("UserInputService"):GetFocusedTextBox() then return end
+
+	local now = tick()
+	if now - lastSpaceTime <= doubleTapThreshold then
+		lastSpaceTime = 0
+		if flyEnabled then
+			-- Désactiver le fly mais conserver la vitesse actuelle
+			stopFlying()
+		elseif flySpeed and flySpeed > 0 then
+			-- Réactiver le fly à la vitesse précédemment définie
+			startFlying()
+		end
+	else
+		lastSpaceTime = now
+	end
+end)
 
 -- Création du Slider pour ajuster la vitesse du vol
 local flySpeedSlider = MainTab:CreateSlider({
