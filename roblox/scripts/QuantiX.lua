@@ -885,11 +885,19 @@ local animationScale = 1 -- Reduced when performance mode is enabled
 -- Refresh accent-applied colors on existing elements immediately
 local function refreshAccentedElements()
     if not Elements or not Elements:GetChildren() then return end
+    
+    -- Apply accent to all tab pages and their elements
     for _, TabPage in ipairs(Elements:GetChildren()) do
         if TabPage.ClassName == "ScrollingFrame" and TabPage.Name ~= "Template" and TabPage.Name ~= "Placeholder" then
             for _, Element in ipairs(TabPage:GetChildren()) do
                 if Element.ClassName == "Frame" then
-                    -- Slider detection
+                    -- Apply accent to element background and stroke
+                    Element.BackgroundColor3 = SelectedTheme.ElementBackground
+                    if Element:FindFirstChild("UIStroke") then
+                        Element.UIStroke.Color = SelectedTheme.ElementStroke
+                    end
+                    
+                    -- Slider detection and accent application
                     local MainFrame = Element:FindFirstChild("Main")
                     if MainFrame and MainFrame:FindFirstChild("Progress") and MainFrame:FindFirstChild("UIStroke") then
                         MainFrame.BackgroundColor3 = SelectedTheme.SliderBackground
@@ -899,13 +907,14 @@ local function refreshAccentedElements()
                         end
                         MainFrame.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
                     end
-                    -- Toggle detection
+                    
+                    -- Toggle detection and accent application
                     local Switch = Element:FindFirstChild("Switch")
                     if Switch and Switch:FindFirstChild("Indicator") and Switch:FindFirstChild("UIStroke") then
                         Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
                         local Indicator = Switch.Indicator
                         -- Determine on/off by position (right ~ on)
-                        local enabled = (Indicator.Position.X.Offset > -30)
+                        local enabled = (Indicator.Position.X.Offset > -20)
                         if enabled then
                             if Indicator:FindFirstChild("UIStroke") then
                                 Indicator.UIStroke.Color = SelectedTheme.ToggleEnabledStroke
@@ -920,23 +929,46 @@ local function refreshAccentedElements()
                             Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
                         end
                     end
-                    -- Apply accent to all element strokes
-                    if Element:FindFirstChild("UIStroke") then
-                        Element.UIStroke.Color = SelectedTheme.ElementStroke
+                    
+                    -- Apply accent to text elements
+                    if Element:FindFirstChild("Title") then
+                        Element.Title.TextColor3 = SelectedTheme.TextColor
+                    end
+                    if Element:FindFirstChild("Information") then
+                        Element.Information.TextColor3 = SelectedTheme.TextColor
                     end
                 end
             end
         end
     end
+    
     -- Apply accent to tab buttons
     for _, tabbtn in ipairs(TabList:GetChildren()) do
         if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Template" and tabbtn.Name ~= "Placeholder" then
             if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
                 tabbtn.BackgroundColor3 = SelectedTheme.TabBackgroundSelected
+            else
+                tabbtn.BackgroundColor3 = SelectedTheme.TabBackground
             end
             if tabbtn:FindFirstChild("UIStroke") then
                 tabbtn.UIStroke.Color = SelectedTheme.TabStroke
             end
+            if tabbtn:FindFirstChild("Title") then
+                tabbtn.Title.TextColor3 = SelectedTheme.TextColor
+            end
+        end
+    end
+    
+    -- Apply accent to topbar elements
+    if QuantiX and QuantiX.Main and QuantiX.Main.Topbar then
+        local Topbar = QuantiX.Main.Topbar
+        for _, element in ipairs(Topbar:GetChildren()) do
+            if element:IsA("ImageButton") and element.Name ~= "Icon" then
+                element.ImageColor3 = SelectedTheme.TextColor
+            end
+        end
+        if Topbar:FindFirstChild("Divider") then
+            Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
         end
     end
 end
@@ -979,24 +1011,42 @@ end
 local function applyAccentToTheme(baseTheme: table, accent: Color3): table
     if not accent then return baseTheme end
     local t = deepCopyTheme(baseTheme)
-    -- Primary accents
-    t.SliderBackground = accent
-    t.SliderProgress = accent
-    t.SliderStroke = accent
-    t.ToggleEnabled = accent
-    -- Subtle strokes derived from accent (slightly lighter)
+    
+    -- Helper function to lighten colors
     local function lighten(color: Color3, amount: number)
         local r = math.clamp(color.R + amount, 0, 1)
         local g = math.clamp(color.G + amount, 0, 1)
         local b = math.clamp(color.B + amount, 0, 1)
         return Color3.new(r, g, b)
     end
-    t.ToggleEnabledStroke = lighten(accent, 0.15)
+    
+    -- Helper function to darken colors
+    local function darken(color: Color3, amount: number)
+        local r = math.clamp(color.R - amount, 0, 1)
+        local g = math.clamp(color.G - amount, 0, 1)
+        local b = math.clamp(color.B - amount, 0, 1)
+        return Color3.new(r, g, b)
+    end
+    
+    -- Primary accent elements (direct accent color)
+    t.SliderBackground = accent
+    t.SliderProgress = accent
+    t.ToggleEnabled = accent
+    
+    -- Stroke elements (slightly lighter accent)
     t.SliderStroke = lighten(accent, 0.1)
-    -- Apply accent to more elements
-    t.TabBackgroundSelected = lighten(accent, 0.2)
+    t.ToggleEnabledStroke = lighten(accent, 0.15)
     t.ElementStroke = lighten(accent, 0.05)
     t.SecondaryElementStroke = lighten(accent, 0.05)
+    t.TabStroke = lighten(accent, 0.05)
+    
+    -- Background elements (lighter accent)
+    t.TabBackgroundSelected = lighten(accent, 0.2)
+    t.ElementBackgroundHover = lighten(accent, 0.1)
+    
+    -- Text elements (darker accent for contrast)
+    t.TextColor = darken(accent, 0.3)
+    
     return t
 end
 
@@ -1051,6 +1101,10 @@ local function ChangeTheme(Theme)
 	end
     -- Ensure accent-applied components (sliders/toggles) update immediately
     refreshAccentedElements()
+    
+    -- Force refresh all elements with accent color
+    task.wait(0.1) -- Small delay to ensure UI is ready
+    refreshAccentedElements()
 end
 
 -- Global UIScale for the entire window
@@ -1061,6 +1115,20 @@ if not GlobalUIScale then
     GlobalUIScale.Scale = 1
     GlobalUIScale.Parent = Main
 end
+
+-- Initialize accent color application
+local function initializeAccentColor()
+    if UserAccentColor then
+        SelectedTheme = applyAccentToTheme(SelectedTheme, UserAccentColor)
+        refreshAccentedElements()
+    end
+end
+
+-- Call initialization after a short delay to ensure UI is ready
+task.spawn(function()
+    task.wait(0.5)
+    initializeAccentColor()
+end)
 
 -- Compact and performance modes
 local isCompactMode = false
@@ -3826,12 +3894,12 @@ function QuantiXLibrary:CreateWindow(Settings)
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
 			if ToggleSettings.CurrentValue == true then
-				Toggle.Switch.Indicator.Position = UDim2.new(1, -30, 0.5, 0)
+				Toggle.Switch.Indicator.Position = UDim2.new(1, -20, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleEnabledStroke
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleEnabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleEnabledOuterStroke
 			else
-				Toggle.Switch.Indicator.Position = UDim2.new(0, 30, 0.5, 0)
+				Toggle.Switch.Indicator.Position = UDim2.new(0, 20, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
 				Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleDisabled
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
@@ -3860,7 +3928,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					-- Enhanced click animation with bounce
 					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 30, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 20, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
 					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
@@ -3871,7 +3939,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					-- Enhanced click animation with bounce
 					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -30, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
 					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
@@ -3907,7 +3975,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					ToggleSettings.CurrentValue = true
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -30, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0,12,0,12)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
@@ -3919,7 +3987,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 					ToggleSettings.CurrentValue = false
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 30, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 20, 0.5, 0)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0,12,0,12)}):Play()
 					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
 					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
@@ -4629,8 +4697,14 @@ end)
 -- Normalize some common printable/special keys to Enum names
 local function normalizeKeyName(name: string): string
     if not name or name == "" then return "Unknown" end
-    local map = {
+    
+    -- Direct character mappings
+    local charMap = {
         ["/"] = "Slash",
+        ["\\"] = "BackSlash",
+        [";"] = "Semicolon",
+        ["'"] = "Quote",
+        ["`"] = "Backquote",
         [" "] = "Space",
         ["."] = "Period",
         [","] = "Comma",
@@ -4638,10 +4712,10 @@ local function normalizeKeyName(name: string): string
         ["="] = "Equals",
         ["["] = "LeftBracket",
         ["]"] = "RightBracket",
-        ["\\"] = "BackSlash",
-        [";"] = "Semicolon",
-        ["'"] = "Quote",
-        ["`"] = "Backquote",
+    }
+    
+    -- Word mappings
+    local wordMap = {
         ["tab"] = "Tab",
         ["capslock"] = "CapsLock",
         ["return"] = "Return",
@@ -4663,29 +4737,51 @@ local function normalizeKeyName(name: string): string
         ["quote"] = "Quote",
         ["backquote"] = "Backquote",
     }
+    
     local lower = string.lower(name)
     local upperName = string.upper(name)
-    -- function keys F1..F12
+    
+    -- Function keys F1..F12
     if string.match(upperName, "^F%d%d?$") then
         return upperName
     end
-    -- keypad numeric names shortcuts
-    if lower == "kp1" then return "KeypadOne" end
-    if lower == "kp2" then return "KeypadTwo" end
-    if lower == "kp3" then return "KeypadThree" end
-    if lower == "kp4" then return "KeypadFour" end
-    if lower == "kp5" then return "KeypadFive" end
-    if lower == "kp6" then return "KeypadSix" end
-    if lower == "kp7" then return "KeypadSeven" end
-    if lower == "kp8" then return "KeypadEight" end
-    if lower == "kp9" then return "KeypadNine" end
-    if lower == "kp0" then return "KeypadZero" end
-    if lower == "kpplus" then return "KeypadPlus" end
-    if lower == "kpminus" then return "KeypadMinus" end
-    if lower == "kpmul" then return "KeypadMultiply" end
-    if lower == "kpdiv" then return "KeypadDivide" end
-    if lower == "kpenter" then return "KeypadEnter" end
-    return map[ name ] or map[ lower ] or upperName
+    
+    -- Keypad mappings
+    local keypadMap = {
+        ["kp1"] = "KeypadOne",
+        ["kp2"] = "KeypadTwo", 
+        ["kp3"] = "KeypadThree",
+        ["kp4"] = "KeypadFour",
+        ["kp5"] = "KeypadFive",
+        ["kp6"] = "KeypadSix",
+        ["kp7"] = "KeypadSeven",
+        ["kp8"] = "KeypadEight",
+        ["kp9"] = "KeypadNine",
+        ["kp0"] = "KeypadZero",
+        ["kpplus"] = "KeypadPlus",
+        ["kpminus"] = "KeypadMinus",
+        ["kpmul"] = "KeypadMultiply",
+        ["kpdiv"] = "KeypadDivide",
+        ["kpenter"] = "KeypadEnter"
+    }
+    
+    -- Check character map first
+    if charMap[name] then
+        return charMap[name]
+    end
+    
+    -- Check word map
+    if wordMap[lower] then
+        return wordMap[lower]
+    end
+    
+    -- Check keypad map
+    if keypadMap[lower] then
+        return keypadMap[lower]
+    end
+    
+    -- Return uppercase if no mapping found
+    return upperName
 end
 
 if hideHotkeyConnection then hideHotkeyConnection:Disconnect() end
@@ -4694,23 +4790,21 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
     local focused = UserInputService:GetFocusedTextBox()
     local function resolveKey(name, fallback)
         if not name or name == "" then return Enum.KeyCode[fallback] end
-        -- Try direct mapping first
-        if name == "/" then return Enum.KeyCode.Slash end
-        if name == "\\" then return Enum.KeyCode.BackSlash end
-        if name == ";" then return Enum.KeyCode.Semicolon end
-        if name == "'" then return Enum.KeyCode.Quote end
-        if name == "`" then return Enum.KeyCode.Backquote end
+        
+        -- Try direct enum access first (for standard keys like F1, F2, etc.)
+        local keyCode = Enum.KeyCode[name]
+        if keyCode then
+            return keyCode
+        end
+        
         -- Try normalized name
         local nn = normalizeKeyName(tostring(name))
-        local keyCode = Enum.KeyCode[nn]
+        keyCode = Enum.KeyCode[nn]
         if keyCode then
             return keyCode
         end
-        -- Try direct enum access
-        keyCode = Enum.KeyCode[name]
-        if keyCode then
-            return keyCode
-        end
+        
+        -- Fallback
         return Enum.KeyCode[fallback]
     end
     local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "F1")
