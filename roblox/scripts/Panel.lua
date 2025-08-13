@@ -182,13 +182,7 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
--- Créer le "sol invisible" sous le joueur
-local invisibleFloor = Instance.new("Part")
-invisibleFloor.Size = Vector3.new(10, 1, 10) -- Largeur du sol
-invisibleFloor.Transparency = 1 -- Rendre le sol invisible
-invisibleFloor.Anchored = true
-invisibleFloor.CanCollide = true
-invisibleFloor.Parent = workspace
+-- Suppression du sol invisible: on simule l'air walk sans créer de partie physique
 
 -- Variables pour détecter si une touche est maintenue enfoncée
 local isSpaceHeld = false
@@ -203,26 +197,15 @@ MainTab:CreateToggle({
     Callback = function(state)
         lockYEnabled = state  -- Mise à jour de l'état de verrouillage de la position Y
         
-        if lockYEnabled then
-            -- Calculer la position de verrouillage Y pour que le socle soit juste sous les pieds
-            lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
-            invisibleFloor.Position = Vector3.new(humanoidRootPart.Position.X, lockedYPosition, humanoidRootPart.Position.Z)
-            humanoid.JumpPower = 0  -- Désactiver le saut
-            
-            -- Met à jour la position du sol invisible pour suivre le joueur
-            game:GetService("RunService").Heartbeat:Connect(function()
-                if lockYEnabled then
-                    invisibleFloor.Position = Vector3.new(humanoidRootPart.Position.X, lockedYPosition, humanoidRootPart.Position.Z)
-                end
-            end)
-            
-            print("Air walk enabled.")
-        else
-            -- Si désactivé, rend le sol invisible inutilisable
-            invisibleFloor.Position = Vector3.new(0, -1000, 0) -- Cache le sol loin du joueur
-            humanoid.JumpPower = 50  -- Réactiver le saut
-            print("Air walk disabled.")
-        end
+    if lockYEnabled then
+        -- Verrouiller la hauteur actuelle (sans plateforme)
+        lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
+        humanoid.JumpPower = 0  -- Désactiver le saut pour éviter des variations brusques de Y
+        print("Air walk enabled.")
+    else
+        humanoid.JumpPower = 50  -- Réactiver le saut
+        print("Air walk disabled.")
+    end
     end
 })
 
@@ -233,11 +216,9 @@ player.CharacterAdded:Connect(function(newCharacter)
     humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     
     if lockYEnabled then
-        -- Replacer le sol invisible sous le nouveau personnage
-        wait(1)  -- Donne un petit délai pour éviter les erreurs
+        wait(1)
         lockedYPosition = humanoidRootPart.Position.Y - (humanoid.HipHeight + humanoidRootPart.Size.Y / 2 + 0.5)
-        invisibleFloor.Position = Vector3.new(humanoidRootPart.Position.X, lockedYPosition, humanoidRootPart.Position.Z)
-        humanoid.JumpPower = 0  -- Désactiver le saut
+        humanoid.JumpPower = 0
     end
 end)
 
@@ -268,14 +249,35 @@ UserInputService.InputEnded:Connect(function(input)
 end)
 
 -- Met à jour la position du socle pendant que les touches sont maintenues
-runService.Heartbeat:Connect(function()
-    if lockYEnabled then
-        if isSpaceHeld then
-            lockedYPosition = lockedYPosition + 0.5  -- Incrémenter pour monter progressivement
-        elseif isCtrlHeld then
-            lockedYPosition = lockedYPosition - 0.5  -- Décrémenter pour descendre progressivement
+runService.Heartbeat:Connect(function(dt)
+    if not lockYEnabled then return end
+
+    -- Monter/descendre la hauteur verrouillée
+    if isSpaceHeld then
+        lockedYPosition = lockedYPosition + 0.5
+    elseif isCtrlHeld then
+        lockedYPosition = lockedYPosition - 0.5
+    end
+
+    -- Verrouiller la position Y du joueur sans platfome
+    local hrp = humanoidRootPart
+    if hrp then
+        -- Appliquer le déplacement horizontal basé sur les contrôles
+        local moveDir = humanoid.MoveDirection
+        local speed = humanoid.WalkSpeed
+        local desiredVel = Vector3.new(moveDir.X, 0, moveDir.Z) * speed
+
+        -- Neutraliser la gravité verticale et appliquer la vitesse horizontale
+        hrp.AssemblyLinearVelocity = Vector3.new(desiredVel.X, 0, desiredVel.Z)
+
+        -- Forcer la composante Y à la hauteur verrouillée
+        local pos = hrp.Position
+        if math.abs((pos.Y - (lockedYPosition))) > 0.05 then
+            hrp.CFrame = CFrame.new(Vector3.new(pos.X, lockedYPosition, pos.Z), pos + hrp.CFrame.LookVector)
+        else
+            -- Ajustement fin pour éviter des oscillations
+            hrp.Position = Vector3.new(pos.X, lockedYPosition, pos.Z)
         end
-        invisibleFloor.Position = Vector3.new(humanoidRootPart.Position.X, lockedYPosition, humanoidRootPart.Position.Z)
     end
 end)
 
