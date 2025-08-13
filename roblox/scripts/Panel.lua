@@ -1307,75 +1307,76 @@ local teleportPearlToggle = FunTab:CreateToggle({
 
 --------------------------------------------- Magnet
 
+-- =======================================
+-- Script complet (Magnet + Magnet Inversé corrigé)
+-- =======================================
+
 local TweenService = game:GetService("TweenService")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
-local isUpdatingMagnetToggles = false
+-- Déclarations anticipées et états partagés
+local MagnetToggle
+local MagnetInverseToggle
+local isMagnetEnabled = false
+local magnetInverseUserEnabled = false
 
+-- =======================================
+-- Bouton Magnet (normal)
+-- =======================================
 MagnetToggle = FunTab:CreateToggle({
     Name = "Magnet",
     Description = "Magnet.",
-    Callback = function()
-        if isUpdatingMagnetToggles then return end
-        -- If inverse is active, turn it off first and reflect in UI
-        if MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then
-            isUpdatingMagnetToggles = true
-            -- Disable inverse logic
-            MagnetSettingsInverse.CanMagnet = false
-            MagnetSettingsInverse.Target = nil
-            if SleepAnimation then
-                pcall(function() SleepAnimation:Stop() end)
-                SleepAnimation = nil
+    Callback = function(state)
+        if state then
+            if magnetInverseUserEnabled and MagnetInverseToggle and MagnetInverseToggle.Set then
+                MagnetInverseToggle:Set(false)
             end
-            if MagnetInverseToggle and typeof(MagnetInverseToggle.Set) == "function" then
-                pcall(function() MagnetInverseToggle:Set(false) end)
+            if not isMagnetEnabled then
+                toggleMagnet()
             end
-            isUpdatingMagnetToggles = false
+        else
+            if isMagnetEnabled then
+                toggleMagnet()
+            end
         end
-        toggleMagnet()
     end
 })
 
-local isMagnetEnabled = false
+-- =======================================
+-- Magnet normal (inchangé / adapté)
+-- =======================================
 local targetPlayer = nil
 local cowerAnimationId = "http://www.roblox.com/asset/?id=4940563117"
 local currentAnimation = nil
 local animationCheckCoroutine = nil
-local oscillationSpeed = 40 -- Vitesse du va-et-vient
-local tweenDuration = 0.1 -- Durée d'interpolation plus rapide pour plus de réactivité
-local originalSitAnimationId = nil -- Stocker l'animation originale pour la restaurer
-local seatedConnection = nil -- Stocker la connexion de l'événement "Seated"
+local oscillationSpeed = 40
+local tweenDuration = 0.1
+local originalSitAnimationId = nil
+local seatedConnection = nil
 
--- Fonction pour désactiver la possibilité de s'asseoir
 local function disableSitAnimation()
-    local character = game.Players.LocalPlayer.Character
+    local character = Players.LocalPlayer.Character
     if character then
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if humanoid then
-            -- Désactiver l'animation "sit"
             local animateScript = character:FindFirstChild("Animate")
             if animateScript and animateScript:FindFirstChild("sit") then
                 local sitAnimation = animateScript.sit:FindFirstChild("SitAnim")
                 if sitAnimation then
-                    -- Sauvegarder l'animation originale
                     if not originalSitAnimationId then
                         originalSitAnimationId = sitAnimation.AnimationId
                     end
-                    -- Remplacer par une animation vide
                     sitAnimation.AnimationId = ""
                 end
             end
-
-            -- Empêcher le joueur de rester assis
             if seatedConnection then
                 seatedConnection:Disconnect()
             end
             seatedConnection = humanoid.Seated:Connect(function(active)
                 if active then
-                    -- Forcer le joueur à se relever
                     humanoid.Jump = true
                 end
             end)
@@ -1383,13 +1384,11 @@ local function disableSitAnimation()
     end
 end
 
--- Fonction pour restaurer la possibilité de s'asseoir
 local function restoreSitAnimation()
-    local character = game.Players.LocalPlayer.Character
+    local character = Players.LocalPlayer.Character
     if character then
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if humanoid then
-            -- Restaurer l'animation "sit"
             local animateScript = character:FindFirstChild("Animate")
             if animateScript and animateScript:FindFirstChild("sit") then
                 local sitAnimation = animateScript.sit:FindFirstChild("SitAnim")
@@ -1397,8 +1396,6 @@ local function restoreSitAnimation()
                     sitAnimation.AnimationId = originalSitAnimationId
                 end
             end
-
-            -- Déconnecter l'événement "Seated"
             if seatedConnection then
                 seatedConnection:Disconnect()
                 seatedConnection = nil
@@ -1407,20 +1404,17 @@ local function restoreSitAnimation()
     end
 end
 
--- Fonction pour jouer l'animation "Cower"
 local function playCowerAnimation()
     if targetPlayer and isMagnetEnabled then
-        local character = game.Players.LocalPlayer.Character
+        local character = Players.LocalPlayer.Character
         if character then
             local humanoid = character:FindFirstChildOfClass("Humanoid")
             if humanoid then
                 local animation = Instance.new("Animation")
                 animation.AnimationId = cowerAnimationId
-
                 if currentAnimation then
                     currentAnimation:Stop()
                 end
-
                 currentAnimation = humanoid:LoadAnimation(animation)
                 currentAnimation:Play()
             end
@@ -1428,7 +1422,6 @@ local function playCowerAnimation()
     end
 end
 
--- Fonction pour arrêter l'animation "Cower"
 local function stopCowerAnimation()
     if currentAnimation then
         currentAnimation:Stop()
@@ -1436,12 +1429,11 @@ local function stopCowerAnimation()
     end
 end
 
--- Fonction pour vérifier périodiquement que l'animation "Cower" est jouée
 local function startAnimationCheck()
     animationCheckCoroutine = coroutine.create(function()
         while isMagnetEnabled and targetPlayer do
-            wait(0.1)
-            local character = game.Players.LocalPlayer.Character
+            task.wait(0.1)
+            local character = Players.LocalPlayer.Character
             if character then
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
                 if humanoid and (not currentAnimation or not currentAnimation.IsPlaying) then
@@ -1453,42 +1445,23 @@ local function startAnimationCheck()
     coroutine.resume(animationCheckCoroutine)
 end
 
--- Fonction pour arrêter la vérification de l'animation
 local function stopAnimationCheck()
     if animationCheckCoroutine then
-        coroutine.close(animationCheckCoroutine)
+        -- coroutine.close may ne pas exister dans tous les environnements; on protège par pcall
+        pcall(function() coroutine.close(animationCheckCoroutine) end)
         animationCheckCoroutine = nil
     end
 end
 
--- Fonction pour activer ou désactiver le "Magnet"
 function toggleMagnet()
-    local newState = not isMagnetEnabled
-    -- If enabling, ensure inverse is disabled first and reflect UI
-    if newState and MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then
-        isUpdatingMagnetToggles = true
-        MagnetSettingsInverse.CanMagnet = false
-        MagnetSettingsInverse.Target = nil
-        if SleepAnimation then
-            pcall(function() SleepAnimation:Stop() end)
-            SleepAnimation = nil
-        end
-        if typeof(MagnetInverseToggle) == "table" and MagnetInverseToggle.Set then
-            pcall(function() MagnetInverseToggle:Set(false) end)
-        end
-        isUpdatingMagnetToggles = false
-    end
-
-    isMagnetEnabled = newState
+    isMagnetEnabled = not isMagnetEnabled
     if isMagnetEnabled then
         StarterGui:SetCore("SendNotification", {
             Title = "Magnet Activé",
-            Text = "Le script est prêt à être utilisé, cliquez sur un joueur !",
-            Icon = "rbxassetid://123456789",
+            Text = "Cliquez sur un joueur pour activer.",
             Duration = 5
         })
-        disableSitAnimation()  -- Empêcher de s'asseoir
-
+        disableSitAnimation()
         if targetPlayer then
             playCowerAnimation()
             startAnimationCheck()
@@ -1496,34 +1469,26 @@ function toggleMagnet()
     else
         StarterGui:SetCore("SendNotification", {
             Title = "Magnet Désactivé",
-            Text = "Le script est désactivé. Vous pouvez maintenant vous asseoir.",
-            Icon = "rbxassetid://123456789",
+            Text = "Vous pouvez vous asseoir.",
             Duration = 5
         })
-        restoreSitAnimation()  -- Restaurer la capacité de s'asseoir
+        restoreSitAnimation()
         stopCowerAnimation()
         stopAnimationCheck()
         targetPlayer = nil
     end
 end
 
--- Fonction pour détecter un clic sur un joueur
 function onPlayerClick()
-    -- Ignore normal magnet selection when inverse magnet is active
-    if MagnetSettingsInverse and MagnetSettingsInverse.CanMagnet then return end
-    local mouse = game.Players.LocalPlayer:GetMouse()
+    local mouse = Players.LocalPlayer:GetMouse()
     local target = mouse.Target
-
-    -- Vérification pour s'assurer que le joueur est bien cliqué, même s'il porte un chapeau ou un cosmétique
     if target and target.Parent and target.Parent:FindFirstChild("Humanoid") then
-        local clickedPlayer = game.Players:GetPlayerFromCharacter(target.Parent)
+        local clickedPlayer = Players:GetPlayerFromCharacter(target.Parent)
         if clickedPlayer then
             if targetPlayer == clickedPlayer then
-                -- Désactive la cible si on reclique dessus
                 targetPlayer = nil
                 stopCowerAnimation()
             else
-                -- Change la cible
                 targetPlayer = clickedPlayer
                 if isMagnetEnabled then
                     playCowerAnimation()
@@ -1538,245 +1503,269 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.UserInputType == Enum.UserInputType.MouseButton1 then
         onPlayerClick()
     elseif input.KeyCode == Enum.KeyCode.LeftControl then
-        -- Si Ctrl est appuyé, arrête de suivre la cible
         if isMagnetEnabled then
             stopCowerAnimation()
             targetPlayer = nil
-            print("Magnet arrêté à cause de la touche Ctrl")
         end
     end
 end)
 
--- Fonction de gestion du respawn pour rejouer l'animation après la mort si nécessaire
-game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
-    -- Cette fonction sera appelée chaque fois qu'un joueur respawn
-
-    -- Assurez-vous que l'animation n'est pas jouée avant que le respawn soit complet
-    character:WaitForChild("HumanoidRootPart")  -- Attendre la fin de la création du personnage
-    wait(0.1)  -- Attendre un peu pour éviter un déclenchement trop rapide
-
-    -- Vérifier si l'animation doit être jouée à ce moment
+Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    character:WaitForChild("HumanoidRootPart")
+    task.wait(0.1)
     if isMagnetEnabled and targetPlayer then
-        -- Rejouer l'animation après le respawn
         playCowerAnimation()
         startAnimationCheck()
     end
-
-    -- Gérer la mort et l'arrêt de l'animation à la mort
     character:WaitForChild("Humanoid").Died:Connect(function()
         if isMagnetEnabled and targetPlayer then
-            stopCowerAnimation()  -- Arrêter l'animation à la mort
+            stopCowerAnimation()
         end
     end)
 end)
 
--- Déplacement du joueur vers la cible avec va-et-vient fluide
-game:GetService("RunService").Heartbeat:Connect(function()
+RunService.Heartbeat:Connect(function()
     if isMagnetEnabled and targetPlayer then
-        local playerToMagnet = game.Players.LocalPlayer
-        local playerCharacter = playerToMagnet.Character
+        local playerCharacter = Players.LocalPlayer.Character
         if playerCharacter then
             local playerHRP = playerCharacter:FindFirstChild("HumanoidRootPart")
             local targetHRP = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
             if playerHRP and targetHRP then
-                -- Always position behind the target
-                local behindDir = -targetHRP.CFrame.LookVector
-                local baseBehind = targetHRP.Position + behindDir * 2.5
-                local osc = math.sin(tick() * oscillationSpeed)
-                local distance = (osc > 0 and 2.0 or 3.5)
-                local moveToPosition = targetHRP.Position + behindDir * distance
+                local backwardDirection = -targetHRP.CFrame.LookVector
+                local targetPosition1 = targetHRP.Position + backwardDirection * 0.1
+                local targetPosition2 = targetHRP.Position + backwardDirection * 4
+                local moveToPosition = (math.sin(tick() * oscillationSpeed) > 0) and targetPosition1 or targetPosition2
                 moveToPosition = Vector3.new(moveToPosition.X, targetHRP.Position.Y, moveToPosition.Z)
-
                 local tweenInfo = TweenInfo.new(tweenDuration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
                 local newCFrame = CFrame.new(moveToPosition, targetHRP.Position)
-                local tween = TweenService:Create(playerHRP, tweenInfo, {CFrame = newCFrame})
-                tween:Play()
+                TweenService:Create(playerHRP, tweenInfo, {CFrame = newCFrame}):Play()
             end
         end
     end
 end)
 
-game.Players.PlayerRemoving:Connect(function(player)
+Players.PlayerRemoving:Connect(function(player)
     if targetPlayer == player then
         targetPlayer = nil
         stopCowerAnimation()
     end
 end)
 
+-- =======================================
+-- Magnet Inversé (réécrit)
+-- =======================================
+do
+    local cfg = {
+        heightOffset = 1,    -- hauteur relative à la tête
+        frontOffset = 2,     -- distance devant la tête
+        oscAmplitude = 1.2,  -- amplitude de l'oscillation avant/arrière
+        oscSpeed = 2.5,      -- vitesse de l'oscillation
+        maxDistanceClamp = 4,-- clamp de l'oscillation
+        responsiveness = 80, -- Align Responsiveness
+        maxVelocity = 120,   -- Align MaxVelocity
+    }
 
-------------------------------------- Magnet Inversé
+    local Player = Players.LocalPlayer
+    -- on gère le character/respawn proprement
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    local Humanoid = Character:WaitForChild("Humanoid")
+    local Root = Character:WaitForChild("HumanoidRootPart")
 
--- Variables pour Magnet inversé
-local MagnetSettingsInverse = {
-    CanMagnet = false,
-    Target = nil
-}
+    local MagnetSettingsInverse = { CanMagnet = false, Target = nil }
+    local SleepAnimation = nil
+    local Inverse = { conn = nil, targetPart = nil, att0 = nil, att1 = nil, alignPos = nil, alignOri = nil }
 
-local Player = game.Players.LocalPlayer
-local Character = Player.Character or Player.CharacterAdded:Wait()
-local Humanoid = Character:WaitForChild("Humanoid")
-local SleepAnimation
-local UserInputService = game:GetService("UserInputService")
-
--- Fonction pour vérifier si une animation est en cours
-function PlayingAnimation(Anim)
-    for _, Animation in Humanoid:GetPlayingAnimationTracks() do
-        if Animation.Name == Anim.Name then
-            return true
+    -- utility: recrée references après respawn
+    local function onCharacterAdded(char)
+        -- détruit les anciennes contraintes si présentes
+        Character = char
+        Humanoid = Character:WaitForChild("Humanoid")
+        Root = Character:WaitForChild("HumanoidRootPart")
+        -- si on était en magnet inversé, arrêter/recréer plus tard proprement
+        if Inverse.conn then
+            destroyConstraints()
         end
     end
-    return false
-end
+    Player.CharacterAdded:Connect(onCharacterAdded)
 
--- Magnet (Fun) [Inverse]
-function MagnetLoopInverse()
-    local previousPosition = Character.PrimaryPart.Position  -- Position initiale du personnage
-    local oscillationAmplitude = 2  -- Amplitude de l'oscillation (réglable)
-    local oscillationSpeed = 20  -- Vitesse de l'oscillation (réglable)
-    local maxDistanceFromTarget = 4  -- Limite de distance maximale avant la cible pour éviter l'intersection
-    local HeightOffset = 2  -- Décalage de hauteur par rapport à la tête de la cible
+    -- Crée la part cible (Ancrée) qui sera positionnée devant la cible
+    local function createTargetPart()
+        if Inverse.targetPart and Inverse.targetPart.Parent then return end
+        local tp = Instance.new("Part")
+        tp.Name = ("InverseMag_Target_%d"):format(Player.UserId)
+        tp.Anchored = true
+        tp.CanCollide = false
+        tp.Transparency = 1
+        tp.Size = Vector3.new(0.5,0.5,0.5)
+        tp.Parent = workspace
+        Inverse.targetPart = tp
 
-    while true do
-        if MagnetSettingsInverse.CanMagnet and MagnetSettingsInverse.Target then
-            local CharacterFound = workspace:FindFirstChild(MagnetSettingsInverse.Target)
-            if CharacterFound and CharacterFound:FindFirstChild("Head") and CharacterFound.PrimaryPart then
-                -- Récupérer la position de la tête
-                local HeadPosition = CharacterFound.Head.Position
-                local TargetHeight = HeadPosition.Y - CharacterFound.PrimaryPart.Position.Y
+        if not Inverse.att1 then
+            local att1 = Instance.new("Attachment", tp)
+            Inverse.att1 = att1
+        end
+    end
 
-                -- Calculer la distance entre le personnage et la tête de la cible
-                local directionToTarget = (HeadPosition - Character.PrimaryPart.Position).unit
-                local distanceToTarget = (HeadPosition - Character.PrimaryPart.Position).magnitude
+    local function createConstraints()
+        if Inverse.att0 then return end
+        -- Att0 attaché au HumanoidRootPart courant
+        Inverse.att0 = Instance.new("Attachment", Root)
+        Inverse.att0.Name = "InverseMag_Att0"
 
-                -- Ajustement dynamique basé sur la hauteur de la tête
-                -- Se placer devant la tête (face à face), avec un léger offset frontal
-                local DefaultCF = CharacterFound.PrimaryPart.CFrame * CFrame.new(0, TargetHeight + HeightOffset, 2)
+        if not Inverse.targetPart then createTargetPart() end
+        if not Inverse.att1 then
+            Inverse.att1 = Instance.new("Attachment", Inverse.targetPart)
+        end
 
-                -- Calculer l'oscillation en fonction du temps mais limiter la distance maximale
-                local oscillation = math.sin(tick() * oscillationSpeed) * oscillationAmplitude
-                local limitedOscillation = math.clamp(oscillation, -maxDistanceFromTarget, maxDistanceFromTarget)
+        -- AlignPosition
+        Inverse.alignPos = Instance.new("AlignPosition")
+        Inverse.alignPos.MaxForce = 1e9
+        Inverse.alignPos.MaxVelocity = cfg.maxVelocity
+        Inverse.alignPos.Responsiveness = cfg.responsiveness
+        Inverse.alignPos.Attachment0 = Inverse.att0
+        Inverse.alignPos.Attachment1 = Inverse.att1
+        Inverse.alignPos.Parent = Root
 
-                -- Nouvelle position avec une oscillation limitée et devant la tête de la cible
-                local MagnetCF = CFrame.new(0, 0, limitedOscillation)  -- Oscillation locale avant/arrière
-                local LookOpposite = CFrame.new()  -- Garder l'orientation face à la cible
+        -- AlignOrientation
+        Inverse.alignOri = Instance.new("AlignOrientation")
+        Inverse.alignOri.MaxTorque = 1e9
+        Inverse.alignOri.Responsiveness = cfg.responsiveness
+        Inverse.alignOri.Attachment0 = Inverse.att0
+        Inverse.alignOri.Attachment1 = Inverse.att1
+        Inverse.alignOri.Parent = Root
 
-                -- Appliquer les transformations
-                Character:SetPrimaryPartCFrame(DefaultCF * MagnetCF * LookOpposite)
+        Humanoid.AutoRotate = false
+    end
 
-                -- Jouer l'animation Sleep
-                if not SleepAnimation or not PlayingAnimation(SleepAnimation) then
-                    local Animation = Instance.new("Animation")
-                    Animation.AnimationId = "rbxassetid://10714360343" -- ID de l'animation "Sleep"
-                    SleepAnimation = Humanoid:LoadAnimation(Animation)
-                    SleepAnimation:Play()
-                end
-            else
-                -- Si la cible est perdue ou introuvable, arrêtez l'animation
-                if SleepAnimation then
-                    SleepAnimation:Stop()
-                    SleepAnimation = nil
-                end
+    local function destroyConstraints()
+        if Inverse.conn then Inverse.conn:Disconnect() Inverse.conn = nil end
+        if SleepAnimation then pcall(function() SleepAnimation:Stop() end); SleepAnimation = nil end
+        if Inverse.alignPos then Inverse.alignPos:Destroy() end
+        if Inverse.alignOri then Inverse.alignOri:Destroy() end
+        if Inverse.att0 then Inverse.att0:Destroy() end
+        if Inverse.att1 then Inverse.att1:Destroy() end
+        if Inverse.targetPart then Inverse.targetPart:Destroy() end
+        Inverse.alignPos, Inverse.alignOri, Inverse.att0, Inverse.att1, Inverse.targetPart = nil, nil, nil, nil, nil
+        Humanoid.AutoRotate = true
+    end
+
+    -- Calcule le CFrame devant la tête de la cible (avec oscillation avant/arrière)
+    local function computeDesiredCFrame(targetChar)
+        local head = targetChar:FindFirstChild("Head")
+        local tr = targetChar:FindFirstChild("HumanoidRootPart") or targetChar.PrimaryPart
+        if not (head and tr) then return nil end
+
+        local headPos = head.Position
+        -- position de base devant la tête
+        local basePos = headPos + (tr.CFrame.LookVector * cfg.frontOffset) + Vector3.new(0, cfg.heightOffset, 0)
+        -- oscille le long du LookVector (avant/arrière)
+        local osc = math.sin(tick() * cfg.oscSpeed) * cfg.oscAmplitude
+        osc = math.clamp(osc, -cfg.maxDistanceClamp, cfg.maxDistanceClamp)
+        local posWithOsc = basePos + (tr.CFrame.LookVector * osc)
+        local lookAt = headPos + Vector3.new(0, cfg.heightOffset, 0)
+        return CFrame.new(posWithOsc, lookAt)
+    end
+
+    local function PlayingAnimation(track)
+        if not track then return false end
+        for _, playing in Humanoid:GetPlayingAnimationTracks() do
+            if playing.Animation and track.Animation and playing.Animation.AnimationId == track.Animation.AnimationId then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function startInverseFollow()
+        -- reconnect proprement
+        if Inverse.conn then Inverse.conn:Disconnect() Inverse.conn = nil end
+        if not Inverse.targetPart then createTargetPart() end
+        if not Inverse.att0 or not Inverse.att1 or not Inverse.alignPos or not Inverse.alignOri then
+            createConstraints()
+        end
+
+        -- jouer l'anim si besoin
+        if (not SleepAnimation or not PlayingAnimation(SleepAnimation)) then
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "rbxassetid://10714360343"
+            SleepAnimation = Humanoid:LoadAnimation(anim)
+            pcall(function() SleepAnimation:Play() end)
+        end
+
+        Inverse.conn = RunService.RenderStepped:Connect(function()
+            if not (magnetInverseUserEnabled and MagnetSettingsInverse.CanMagnet and MagnetSettingsInverse.Target) then return end
+            local targetChar = workspace:FindFirstChild(MagnetSettingsInverse.Target)
+            if not (targetChar and (targetChar:FindFirstChild("HumanoidRootPart") or targetChar.PrimaryPart)) then
+                MagnetSettingsInverse.CanMagnet = false
                 MagnetSettingsInverse.Target = nil
+                destroyConstraints()
+                return
             end
+            local desired = computeDesiredCFrame(targetChar)
+            if desired and Inverse.targetPart then
+                Inverse.targetPart.CFrame = desired
+            end
+        end)
+    end
+
+    local function stopInverseFollow()
+        MagnetSettingsInverse.CanMagnet = false
+        MagnetSettingsInverse.Target = nil
+        destroyConstraints()
+    end
+
+    -- CTRL pour stop (comme reclique)
+    UserInputService.InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.UserInputType == Enum.UserInputType.Keyboard
+           and (input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.RightControl) then
+            if MagnetSettingsInverse.CanMagnet then
+                stopInverseFollow()
+            end
+        end
+    end)
+
+    -- Clic gauche pour cibler / décibler
+    local Mouse = Players.LocalPlayer:GetMouse()
+    Mouse.Button1Down:Connect(function()
+        if not magnetInverseUserEnabled then return end
+        local target = Mouse.Target
+        if not target or not target.Parent then return end
+        local char = target.Parent
+        if not (char:FindFirstChild("Humanoid") and (char:FindFirstChild("HumanoidRootPart") or char.PrimaryPart) and char ~= Character) then return end
+
+        if MagnetSettingsInverse.CanMagnet and MagnetSettingsInverse.Target == char.Name then
+            stopInverseFollow()
         else
-            -- Si le magnétisme est désactivé, arrêtez l'animation
-            if SleepAnimation then
-                SleepAnimation:Stop()
-                SleepAnimation = nil
-            end
+            MagnetSettingsInverse.Target = char.Name
+            MagnetSettingsInverse.CanMagnet = true
+            if not Inverse.targetPart then createTargetPart() end
+            if not Inverse.att0 or not Inverse.alignPos then createConstraints() end
+            startInverseFollow()
         end
-        task.wait(0.03) -- Temps de pause pour un déplacement fluide
-    end
-end
+    end)
 
--- Lancer la boucle pour le magnétisme inversé
-spawn(MagnetLoopInverse)
-
--- Création du bouton "Magnet Inversé"
-MagnetInverseToggle = FunTab:CreateToggle({
-    Name = "Magnet Inversé",
-    Callback = function(Value)
-        if isUpdatingMagnetToggles then return end
-        -- If turning on inverse while normal magnet is active, switch off normal magnet first
-        if Value and isMagnetEnabled then
-            isUpdatingMagnetToggles = true
-            -- Turn off normal magnet and reflect in UI
-            toggleMagnet() -- will disable and show notification
-            if MagnetToggle and typeof(MagnetToggle.Set) == "function" then
-                pcall(function() MagnetToggle:Set(false) end)
-            end
-            isUpdatingMagnetToggles = false
-        end
-
-        MagnetSettingsInverse.CanMagnet = Value
-        if not Value then
-            MagnetSettingsInverse.Target = nil
-            if SleepAnimation then
-                pcall(function() SleepAnimation:Stop() end)
-                SleepAnimation = nil
-            end
-        end
-    end
-})
-
--- Activer ou désactiver le magnétisme via clic souris
-local Mouse = game.Players.LocalPlayer:GetMouse()
-
--- Variable pour savoir si Ctrl est enfoncé
-local isCtrlPressed = false
-
--- Quand Ctrl est appuyé, suspendre temporairement le magnétisme
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-    if gameProcessedEvent then return end  -- Ignore les entrées traitées par d'autres systèmes
-
-    -- Vérifier si la touche Ctrl est enfoncée
-    if input.UserInputType == Enum.UserInputType.Keyboard and 
-       (input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.RightControl) then
-        -- Suspendre le magnétisme sur la cible actuelle lorsque Ctrl est pressé
-        if MagnetSettingsInverse.CanMagnet then
-            if MagnetSettingsInverse.Target then
-                MagnetSettingsInverse.CanMagnet = false  -- Arrêter le magnétisme sur le joueur ciblé
-                if SleepAnimation then
-                    SleepAnimation:Stop()  -- Arrêter l'animation si nécessaire
-                    SleepAnimation = nil
+    -- Toggle Magnet Inversé relié au Magnet normal
+    MagnetInverseToggle = FunTab:CreateToggle({
+        Name = "Magnet Inversé",
+        CurrentValue = false,
+        Callback = function(state)
+            if state then
+                if isMagnetEnabled and MagnetToggle and MagnetToggle.Set then
+                    MagnetToggle:Set(false)
+                end
+                if not magnetInverseUserEnabled then
+                    magnetInverseUserEnabled = true
+                end
+            else
+                if magnetInverseUserEnabled then
+                    magnetInverseUserEnabled = false
+                    stopInverseFollow()
                 end
             end
         end
-    end
-end)
-
--- Quand Ctrl est relâché, permettre de réactiver le magnétisme via un clic
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Keyboard and
-       (input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.RightControl) then
-        -- Après avoir relâché Ctrl, tu peux cliquer sur un joueur pour réactiver le magnétisme
-    end
-end)
-
--- Clic sur un joueur pour activer ou réactiver le magnétisme
-Mouse.Button1Down:Connect(function()
-    -- Ignore inverse selection when normal magnet is active
-    if isMagnetEnabled then return end
-    -- Si Ctrl est appuyé, ignorer le clic
-    if isCtrlPressed then return end
-
-    -- Si le magnétisme est désactivé après avoir appuyé sur Ctrl, réactiver le magnétisme avec un clic
-    if not MagnetSettingsInverse.CanMagnet then
-        local MouseTarget = Mouse.Target
-        if MouseTarget and MouseTarget.Parent:FindFirstChild("Humanoid") then
-            local CharacterFound = MouseTarget.Parent
-
-            -- Vérifier si un nouveau joueur est sélectionné
-            if CharacterFound.Name ~= MagnetSettingsInverse.Target then
-                MagnetSettingsInverse.Target = CharacterFound.Name
-                MagnetSettingsInverse.CanMagnet = true  -- Reprendre le magnétisme sur ce joueur
-            else
-                MagnetSettingsInverse.Target = nil  -- Si le même joueur est cliqué, désactiver le magnétisme
-            end
-        end
-    end
-end)
-
+    })
+end
 
 
 ------------------------------------- Emotes
