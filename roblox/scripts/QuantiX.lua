@@ -86,7 +86,7 @@ local settingsTable = {
     },
     Interface = {
         uiScale = {Type = 'slider', Value = 1, Name = 'UI Scale', Range = {0.8, 1.4}, Increment = 0.01, Suffix = 'x'},
-        compactMode = {Type = 'toggle', Value = false, Name = 'Compact Mode'},
+        compactMode = {Type = 'toggle', Value = true, Name = 'Compact Mode'},
         performanceMode = {Type = 'toggle', Value = false, Name = 'Performance Mode'},
         theme = {Type = 'dropdown', Value = 'Default', Name = 'Theme', Options = nil, MultipleOptions = false},
         accentColor = {Type = 'color', Value = Color3.fromRGB(255, 0, 0), Name = 'Accent Color'},
@@ -1082,8 +1082,26 @@ local function setPerformanceMode(enabled: boolean)
     -- Slightly reduce background transparency to cut overdraw in performance mode
     if isPerformanceMode then
         Main.BackgroundTransparency = 0.05
+        -- Disable complex animations in performance mode
+        for _, element in ipairs(QuantiX:GetDescendants()) do
+            if element:IsA("Frame") and element:FindFirstChildOfClass("UIStroke") then
+                local stroke = element:FindFirstChildOfClass("UIStroke")
+                if stroke then
+                    stroke.Thickness = 1
+                end
+            end
+        end
     else
         Main.BackgroundTransparency = 0
+        -- Restore normal stroke thickness
+        for _, element in ipairs(QuantiX:GetDescendants()) do
+            if element:IsA("Frame") and element:FindFirstChildOfClass("UIStroke") then
+                local stroke = element:FindFirstChildOfClass("UIStroke")
+                if stroke then
+                    stroke.Thickness = 1
+                end
+            end
+        end
     end
 end
 
@@ -1200,6 +1218,12 @@ local function makeDraggable(object, dragObject, enableTaptic, tapticOffset)
 	local renderStepped = RunService.RenderStepped:Connect(function()
 		if dragging and not Hidden then
 			local position = UserInputService:GetMouseLocation() + relative + offset
+			-- Ensure the interface stays within screen bounds
+			local screenSize = workspace.CurrentCamera.ViewportSize
+			local objectSize = object.AbsoluteSize
+			position.X = math.clamp(position.X, 0, screenSize.X - objectSize.X)
+			position.Y = math.clamp(position.Y, 0, screenSize.Y - objectSize.Y)
+			
 			if enableTaptic and tapticOffset then
 				TweenService:Create(object, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromOffset(position.X, position.Y)}):Play()
 				TweenService:Create(dragObject.Parent, TweenInfo.new(0.05, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromOffset(position.X, position.Y + ((useMobileSizing and tapticOffset[2]) or tapticOffset[1]))}):Play()
@@ -2681,6 +2705,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 				
 				-- Enhanced stroke effect
 				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 2}):Play()
+				
+				-- Add subtle glow effect
+				if Button:FindFirstChild("UIStroke") then
+					TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.3}):Play()
+				end
 			end)
 
 			Button.MouseLeave:Connect(function()
@@ -2695,6 +2724,11 @@ function QuantiXLibrary:CreateWindow(Settings)
 				
 				-- Reset stroke
 				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 1}):Play()
+				
+				-- Reset glow effect
+				if Button:FindFirstChild("UIStroke") then
+					TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+				end
 			end)
 
 			function ButtonValue:Set(NewButton)
@@ -4044,11 +4078,12 @@ function QuantiXLibrary:CreateWindow(Settings)
 					local ratio = math.clamp(r, 0, 1)
 					local targetFill = UDim2.new(ratio, 0, 1, 0)
 					if tweenTime and tweenTime > 0 then
-						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+						TweenService:Create(fill, TweenInfo.new(tweenTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = targetFill}):Play()
+						TweenService:Create(thumb, TweenInfo.new(tweenTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(ratio, 0, 0.5, 0)}):Play()
 					else
 						fill.Size = targetFill
+						thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 					end
-					thumb.Position = UDim2.new(ratio, 0, 0.5, 0)
 				end
 
 				local function applyValue(v, tweenTime)
@@ -4063,7 +4098,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end
 
 				-- Initial
-                applyValue(SliderSettings.CurrentValue, 0.2)
+                applyValue(SliderSettings.CurrentValue, 0.4)
 
 				-- Input handling
 				local dragging = false
@@ -4090,7 +4125,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 				end)
 
                 RunService.RenderStepped:Connect(function()
-                    if dragging then updateFromMouse(0.08) end
+                    if dragging then updateFromMouse(0.15) end
 				end)
 
 				-- Theme updates
@@ -4187,11 +4222,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Slider.Main.Information.Text = initialText .. (SliderSettings.Suffix and (" " .. SliderSettings.Suffix) or "")
 
 			Slider.MouseEnter:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Slider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 2}):Play()
 			end)
 
 			Slider.MouseLeave:Connect(function()
-				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Slider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Slider.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 1}):Play()
 			end)
 
 			Slider.Main.Interact.InputBegan:Connect(function(Input)
@@ -4238,7 +4275,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 							-- Keep progress clamped inside the track and at least 5px
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 						NewValue = quantize(NewValue, SliderSettings.Increment or 1)
 						local text = formatNumber(NewValue, SliderSettings.Increment or 1)
@@ -4267,7 +4304,7 @@ function QuantiXLibrary:CreateWindow(Settings)
 						end
 					else
                         local ratio = math.clamp((Location - Slider.Main.AbsolutePosition.X) / math.max(1, Slider.Main.AbsoluteSize.X), 0, 1)
-                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
+                        TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(ratio, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0)}):Play()
 						Loop:Disconnect()
 					end
 				end)
@@ -4279,8 +4316,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 
                 local px = math.max(5, valueToPixels(NewVal))
                 applyProgressPixels(px)
-					local text = formatNumber(NewVal, SliderSettings.Increment or 1)
-					Slider.Main.Information.Text = text .. " " .. (SliderSettings.Suffix or "")
+				local text = formatNumber(NewVal, SliderSettings.Increment or 1)
+				Slider.Main.Information.Text = text .. " " .. (SliderSettings.Suffix or "")
 
 				local Success, Response = pcall(function()
 					SliderSettings.Callback(NewVal)
@@ -4461,36 +4498,72 @@ Topbar.ChangeSize.MouseButton1Click:Connect(function()
 end)
 
 Main.Search.Input:GetPropertyChangedSignal('Text'):Connect(function()
-	if #Main.Search.Input.Text > 0 then
-		if not Elements.UIPageLayout.CurrentPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks') then 
-			local searchTitle = Elements.Template.SectionTitle:Clone()
-			searchTitle.Parent = Elements.UIPageLayout.CurrentPage
-			searchTitle.Name = 'SearchTitle-fsefsefesfsefesfesfThanks'
-			searchTitle.LayoutOrder = -100
-			searchTitle.Title.Text = "Results from '"..Elements.UIPageLayout.CurrentPage.Name.."'"
-			searchTitle.Visible = true
+	local searchText = string.lower(Main.Search.Input.Text)
+	
+	if #searchText > 0 then
+		-- Search across all tabs
+		for _, tabPage in ipairs(Elements:GetChildren()) do
+			if tabPage.ClassName == "ScrollingFrame" and tabPage.Name ~= "Template" and tabPage.Name ~= "Placeholder" then
+				local hasResults = false
+				
+				-- Check if this tab has any matching elements
+				for _, element in ipairs(tabPage:GetChildren()) do
+					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
+						if element.Name ~= 'SectionTitle' then
+							if string.lower(element.Name):find(searchText, 1, true) then
+								hasResults = true
+								break
+							end
+						end
+					end
+				end
+				
+				-- Show/hide elements based on search
+				for _, element in ipairs(tabPage:GetChildren()) do
+					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
+						if element.Name == 'SectionTitle' then
+							element.Visible = hasResults
+						else
+							if string.lower(element.Name):find(searchText, 1, true) then
+								element.Visible = true
+							else
+								element.Visible = false
+							end
+						end
+					end
+				end
+				
+				-- Add search title if this tab has results
+				if hasResults then
+					if not tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks') then 
+						local searchTitle = Elements.Template.SectionTitle:Clone()
+						searchTitle.Parent = tabPage
+						searchTitle.Name = 'SearchTitle-fsefsefesfsefesfesfThanks'
+						searchTitle.LayoutOrder = -100
+						searchTitle.Title.Text = "Results from '"..tabPage.Name.."'"
+						searchTitle.Visible = true
+					end
+				else
+					local searchTitle = tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
+					if searchTitle then
+						searchTitle:Destroy()
+					end
+				end
+			end
 		end
 	else
-		local searchTitle = Elements.UIPageLayout.CurrentPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
-
-		if searchTitle then
-			searchTitle:Destroy()
-		end
-	end
-
-	for _, element in ipairs(Elements.UIPageLayout.CurrentPage:GetChildren()) do
-		if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
-			if element.Name == 'SectionTitle' then
-				if #Main.Search.Input.Text == 0 then
-					element.Visible = true
-				else
-					element.Visible = false
+		-- Clear search - show all elements and remove search titles
+		for _, tabPage in ipairs(Elements:GetChildren()) do
+			if tabPage.ClassName == "ScrollingFrame" and tabPage.Name ~= "Template" and tabPage.Name ~= "Placeholder" then
+				local searchTitle = tabPage:FindFirstChild('SearchTitle-fsefsefesfsefesfesfThanks')
+				if searchTitle then
+					searchTitle:Destroy()
 				end
-			else
-				if string.lower(element.Name):find(string.lower(Main.Search.Input.Text), 1, true) then
-					element.Visible = true
-				else
-					element.Visible = false
+				
+				for _, element in ipairs(tabPage:GetChildren()) do
+					if element.ClassName ~= 'UIListLayout' and element.Name ~= 'Placeholder' and element.Name ~= 'SearchTitle-fsefsefesfsefesfesfThanks' then
+						element.Visible = true
+					end
 				end
 			end
 		end
@@ -4571,6 +4644,11 @@ local function normalizeKeyName(name: string): string
         ["right"] = "Right",
         ["up"] = "Up",
         ["down"] = "Down",
+        ["slash"] = "Slash",
+        ["backslash"] = "BackSlash",
+        ["semicolon"] = "Semicolon",
+        ["quote"] = "Quote",
+        ["backquote"] = "Backquote",
     }
     local lower = string.lower(name)
     local upperName = string.upper(name)
@@ -4604,7 +4682,17 @@ hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, proce
     local function resolveKey(name, fallback)
         if not name or name == "" then return Enum.KeyCode[fallback] end
         local nn = normalizeKeyName(tostring(name))
-        return Enum.KeyCode[nn] or Enum.KeyCode[fallback]
+        local keyCode = Enum.KeyCode[nn]
+        if keyCode then
+            return keyCode
+        end
+        -- Try direct mapping for common keys
+        if name == "/" then return Enum.KeyCode.Slash end
+        if name == "\\" then return Enum.KeyCode.BackSlash end
+        if name == ";" then return Enum.KeyCode.Semicolon end
+        if name == "'" then return Enum.KeyCode.Quote end
+        if name == "`" then return Enum.KeyCode.Backquote end
+        return Enum.KeyCode[fallback]
     end
     local qkc = resolveKey(getSetting("General", "QuantiXOpen"), "K")
     local skc = resolveKey(getSetting("General", "SearchOpen"), "Slash")
