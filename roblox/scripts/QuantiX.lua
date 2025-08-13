@@ -1,22 +1,12 @@
 --[[
 
-	QuantiX Interface Suite - Enhanced Version
+	QuantiX Interface Suite
 	by GRAPHICX
 
 	shlex  | Designing + Programming
 	iRay   | Programming
 	Max    | Programming
 	Damian | Programming
-
-	ENHANCED FEATURES:
-	- Advanced animations and visual effects
-	- Modular customization system
-	- Enhanced button functionality
-	- Particle effects and glow system
-	- Advanced theme customization
-	- Responsive interface improvements
-	- Advanced keyboard shortcuts
-	- Enhanced notification system
 
 ]]
 
@@ -28,258 +18,6 @@ local function getService(name)
 	local service = game:GetService(name)
 	return if cloneref then cloneref(service) else service
 end
-
--- Enhanced animation system with modular controls
-local AnimationSystem = {
-	Enabled = true,
-	Speed = 1.0,
-	EasingStyles = {
-		Default = Enum.EasingStyle.Exponential,
-		Bounce = Enum.EasingStyle.Bounce,
-		Elastic = Enum.EasingStyle.Elastic,
-		Back = Enum.EasingStyle.Back,
-		Quart = Enum.EasingStyle.Quart,
-		Quint = Enum.EasingStyle.Quint,
-		Sine = Enum.EasingStyle.Sine,
-		Linear = Enum.EasingStyle.Linear
-	},
-	EasingDirections = {
-		Out = Enum.EasingDirection.Out,
-		In = Enum.EasingDirection.In,
-		InOut = Enum.EasingDirection.InOut
-	}
-}
-
--- Enhanced TweenService wrapper with animation controls
-local function CreateEnhancedTween(instance, tweenInfo, goal)
-	if not AnimationSystem.Enabled then
-		-- Apply changes instantly if animations are disabled
-		for property, value in pairs(goal) do
-			instance[property] = value
-		end
-		return { Play = function() end, Completed = Instance.new("BindableEvent").Event }
-	end
-	
-	-- Scale animation duration based on speed setting
-	local scaledTweenInfo = TweenInfo.new(
-		tweenInfo.Time * AnimationSystem.Speed,
-		tweenInfo.EasingStyle,
-		tweenInfo.EasingDirection,
-		tweenInfo.RepeatCount,
-		tweenInfo.Reverses,
-		tweenInfo.DelayTime * AnimationSystem.Speed
-	)
-	
-	return TweenService:Create(instance, scaledTweenInfo, goal)
-end
-
--- Particle system for enhanced visual effects
-local ParticleSystem = {
-	Enabled = true,
-	Particles = {},
-	
-	CreateParticle = function(parent, position, color, size, lifetime)
-		if not ParticleSystem.Enabled then return end
-		
-		local particle = Instance.new("Frame")
-		particle.Size = UDim2.new(0, size or 4, 0, size or 4)
-		particle.Position = position or UDim2.new(0.5, 0, 0.5, 0)
-		particle.BackgroundColor3 = color or Color3.fromRGB(255, 255, 255)
-		particle.BorderSizePixel = 0
-		particle.Parent = parent
-		
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(1, 0)
-		corner.Parent = particle
-		
-		local stroke = Instance.new("UIStroke")
-		stroke.Color = color or Color3.fromRGB(255, 255, 255)
-		stroke.Transparency = 0.5
-		stroke.Thickness = 1
-		stroke.Parent = particle
-		
-		table.insert(ParticleSystem.Particles, particle)
-		
-		-- Animate particle
-		local tweenInfo = TweenInfo.new(lifetime or 1, AnimationSystem.EasingStyles.Default, AnimationSystem.EasingDirections.Out)
-		local tween = CreateEnhancedTween(particle, tweenInfo, {
-			Size = UDim2.new(0, 0, 0, 0),
-			BackgroundTransparency = 1,
-			Position = UDim2.new(math.random(), 0, math.random(), 0)
-		})
-		
-		tween:Play()
-		tween.Completed:Connect(function()
-			particle:Destroy()
-			for i, p in ipairs(ParticleSystem.Particles) do
-				if p == particle then
-					table.remove(ParticleSystem.Particles, i)
-					break
-				end
-			end
-		end)
-		
-		return particle
-	end,
-	
-	CreateRippleEffect = function(parent, position, color)
-		if not ParticleSystem.Enabled then return end
-		
-		local ripple = Instance.new("Frame")
-		ripple.Size = UDim2.new(0, 0, 0, 0)
-		ripple.Position = position or UDim2.new(0.5, 0, 0.5, 0)
-		ripple.BackgroundColor3 = color or Color3.fromRGB(255, 255, 255)
-		ripple.BorderSizePixel = 0
-		ripple.Parent = parent
-		
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(1, 0)
-		corner.Parent = ripple
-		
-		local stroke = Instance.new("UIStroke")
-		stroke.Color = color or Color3.fromRGB(255, 255, 255)
-		stroke.Transparency = 0.7
-		stroke.Thickness = 2
-		stroke.Parent = ripple
-		
-		-- Animate ripple
-		local tweenInfo = TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential, AnimationSystem.EasingDirection.Out)
-		local tween = CreateEnhancedTween(ripple, tweenInfo, {
-			Size = UDim2.new(0, 100, 0, 100),
-			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, -50, 0.5, -50)
-		})
-		
-		tween:Play()
-		tween.Completed:Connect(function()
-			ripple:Destroy()
-		end)
-		
-		return ripple
-	end
-}
-
--- Enhanced glow system
-local GlowSystem = {
-	Enabled = true,
-	Glows = {},
-	
-	CreateGlow = function(parent, color, intensity)
-		if not GlowSystem.Enabled then return end
-		
-		local glow = Instance.new("Frame")
-		glow.Size = UDim2.new(1, 0, 1, 0)
-		glow.Position = UDim2.new(0, 0, 0, 0)
-		glow.BackgroundColor3 = color or Color3.fromRGB(255, 255, 255)
-		glow.BackgroundTransparency = 0.9
-		glow.BorderSizePixel = 0
-		glow.Parent = parent
-		glow.ZIndex = (parent.ZIndex or 1) - 1
-		
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = parent:FindFirstChildOfClass("UICorner") and parent:FindFirstChildOfClass("UICorner").CornerRadius or UDim.new(0, 0)
-		corner.Parent = glow
-		
-		table.insert(GlowSystem.Glows, glow)
-		
-		-- Animate glow
-		local tweenInfo = TweenInfo.new(2, AnimationSystem.EasingStyles.Sine, AnimationSystem.EasingDirection.InOut)
-		local tween = CreateEnhancedTween(glow, tweenInfo, {
-			BackgroundTransparency = 0.7
-		})
-		
-		tween:Play()
-		
-		return glow
-	end,
-	
-	RemoveGlow = function(glow)
-		if glow then
-			local tweenInfo = TweenInfo.new(0.3, AnimationSystem.EasingStyles.Exponential, AnimationSystem.EasingDirection.Out)
-			local tween = CreateEnhancedTween(glow, tweenInfo, {
-				BackgroundTransparency = 1
-			})
-			
-			tween:Play()
-			tween.Completed:Connect(function()
-				glow:Destroy()
-			end)
-		end
-	end
-}
-
--- Enhanced keyboard shortcut system
-local EnhancedShortcutSystem = {
-	Shortcuts = {},
-	
-	RegisterShortcut = function(key, callback, description)
-		EnhancedShortcutSystem.Shortcuts[key] = {
-			Callback = callback,
-			Description = description
-		}
-	end,
-	
-	UnregisterShortcut = function(key)
-		EnhancedShortcutSystem.Shortcuts[key] = nil
-	end,
-	
-	GetShortcuts = function()
-		return EnhancedShortcutSystem.Shortcuts
-	end,
-	
-	ExecuteShortcut = function(key)
-		local shortcut = EnhancedShortcutSystem.Shortcuts[key]
-		if shortcut and shortcut.Callback then
-			pcall(shortcut.Callback)
-		end
-	end
-}
-
--- Advanced theme customization system
-local AdvancedThemeSystem = {
-	CurrentTheme = "Default",
-	CustomThemes = {},
-	
-	CreateCustomTheme = function(name, colors)
-		AdvancedThemeSystem.CustomThemes[name] = colors
-		return true
-	end,
-	
-	ApplyTheme = function(themeName)
-		local theme = AdvancedThemeSystem.CustomThemes[themeName] or QuantiXLibrary.Theme[themeName]
-		if theme then
-			AdvancedThemeSystem.CurrentTheme = themeName
-			-- Apply theme to all UI elements
-			ChangeTheme(themeName)
-			return true
-		end
-		return false
-	end,
-	
-	GetThemeColor = function(colorName)
-		local currentTheme = AdvancedThemeSystem.CustomThemes[AdvancedThemeSystem.CurrentTheme] or QuantiXLibrary.Theme[AdvancedThemeSystem.CurrentTheme]
-		return currentTheme and currentTheme[colorName] or Color3.fromRGB(255, 255, 255)
-	end,
-	
-	ExportTheme = function(themeName)
-		local theme = AdvancedThemeSystem.CustomThemes[themeName] or QuantiXLibrary.Theme[themeName]
-		if theme then
-			return HttpService:JSONEncode(theme)
-		end
-		return nil
-	end,
-	
-	ImportTheme = function(name, themeData)
-		local success, theme = pcall(function()
-			return HttpService:JSONDecode(themeData)
-		end)
-		if success then
-			AdvancedThemeSystem.CustomThemes[name] = theme
-			return true
-		end
-		return false
-	end
-}
 
 -- Loads and executes a function hosted on a remote URL. Cancels the request if the requested URL takes too long to respond.
 -- Errors with the function are caught and logged to the output
@@ -352,14 +90,6 @@ local settingsTable = {
         performanceMode = {Type = 'toggle', Value = false, Name = 'Performance Mode'},
         theme = {Type = 'dropdown', Value = 'Default', Name = 'Theme', Options = nil, MultipleOptions = false},
         accentColor = {Type = 'color', Value = Color3.fromRGB(255, 0, 0), Name = 'Accent Color'},
-    },
-    Enhanced = {
-        animationsEnabled = {Type = 'toggle', Value = true, Name = 'Enable Animations'},
-        animationSpeed = {Type = 'slider', Value = 1, Name = 'Animation Speed', Range = {0.5, 2.0}, Increment = 0.1, Suffix = 'x'},
-        particlesEnabled = {Type = 'toggle', Value = true, Name = 'Enable Particles'},
-        glowEnabled = {Type = 'toggle', Value = true, Name = 'Enable Glow Effects'},
-        enhancedNotifications = {Type = 'toggle', Value = true, Name = 'Enhanced Notifications'},
-        responsiveMode = {Type = 'toggle', Value = true, Name = 'Responsive Interface'},
     }
 }
 
@@ -1639,156 +1369,39 @@ function QuantiXLibrary:Notify(data) -- action e.g open messages
 		newNotification.Icon.Size = UDim2.new(0, 32, 0, 32)
 		newNotification.Icon.Position = UDim2.new(0, 20, 0.5, 0)
 
-		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))}):Play()
-
-		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.45}):Play()
-		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
-
-		task.wait(0.05)
-
-		TweenService:Create(newNotification.Icon, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-
-		task.wait(0.05)
-		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.35}):Play()
-		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
-		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
-
-		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-		task.wait(data.Duration or waitDuration)
-
-		newNotification.Icon.Visible = false
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-		TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-
-		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
-
-		task.wait(1)
-
-		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)}):Play()
-
-		newNotification.Visible = false
-		newNotification:Destroy()
-	end)
-end
-
--- Enhanced notification system with advanced animations and effects
-function QuantiXLibrary:NotifyEnhanced(data)
-	task.spawn(function()
-		-- Check if enhanced notifications are enabled
-		if not getSetting("Enhanced", "enhancedNotifications") then
-			-- Fallback to regular notification
-			return QuantiXLibrary:Notify(data)
-		end
-
-		-- Enhanced notification with particle effects and glow
-		local newNotification = Notifications.Template:Clone()
-		newNotification.Name = data.Title or 'Enhanced Notification'
-		newNotification.Parent = Notifications
-		newNotification.LayoutOrder = #Notifications:GetChildren()
-		newNotification.Visible = false
-
-		-- Set Data
-		newNotification.Title.Text = data.Title or "Enhanced Notification"
-		newNotification.Description.Text = data.Content or "Enhanced notification content"
-
-		if data.Image then
-			if typeof(data.Image) == 'string' and Icons then
-				local asset = getIcon(data.Image)
-				newNotification.Icon.Image = 'rbxassetid://'..asset.id
-				newNotification.Icon.ImageRectOffset = asset.imageRectOffset
-				newNotification.Icon.ImageRectSize = asset.imageRectSize
-			else
-				newNotification.Icon.Image = getAssetUri(data.Image)
-			end
-		else
-			newNotification.Icon.Image = "rbxassetid://" .. 0
-		end
-
-		-- Enhanced styling
-		newNotification.Title.TextColor3 = data.TitleColor or SelectedTheme.TextColor
-		newNotification.Description.TextColor3 = data.ContentColor or SelectedTheme.TextColor
-		newNotification.BackgroundColor3 = data.BackgroundColor or SelectedTheme.Background
-		newNotification.UIStroke.Color = data.StrokeColor or SelectedTheme.TextColor
-		newNotification.Icon.ImageColor3 = data.IconColor or SelectedTheme.TextColor
-
-		-- Initial state
-		newNotification.BackgroundTransparency = 1
-		newNotification.Title.TextTransparency = 1
-		newNotification.Description.TextTransparency = 1
-		newNotification.UIStroke.Transparency = 1
-		newNotification.Shadow.ImageTransparency = 1
-		newNotification.Size = UDim2.new(1, 0, 0, 800)
-		newNotification.Icon.ImageTransparency = 1
-		newNotification.Icon.BackgroundTransparency = 1
-
-		task.wait()
-		newNotification.Visible = true
-
-		-- Calculate bounds
-		local bounds = {newNotification.Title.TextBounds.Y, newNotification.Description.TextBounds.Y}
-		newNotification.Size = UDim2.new(1, -60, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)
-
-		newNotification.Icon.Size = UDim2.new(0, 32, 0, 32)
-		newNotification.Icon.Position = UDim2.new(0, 20, 0.5, 0)
-
 		-- Enhanced entrance animation with bounce effect
-		CreateEnhancedTween(newNotification, TweenInfo.new(0.8, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.Out), {
-			Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))
-		}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))}):Play()
 
 		task.wait(0.2)
-		
-		-- Staggered fade-in with enhanced timing
-		CreateEnhancedTween(newNotification, TweenInfo.new(0.5, AnimationSystem.EasingStyles.Exponential), {BackgroundTransparency = 0.3}):Play()
-		CreateEnhancedTween(newNotification.Title, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0}):Play()
+		-- Enhanced fade-in with staggered timing
+		TweenService:Create(newNotification, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.3}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
 		task.wait(0.1)
-		CreateEnhancedTween(newNotification.Icon, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {ImageTransparency = 0}):Play()
+		TweenService:Create(newNotification.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 
 		task.wait(0.1)
-		CreateEnhancedTween(newNotification.Description, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0.2}):Play()
-		CreateEnhancedTween(newNotification.UIStroke, TweenInfo.new(0.5, AnimationSystem.EasingStyles.Exponential), {Transparency = 0.9}):Play()
-		CreateEnhancedTween(newNotification.Shadow, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {ImageTransparency = 0.7}):Play()
-
-		-- Add glow effect if enabled
-		if GlowSystem.Enabled and data.EnableGlow then
-			GlowSystem.CreateGlow(newNotification, data.GlowColor or SelectedTheme.TextColor)
-		end
-
-		-- Add particle effects if enabled
-		if ParticleSystem.Enabled and data.EnableParticles then
-			task.spawn(function()
-				for i = 1, 5 do
-					task.wait(0.5)
-					ParticleSystem.CreateParticle(newNotification, UDim2.new(math.random(), 0, math.random(), 0), data.ParticleColor or SelectedTheme.TextColor)
-				end
-			end)
-		end
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 0.2}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0.9}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 0.7}):Play()
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
 		task.wait(data.Duration or waitDuration)
 
-		-- Enhanced exit animation
+		-- Enhanced exit animation with smooth transitions
 		newNotification.Icon.Visible = false
-		CreateEnhancedTween(newNotification, TweenInfo.new(0.5, AnimationSystem.EasingStyles.Exponential), {BackgroundTransparency = 1}):Play()
-		CreateEnhancedTween(newNotification.UIStroke, TweenInfo.new(0.5, AnimationSystem.EasingStyles.Exponential), {Transparency = 1}):Play()
-		CreateEnhancedTween(newNotification.Shadow, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {ImageTransparency = 1}):Play()
-		CreateEnhancedTween(newNotification.Title, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 1}):Play()
-		CreateEnhancedTween(newNotification.Description, TweenInfo.new(0.4, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 1}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+		TweenService:Create(newNotification.Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+		TweenService:Create(newNotification.Description, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
-		CreateEnhancedTween(newNotification, TweenInfo.new(1.2, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.In), {
-			Size = UDim2.new(1, -90, 0, 0)
-		}):Play()
+		-- Enhanced slide out with bounce effect
+		TweenService:Create(newNotification, TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
 		task.wait(1.2)
 
-		CreateEnhancedTween(newNotification, TweenInfo.new(1.2, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.In), {
-			Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)
-		}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)}):Play()
 
 		newNotification.Visible = false
 		newNotification:Destroy()
@@ -2302,24 +1915,6 @@ local function createSettings(window)
 			end
 		end
 	end
-
-	-- Apply enhanced settings side-effects
-	pcall(function()
-		if settingsTable.Enhanced then
-			if settingsTable.Enhanced.animationsEnabled then
-				AnimationSystem.Enabled = settingsTable.Enhanced.animationsEnabled.Value
-			end
-			if settingsTable.Enhanced.animationSpeed then
-				AnimationSystem.Speed = settingsTable.Enhanced.animationSpeed.Value
-			end
-			if settingsTable.Enhanced.particlesEnabled then
-				ParticleSystem.Enabled = settingsTable.Enhanced.particlesEnabled.Value
-			end
-			if settingsTable.Enhanced.glowEnabled then
-				GlowSystem.Enabled = settingsTable.Enhanced.glowEnabled.Value
-			end
-		end
-	end)
 
 	settingsCreated = true
     loadSettings()
@@ -2888,20 +2483,55 @@ function QuantiXLibrary:CreateWindow(Settings)
 			local Section = Tab:CreateSection(title)
 			local elementsByUserId: { [number]: any } = {}
 			local connection
+			local lastPlayerCount = 0
 
 			local function sync(playersList)
-				-- Remove elements no longer present
+				-- Only update if the player count actually changed
+				if #playersList == lastPlayerCount then
+					-- Just update names if needed, don't recreate everything
+					for index, plr in ipairs(playersList) do
+						if elementsByUserId[plr.UserId] then
+							local btn = elementsByUserId[plr.UserId]
+							if typeof(btn.Set) == "function" then
+								pcall(function()
+									btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
+								end)
+							end
+						end
+					end
+					return
+				end
+				
+				lastPlayerCount = #playersList
+				
+				-- Remove elements no longer present with smooth animation
 				for userId, elem in pairs(elementsByUserId) do
 					local found = false
 					for _, plr in ipairs(playersList) do
 						if plr.UserId == userId then found = true break end
 					end
 					if not found then
-						pcall(function() elem:Destroy() end)
+						-- Smooth fade out animation before destroying
+						local uiObject = nil
+						pcall(function()
+							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(elem.Name or "")
+						end)
+						if uiObject and uiObject.ClassName == "Frame" then
+							TweenService:Create(uiObject, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+								BackgroundTransparency = 1,
+								Size = UDim2.new(0, 0, 0, uiObject.Size.Y.Offset)
+							}):Play()
+							task.delay(0.3, function()
+								pcall(function() elem:Destroy() end)
+							end)
+						else
+							pcall(function() elem:Destroy() end)
+						end
 						elementsByUserId[userId] = nil
 					end
 				end
-				-- Add or update existing
+				
+				-- Add new players with smooth animation
 				for index, plr in ipairs(playersList) do
 					if not elementsByUserId[plr.UserId] then
 						local btn = Tab:CreateButton({
@@ -2912,36 +2542,53 @@ function QuantiXLibrary:CreateWindow(Settings)
 							end,
 						})
 						elementsByUserId[plr.UserId] = btn
+						
+						-- Set proper order
+						local uiObject = nil
+						pcall(function()
+							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
+						end)
+						if uiObject and uiObject.ClassName == "Frame" then
+							uiObject.LayoutOrder = index
+						end
 					else
+						-- Update existing button name if needed
 						local btn = elementsByUserId[plr.UserId]
 						if typeof(btn.Set) == "function" then
 							pcall(function()
 								btn:Set(plr.DisplayName .. " (" .. plr.Name .. ")")
 							end)
 						end
-					end
-					-- Try to keep order consistent with playersList by setting LayoutOrder
-					local uiObject = nil
-					pcall(function()
-						-- ButtonValue returned doesn't expose the frame directly; try to infer from last created child
-						uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
-					end)
-					if uiObject and uiObject.ClassName == "Frame" then
-						uiObject.LayoutOrder = index
+						
+						-- Update order
+						local uiObject = nil
+						pcall(function()
+							uiObject = Elements[Elements.UIPageLayout.CurrentPage.Name]:FindFirstChild(plr.DisplayName .. " (" .. plr.Name .. ")")
+						end)
+						if uiObject and uiObject.ClassName == "Frame" then
+							uiObject.LayoutOrder = index
+						end
 					end
 				end
 			end
 
 			-- Initial sync
 			sync(QuantiXLibrary:GetPlayersList(includeLocal))
-			-- Subscribe
+			-- Subscribe with debouncing to prevent excessive updates
+			local debounceTimer = nil
 			connection = QuantiXLibrary:OnPlayersChanged(function(players)
-				sync(players)
+				if debounceTimer then
+					task.cancel(debounceTimer)
+				end
+				debounceTimer = task.delay(0.1, function()
+					sync(players)
+				end)
 			end, includeLocal)
 
 			return {
 				Destroy = function()
 					if connection and connection.Disconnect then connection:Disconnect() end
+					if debounceTimer then task.cancel(debounceTimer) end
 					for _, elem in pairs(elementsByUserId) do
 						pcall(function() elem:Destroy() end)
 					end
@@ -2965,11 +2612,13 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Button.ElementIndicator.Text = tostring(ButtonSettings.IndicatorText)
 			end
 
+			-- Enhanced button properties
 			Button.BackgroundTransparency = 1
 			Button.UIStroke.Transparency = 1
 			Button.Title.TextTransparency = 1
 
-			TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+			-- Enhanced entrance animation with bounce effect
+			TweenService:Create(Button, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Button.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Button.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -2996,24 +2645,56 @@ function QuantiXLibrary:CreateWindow(Settings)
 					if not ButtonSettings.Ext then
 						SaveConfiguration(ButtonSettings.Name..'\n')
 					end
+					
+					-- Enhanced click animation with bounce and rotation
+					TweenService:Create(Button, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+						Size = Button.Size - UDim2.new(0, 2, 0, 1)
+					}):Play()
+					
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					task.wait(0.2)
+					
+					task.wait(0.15)
+					
+					-- Reset size with bounce
+					TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+						Size = Button.Size + UDim2.new(0, 2, 0, 1)
+					}):Play()
+					
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 				end
 			end)
 
+			-- Enhanced hover effects with scale and glow
 			Button.MouseEnter:Connect(function()
-				TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.7}):Play()
+				-- Scale effect
+				TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = Button.Size + UDim2.new(0, 3, 0, 1)
+				}):Play()
+				
+				-- Color change
+				TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.7}):Play()
+				
+				-- Enhanced stroke effect
+				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 2}):Play()
 			end)
 
 			Button.MouseLeave:Connect(function()
-				TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
+				-- Reset scale
+				TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = Button.Size - UDim2.new(0, 3, 0, 1)
+				}):Play()
+				
+				-- Reset color
+				TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
+				
+				-- Reset stroke
+				TweenService:Create(Button.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Thickness = 1}):Play()
 			end)
 
 			function ButtonValue:Set(NewButton)
@@ -3030,148 +2711,6 @@ function QuantiXLibrary:CreateWindow(Settings)
 			-- Provide a Destroy method for UI cleanup by external scripts
 			function ButtonValue:Destroy()
 				pcall(function()
-					Button.Visible = false
-					Button:Destroy()
-				end)
-			end
-
-			return ButtonValue
-		end
-
-		-- Enhanced Button with advanced animations and effects
-		function Tab:CreateEnhancedButton(ButtonSettings)
-			local ButtonValue = {}
-
-			local Button = Elements.Template.Button:Clone()
-			Button.Name = ButtonSettings.Name
-			Button.Title.Text = ButtonSettings.Name
-			Button.Visible = true
-			Button.Parent = TabPage
-
-			-- Optional right-side indicator text
-			if Button:FindFirstChild("ElementIndicator") and ButtonSettings.IndicatorText then
-				Button.ElementIndicator.Text = tostring(ButtonSettings.IndicatorText)
-			end
-
-			Button.BackgroundTransparency = 1
-			Button.UIStroke.Transparency = 1
-			Button.Title.TextTransparency = 1
-
-			-- Use enhanced tween system
-			CreateEnhancedTween(Button, TweenInfo.new(0.7, AnimationSystem.EasingStyles.Exponential), {BackgroundTransparency = 0}):Play()
-			CreateEnhancedTween(Button.UIStroke, TweenInfo.new(0.7, AnimationSystem.EasingStyles.Exponential), {Transparency = 0}):Play()
-			CreateEnhancedTween(Button.Title, TweenInfo.new(0.7, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0}):Play()
-
-			-- Enhanced hover effects
-			Button.MouseEnter:Connect(function()
-				-- Scale effect
-				if ButtonSettings.EnableScale then
-					CreateEnhancedTween(Button, TweenInfo.new(0.2, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.Out), {
-						Size = Button.Size + UDim2.new(0, 5, 0, 2)
-					}):Play()
-				end
-				
-				-- Glow effect
-				if ButtonSettings.EnableGlow and GlowSystem.Enabled then
-					Button.GlowEffect = GlowSystem.CreateGlow(Button, ButtonSettings.GlowColor or SelectedTheme.TextColor)
-				end
-				
-				-- Color change
-				CreateEnhancedTween(Button, TweenInfo.new(0.3, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.3, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0.7}):Play()
-			end)
-
-			Button.MouseLeave:Connect(function()
-				-- Reset scale
-				if ButtonSettings.EnableScale then
-					CreateEnhancedTween(Button, TweenInfo.new(0.2, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.Out), {
-						Size = Button.Size - UDim2.new(0, 5, 0, 2)
-					}):Play()
-				end
-				
-				-- Remove glow
-				if Button.GlowEffect then
-					GlowSystem.RemoveGlow(Button.GlowEffect)
-					Button.GlowEffect = nil
-				end
-				
-				-- Reset color
-				CreateEnhancedTween(Button, TweenInfo.new(0.3, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.3, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0.9}):Play()
-			end)
-
-			Button.Interact.MouseButton1Click:Connect(function()
-				local Success, Response = pcall(ButtonSettings.Callback)
-				
-				if QuantiXDestroyed then
-					return
-				end
-				
-				if not Success then
-					-- Error animation
-					CreateEnhancedTween(Button, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
-					CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 1}):Play()
-					CreateEnhancedTween(Button.UIStroke, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {Transparency = 1}):Play()
-					Button.Title.Text = "Callback Error"
-					print("QuantiX | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with QuantiX specific development.')
-					task.wait(0.5)
-					Button.Title.Text = ButtonSettings.Name
-					CreateEnhancedTween(Button, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0.9}):Play()
-					CreateEnhancedTween(Button.UIStroke, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {Transparency = 0}):Play()
-				else
-					-- Success effects
-					if not ButtonSettings.Ext then
-						SaveConfiguration(ButtonSettings.Name..'\n')
-					end
-					
-					-- Particle effect
-					if ButtonSettings.EnableParticles and ParticleSystem.Enabled then
-						for i = 1, 3 do
-							ParticleSystem.CreateParticle(Button, UDim2.new(math.random(), 0, math.random(), 0), ButtonSettings.ParticleColor or SelectedTheme.TextColor)
-						end
-					end
-					
-					-- Ripple effect
-					if ButtonSettings.EnableRipple and ParticleSystem.Enabled then
-						ParticleSystem.CreateRippleEffect(Button, UDim2.new(0.5, 0, 0.5, 0), ButtonSettings.RippleColor or SelectedTheme.TextColor)
-					end
-					
-					-- Rotation effect
-					if ButtonSettings.EnableRotation then
-						CreateEnhancedTween(Button, TweenInfo.new(0.3, AnimationSystem.EasingStyles.Back, AnimationSystem.EasingDirection.Out), {
-							Rotation = Button.Rotation + 180
-						}):Play()
-					end
-					
-					-- Standard click animation
-					CreateEnhancedTween(Button, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-					CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 1}):Play()
-					CreateEnhancedTween(Button.UIStroke, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {Transparency = 1}):Play()
-					task.wait(0.2)
-					CreateEnhancedTween(Button, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					CreateEnhancedTween(Button.ElementIndicator, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {TextTransparency = 0.9}):Play()
-					CreateEnhancedTween(Button.UIStroke, TweenInfo.new(0.6, AnimationSystem.EasingStyles.Exponential), {Transparency = 0}):Play()
-				end
-			end)
-
-			function ButtonValue:Set(NewButton)
-				Button.Title.Text = NewButton
-				Button.Name = NewButton
-			end
-
-			function ButtonValue:SetIndicator(text)
-				if Button:FindFirstChild("ElementIndicator") then
-					Button.ElementIndicator.Text = tostring(text)
-				end
-			end
-
-			function ButtonValue:Destroy()
-				pcall(function()
-					if Button.GlowEffect then
-						GlowSystem.RemoveGlow(Button.GlowEffect)
-					end
 					Button.Visible = false
 					Button:Destroy()
 				end)
@@ -4234,7 +3773,8 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Toggle.Switch.Shadow.Visible = false
 			end
 
-			TweenService:Create(Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+			-- Enhanced entrance animation with bounce effect
+			TweenService:Create(Toggle, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -4250,35 +3790,46 @@ function QuantiXLibrary:CreateWindow(Settings)
 				Toggle.Switch.UIStroke.Color = SelectedTheme.ToggleDisabledOuterStroke
 			end
 
+			-- Enhanced hover effects with scale
 			Toggle.MouseEnter:Connect(function()
-				TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				-- Subtle scale effect on the switch
+				TweenService:Create(Toggle.Switch, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = Toggle.Switch.Size + UDim2.new(0, 2, 0, 2)
+				}):Play()
 			end)
 
 			Toggle.MouseLeave:Connect(function()
-				TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				-- Reset scale
+				TweenService:Create(Toggle.Switch, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = Toggle.Switch.Size - UDim2.new(0, 2, 0, 2)
+				}):Play()
 			end)
 
 			Toggle.Interact.MouseButton1Click:Connect(function()
 				if ToggleSettings.CurrentValue == true then
 					ToggleSettings.CurrentValue = false
-					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
-					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
-					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
-					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()	
+					-- Enhanced click animation with bounce
+					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -40, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledStroke}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleDisabled}):Play()
+					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleDisabledOuterStroke}):Play()
+					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()	
 				else
 					ToggleSettings.CurrentValue = true
-					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
-					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
-					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
-					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
-					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()		
+					-- Enhanced click animation with bounce
+					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -20, 0.5, 0)}):Play()
+					TweenService:Create(Toggle.Switch.Indicator.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledStroke}):Play()
+					TweenService:Create(Toggle.Switch.Indicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundColor3 = SelectedTheme.ToggleEnabled}):Play()
+					TweenService:Create(Toggle.Switch.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Color = SelectedTheme.ToggleEnabledOuterStroke}):Play()
+					TweenService:Create(Toggle, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()		
 				end
 
 				local Success, Response = pcall(function()
@@ -5353,55 +4904,6 @@ if useStudio then
 	--local Label2 = Tab:CreateLabel("Warning", 4483362458, Color3.fromRGB(255, 159, 49),  true)
 
 	--local Paragraph = Tab:CreateParagraph({Title = "Paragraph Example", Content = "Paragraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph Example"})
-end
-
--- Add enhanced functions to QuantiXLibrary
-QuantiXLibrary.CreateEnhancedButton = function(tab, settings)
-	return tab:CreateEnhancedButton(settings)
-end
-
-QuantiXLibrary.NotifyEnhanced = function(data)
-	return QuantiXLibrary:NotifyEnhanced(data)
-end
-
-QuantiXLibrary.RegisterShortcut = function(key, callback, description)
-	return EnhancedShortcutSystem.RegisterShortcut(key, callback, description)
-end
-
-QuantiXLibrary.UnregisterShortcut = function(key)
-	return EnhancedShortcutSystem.UnregisterShortcut(key)
-end
-
-QuantiXLibrary.GetShortcuts = function()
-	return EnhancedShortcutSystem.GetShortcuts()
-end
-
-QuantiXLibrary.CreateCustomTheme = function(name, colors)
-	return AdvancedThemeSystem.CreateCustomTheme(name, colors)
-end
-
-QuantiXLibrary.ApplyCustomTheme = function(themeName)
-	return AdvancedThemeSystem.ApplyTheme(themeName)
-end
-
-QuantiXLibrary.ExportTheme = function(themeName)
-	return AdvancedThemeSystem.ExportTheme(themeName)
-end
-
-QuantiXLibrary.ImportTheme = function(name, themeData)
-	return AdvancedThemeSystem.ImportTheme(name, themeData)
-end
-
-QuantiXLibrary.GetAnimationSystem = function()
-	return AnimationSystem
-end
-
-QuantiXLibrary.GetParticleSystem = function()
-	return ParticleSystem
-end
-
-QuantiXLibrary.GetGlowSystem = function()
-	return GlowSystem
 end
 
 if CEnabled and Main:FindFirstChild('Notice') then
