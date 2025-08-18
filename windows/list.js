@@ -693,7 +693,7 @@ const posts = [
       description: "Script pour After Effects",
       thumbnail: "assets/images/script_logo.png",
       tags: ["After Effects", "Scripts"],
-      file: "https://drive.google.com/uc?export=download&id=1Y7i4lRIv7PvXEbB2ztLiIR9FVHyFRU31",
+      file: "https://drive.google.com/uc?export=download&id=1pBUAPRsUC6DyR6DLWBXyoRnbfzVYSG_B",
       size: "73.5 KB"
     },
     {
