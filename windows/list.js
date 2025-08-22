@@ -315,7 +315,7 @@ const posts = [
       description: "Plugin pour After Effects",
       thumbnail: "assets/images/plugin_logo.png",
       tags: ["After Effects", "Plugins"],
-      file: "https://drive.google.com/uc?export=download&id=1m12awHwfuPxFRPfUi1kLWn45qHOFYo3C",
+      file: "https://drive.google.com/uc?export=download&id=104vJvjFYXHiSbcnWGgTAtP8sqtA0oiVZ",
       size: "373 KB"
     },
     {
